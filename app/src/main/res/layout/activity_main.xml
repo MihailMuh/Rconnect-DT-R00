@@ -1,0 +1,490 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".MainActivity">
+
+    <TextView
+        android:id="@+id/relay1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="27dp"
+        android:text="@string/Relay_1"
+        android:textColor="@color/black"
+        android:textSize="20sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.501"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/relay2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="60dp"
+        android:text="@string/Relay_2"
+        android:textColor="@color/black"
+        android:textSize="20sp"
+        app:layout_constraintEnd_toEndOf="@+id/relay1"
+        app:layout_constraintStart_toStartOf="@+id/relay1"
+        app:layout_constraintTop_toBottomOf="@+id/relay1" />
+
+    <TextView
+        android:id="@+id/relay3"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="60dp"
+        android:text="@string/Relay_3"
+        android:textColor="@color/black"
+        android:textSize="20sp"
+        app:layout_constraintEnd_toEndOf="@+id/relay2"
+        app:layout_constraintStart_toStartOf="@+id/relay2"
+        app:layout_constraintTop_toBottomOf="@+id/relay2" />
+
+    <TextView
+        android:id="@+id/relay4"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="60dp"
+        android:text="@string/Relay_4"
+        android:textColor="@color/black"
+        android:textSize="20sp"
+        app:layout_constraintEnd_toEndOf="@+id/relay3"
+        app:layout_constraintStart_toStartOf="@+id/relay3"
+        app:layout_constraintTop_toBottomOf="@+id/relay3" />
+
+    <TextView
+        android:id="@+id/relay5"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="60dp"
+        android:text="@string/Relay_5"
+        android:textColor="@color/black"
+        android:textSize="20sp"
+        app:layout_constraintEnd_toEndOf="@+id/relay4"
+        app:layout_constraintStart_toStartOf="@+id/relay4"
+        app:layout_constraintTop_toBottomOf="@+id/relay4" />
+
+    <TextView
+        android:id="@+id/relay6"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="60dp"
+        android:text="@string/Relay_6"
+        android:textColor="@color/black"
+        android:textSize="20sp"
+        app:layout_constraintEnd_toEndOf="@+id/relay5"
+        app:layout_constraintStart_toStartOf="@+id/relay5"
+        app:layout_constraintTop_toBottomOf="@+id/relay5" />
+
+    <TextView
+        android:id="@+id/relay7"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="60dp"
+        android:text="@string/Relay_7"
+        android:textColor="@color/black"
+        android:textSize="20sp"
+        app:layout_constraintEnd_toEndOf="@+id/relay6"
+        app:layout_constraintStart_toStartOf="@+id/relay6"
+        app:layout_constraintTop_toBottomOf="@+id/relay6" />
+
+    <TextView
+        android:id="@+id/relay8"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="60dp"
+        android:text="@string/Relay_8"
+        android:textColor="@color/black"
+        android:textSize="20sp"
+        app:layout_constraintEnd_toEndOf="@+id/relay7"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="@+id/relay7"
+        app:layout_constraintTop_toBottomOf="@+id/relay7" />
+
+    <Button
+        android:id="@+id/buttonRelay1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/On"
+        app:layout_constraintEnd_toStartOf="@+id/time1"
+        app:layout_constraintStart_toEndOf="@+id/buttonDelay1"
+        app:layout_constraintTop_toBottomOf="@+id/relay1" />
+
+    <Button
+        android:id="@+id/buttonRelay2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/On"
+        app:layout_constraintEnd_toStartOf="@+id/time2"
+        app:layout_constraintStart_toEndOf="@+id/buttonDelay2"
+        app:layout_constraintTop_toBottomOf="@+id/relay2" />
+
+    <Button
+        android:id="@+id/buttonRelay3"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/On"
+        app:layout_constraintEnd_toStartOf="@+id/time3"
+        app:layout_constraintStart_toEndOf="@+id/buttonDelay3"
+        app:layout_constraintTop_toBottomOf="@+id/relay3" />
+
+    <Button
+        android:id="@+id/buttonRelay4"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/On"
+        app:layout_constraintEnd_toStartOf="@+id/time4"
+        app:layout_constraintStart_toEndOf="@+id/buttonDelay4"
+        app:layout_constraintTop_toBottomOf="@+id/relay4" />
+
+    <Button
+        android:id="@+id/buttonRelay5"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/On"
+        app:layout_constraintEnd_toStartOf="@+id/time5"
+        app:layout_constraintStart_toEndOf="@+id/buttonDelay5"
+        app:layout_constraintTop_toBottomOf="@+id/relay5" />
+
+    <Button
+        android:id="@+id/buttonRelay6"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/On"
+        app:layout_constraintEnd_toStartOf="@+id/time6"
+        app:layout_constraintStart_toEndOf="@+id/buttonDelay6"
+        app:layout_constraintTop_toBottomOf="@+id/relay6" />
+
+    <Button
+        android:id="@+id/buttonRelay7"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/On"
+        app:layout_constraintEnd_toStartOf="@+id/time7"
+        app:layout_constraintStart_toEndOf="@+id/buttonDelay7"
+        app:layout_constraintTop_toBottomOf="@+id/relay7" />
+
+    <Button
+        android:id="@+id/buttonRelay8"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/On"
+        app:layout_constraintEnd_toStartOf="@+id/time8"
+        app:layout_constraintStart_toEndOf="@+id/buttonDelay8"
+        app:layout_constraintTop_toBottomOf="@+id/relay8" />
+
+    <Button
+        android:id="@+id/buttonDelay1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:padding="0dp"
+        android:text="@string/Delay"
+        app:layout_constraintBottom_toBottomOf="@+id/buttonRelay1"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/buttonRelay1" />
+
+    <Button
+        android:id="@+id/buttonDelay2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:padding="0dp"
+        android:text="@string/Delay"
+        app:layout_constraintBottom_toBottomOf="@+id/buttonRelay2"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/buttonRelay2" />
+
+    <Button
+        android:id="@+id/buttonDelay3"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:padding="0dp"
+        android:text="@string/Delay"
+        app:layout_constraintBottom_toBottomOf="@+id/buttonRelay3"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/buttonRelay3" />
+
+    <Button
+        android:id="@+id/buttonDelay4"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:padding="0dp"
+        android:text="@string/Delay"
+        app:layout_constraintBottom_toBottomOf="@+id/buttonRelay4"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/buttonRelay4" />
+
+    <Button
+        android:id="@+id/buttonDelay5"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:padding="0dp"
+        android:text="@string/Delay"
+        app:layout_constraintBottom_toBottomOf="@+id/buttonRelay5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/buttonRelay5" />
+
+    <Button
+        android:id="@+id/buttonDelay6"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:padding="0dp"
+        android:text="@string/Delay"
+        app:layout_constraintBottom_toBottomOf="@+id/buttonRelay6"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/buttonRelay6" />
+
+    <Button
+        android:id="@+id/buttonDelay7"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:padding="0dp"
+        android:text="@string/Delay"
+        app:layout_constraintBottom_toBottomOf="@+id/buttonRelay7"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/buttonRelay7" />
+
+    <Button
+        android:id="@+id/buttonDelay8"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:padding="0dp"
+        android:text="@string/Delay"
+        app:layout_constraintBottom_toBottomOf="@+id/buttonRelay8"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/buttonRelay8" />
+
+    <EditText
+        android:id="@+id/input_ip"
+        android:layout_width="60dp"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="16dp"
+        android:imeOptions="actionDone"
+        android:inputType="number"
+        android:minHeight="48dp"
+        android:textColor="@color/black"
+        app:layout_constraintBottom_toBottomOf="@+id/time1"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/time1" />
+
+    <EditText
+        android:id="@+id/input2"
+        android:layout_width="60dp"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="16dp"
+        android:imeOptions="actionDone"
+        android:inputType="number"
+        android:minHeight="48dp"
+        android:textColor="@color/black"
+        app:layout_constraintBottom_toBottomOf="@+id/time2"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/time2" />
+
+    <EditText
+        android:id="@+id/input3"
+        android:layout_width="60dp"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="16dp"
+        android:imeOptions="actionDone"
+        android:inputType="number"
+        android:minHeight="48dp"
+        android:textColor="@color/black"
+        app:layout_constraintBottom_toBottomOf="@+id/time3"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/time3" />
+
+    <EditText
+        android:id="@+id/input4"
+        android:layout_width="60dp"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="16dp"
+        android:imeOptions="actionDone"
+        android:inputType="number"
+        android:minHeight="48dp"
+        android:textColor="@color/black"
+        app:layout_constraintBottom_toBottomOf="@+id/time4"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/time4" />
+
+    <EditText
+        android:id="@+id/input5"
+        android:layout_width="60dp"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="16dp"
+        android:imeOptions="actionDone"
+        android:inputType="number"
+        android:minHeight="48dp"
+        android:textColor="@color/black"
+        app:layout_constraintBottom_toBottomOf="@+id/time5"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/time5" />
+
+    <EditText
+        android:id="@+id/input6"
+        android:layout_width="60dp"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="16dp"
+        android:imeOptions="actionDone"
+        android:inputType="number"
+        android:minHeight="48dp"
+        android:textColor="@color/black"
+        app:layout_constraintBottom_toBottomOf="@+id/time6"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/time6" />
+
+    <EditText
+        android:id="@+id/input7"
+        android:layout_width="60dp"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="16dp"
+        android:imeOptions="actionDone"
+        android:inputType="number"
+        android:minHeight="48dp"
+        android:textColor="@color/black"
+        app:layout_constraintBottom_toBottomOf="@+id/time7"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/time7" />
+
+    <EditText
+        android:id="@+id/input8"
+        android:layout_width="60dp"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="16dp"
+        android:imeOptions="actionDone"
+        android:inputType="number"
+        android:minHeight="48dp"
+        android:textColor="@color/black"
+        app:layout_constraintBottom_toBottomOf="@+id/time8"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/time8" />
+
+    <TextView
+        android:id="@+id/time1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="4dp"
+        android:text="@string/time"
+        android:textColor="@color/black"
+        android:textSize="18sp"
+        app:layout_constraintBottom_toBottomOf="@+id/buttonRelay1"
+        app:layout_constraintEnd_toStartOf="@+id/input_ip"
+        app:layout_constraintTop_toTopOf="@+id/buttonRelay1" />
+
+    <TextView
+        android:id="@+id/time2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="4dp"
+        android:text="@string/time"
+        android:textColor="@color/black"
+        android:textSize="18sp"
+        app:layout_constraintBottom_toBottomOf="@+id/buttonRelay2"
+        app:layout_constraintEnd_toStartOf="@+id/input2"
+        app:layout_constraintTop_toTopOf="@+id/buttonRelay2" />
+
+    <TextView
+        android:id="@+id/time3"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="4dp"
+        android:text="@string/time"
+        android:textColor="@color/black"
+        android:textSize="18sp"
+        app:layout_constraintBottom_toBottomOf="@+id/buttonRelay3"
+        app:layout_constraintEnd_toStartOf="@+id/input3"
+        app:layout_constraintTop_toTopOf="@+id/buttonRelay3" />
+
+    <TextView
+        android:id="@+id/time4"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="4dp"
+        android:text="@string/time"
+        android:textColor="@color/black"
+        android:textSize="18sp"
+        app:layout_constraintBottom_toBottomOf="@+id/buttonRelay4"
+        app:layout_constraintEnd_toStartOf="@+id/input4"
+        app:layout_constraintTop_toTopOf="@+id/buttonRelay4" />
+
+    <TextView
+        android:id="@+id/time5"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="4dp"
+        android:text="@string/time"
+        android:textColor="@color/black"
+        android:textSize="18sp"
+        app:layout_constraintBottom_toBottomOf="@+id/buttonRelay5"
+        app:layout_constraintEnd_toStartOf="@+id/input5"
+        app:layout_constraintTop_toTopOf="@+id/buttonRelay5" />
+
+    <TextView
+        android:id="@+id/time6"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="4dp"
+        android:text="@string/time"
+        android:textColor="@color/black"
+        android:textSize="18sp"
+        app:layout_constraintBottom_toBottomOf="@+id/buttonRelay6"
+        app:layout_constraintEnd_toStartOf="@+id/input6"
+        app:layout_constraintTop_toTopOf="@+id/buttonRelay6" />
+
+    <TextView
+        android:id="@+id/time7"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="4dp"
+        android:text="@string/time"
+        android:textColor="@color/black"
+        android:textSize="18sp"
+        app:layout_constraintBottom_toBottomOf="@+id/buttonRelay7"
+        app:layout_constraintEnd_toStartOf="@+id/input7"
+        app:layout_constraintTop_toTopOf="@+id/buttonRelay7" />
+
+    <TextView
+        android:id="@+id/time8"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="4dp"
+        android:text="@string/time"
+        android:textColor="@color/black"
+        android:textSize="18sp"
+        app:layout_constraintBottom_toBottomOf="@+id/buttonRelay8"
+        app:layout_constraintEnd_toStartOf="@+id/input8"
+        app:layout_constraintTop_toTopOf="@+id/buttonRelay8" />
+
+    <Button
+        android:id="@+id/ip"
+        android:layout_width="138dp"
+        android:layout_height="55dp"
+        android:text="@string/set_ip"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/buttonRelay8"
+        app:layout_constraintVertical_bias="0.805" />
+
+    <TextView
+        android:id="@+id/current_ip"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@color/black"
+        android:textSize="19sp"
+        app:layout_constraintBottom_toTopOf="@+id/ip"
+        app:layout_constraintEnd_toEndOf="@+id/ip"
+        app:layout_constraintStart_toStartOf="@+id/ip"
+        app:layout_constraintTop_toBottomOf="@+id/buttonRelay8"
+        app:layout_constraintVertical_bias="0.742" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

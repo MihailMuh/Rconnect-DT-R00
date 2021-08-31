@@ -1,0 +1,19 @@
+<resources>
+    <string name="app_name">ESP8266</string>
+    <string name="Relay_1">Реле 1</string>
+    <string name="Relay_2">Реле 2</string>
+    <string name="Relay_3">Реле 3</string>
+    <string name="Relay_4">Реле 4</string>
+    <string name="Relay_5">Реле 5</string>
+    <string name="Relay_6">Реле 6</string>
+    <string name="Relay_7">Реле 7</string>
+    <string name="Relay_8">Реле 8</string>
+
+    <string name="On">Вкл</string>
+    <string name="Delay">Импульс</string>
+    <string name="time">Время в сек</string>
+    <string name="set_ip">Установить IP</string>
+    <string name="ip_address">Ip адрес</string>
+    <string name="Save">Сохранить</string>
+    <string name="Example">Пример: 192.168.60.60:8000</string>
+</resources>
