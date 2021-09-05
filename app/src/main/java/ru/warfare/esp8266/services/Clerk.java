@@ -1,12 +1,14 @@
-package ru.warfare.esp8266;
+package ru.warfare.esp8266.services;
 
-import static ru.warfare.esp8266.Py.print;
+import static ru.warfare.esp8266.services.Py.print;
 
 import android.content.Context;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
+
+import ru.warfare.esp8266.activity.MainActivity;
 
 public final class Clerk {
     private static MainActivity activity;

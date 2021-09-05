@@ -1,6 +1,9 @@
-package ru.warfare.esp8266;
+package ru.warfare.esp8266.activity;
 
+import android.app.ActivityManager;
+import android.content.Context;
 import android.content.res.Configuration;
+import android.content.res.Resources;
 import android.net.ConnectivityManager;
 import android.os.Bundle;
 import android.view.View;
@@ -11,11 +14,20 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import java.util.Objects;
 
+import ru.warfare.esp8266.R;
+import ru.warfare.esp8266.services.ThreadPool;
+import ru.warfare.esp8266.services.Time;
+
 public abstract class BaseActivity extends AppCompatActivity {
+    public Resources resources;
+    public String packageName;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+
+        resources = getResources();
+        packageName = getPackageName();
     }
 
     @Override
@@ -33,12 +45,20 @@ public abstract class BaseActivity extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
+        Exit();
     }
 
     @Override
     protected void onResume() {
         super.onResume();
         fullscreen();
+    }
+
+    public void Exit() {
+        ActivityManager activityManager = (ActivityManager) getSystemService(Context.ACTIVITY_SERVICE);
+        activityManager.killBackgroundProcesses(getApplication().getPackageName());
+        finishAndRemoveTask();
+        System.exit(0);
     }
 
     public void fullscreen() {
@@ -62,7 +82,25 @@ public abstract class BaseActivity extends AppCompatActivity {
         runOnUiThread(() -> Toast.makeText(this, text, Toast.LENGTH_SHORT).show());
     }
 
-    public void makeLongToast(String text) {
-        runOnUiThread(() -> Toast.makeText(this, text, Toast.LENGTH_LONG).show());
+    public void wrapperToast(String text, int millis) {
+        runOnUiThread(() -> {
+            Toast toast = Toast.makeText(this, text, Toast.LENGTH_LONG);
+            ThreadPool.post(() -> {
+                Time.sleepMillis(millis);
+
+                runOnUiThread(toast::cancel);
+            });
+            toast.show();
+        });
+    }
+
+    public int id(String name, String type) {
+        return resources.getIdentifier(name, type, packageName);
+    }
+
+    public int id(StringBuilder stringBuilder, String type) {
+        int id =  resources.getIdentifier(stringBuilder.toString(), type, packageName);
+        stringBuilder.setLength(0);
+        return id;
     }
 }

@@ -16,4 +16,9 @@
     <string name="ip_address">Ip адрес</string>
     <string name="Save">Сохранить</string>
     <string name="Example">Пример: 192.168.60.60:8000</string>
+    <string name="no_internet">Отсутствует интернет соединение!</string>
+    <string name="Exit">Выход</string>
+    <string name="Settings">Настройки</string>
+    <string name="Current_IP">Текущий IP</string>
+
 </resources>

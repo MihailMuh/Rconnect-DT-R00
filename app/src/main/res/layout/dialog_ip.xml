@@ -6,8 +6,9 @@
 
     <EditText
         android:id="@+id/input_ip"
-        android:layout_width="337dp"
-        android:layout_height="54dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:backgroundTint="#004524"
         android:hint="@string/ip_address"
         android:imeOptions="actionDone"
         android:inputType="text"
@@ -19,26 +20,31 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <Button
-        android:id="@+id/button_ip"
+        android:id="@+id/button_save"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:autoSizeMinTextSize="1dp"
+        android:autoSizeTextType="uniform"
+        android:backgroundTint="#004524"
+        android:padding="5dp"
         android:text="@string/Save"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="@+id/input_ip"
         app:layout_constraintStart_toStartOf="@+id/input_ip"
-        app:layout_constraintTop_toBottomOf="@+id/input_ip"
-        app:layout_constraintVertical_bias="0.175" />
+        app:layout_constraintTop_toBottomOf="@+id/input_ip" />
 
     <TextView
-        android:id="@+id/textView"
+        android:id="@+id/text_example"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:autoSizeMinTextSize="1dp"
+        android:autoSizeTextType="uniform"
         android:text="@string/Example"
         android:textColor="@color/black"
+        android:textSize="20sp"
         app:layout_constraintBottom_toTopOf="@+id/input_ip"
         app:layout_constraintEnd_toEndOf="@+id/input_ip"
         app:layout_constraintStart_toStartOf="@+id/input_ip"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.803" />
+        app:layout_constraintTop_toTopOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

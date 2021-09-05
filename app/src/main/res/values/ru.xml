@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="ru">
+        <item>Реле</item>
+        <item>Вкл</item>
+        <item>Выкл</item>
+        <item>Включено</item>
+        <item>Выключено</item>
+        <item>Импульс</item>
+        <item>Время в сек</item>
+        <item>Установить</item>
+        <item>адрес</item>
+        <item>Сохранить</item>
+        <item>Пример</item>
+        <item>Выход</item>
+        <item>Некорректный</item>
+        <item>Текущий</item>
+        <item>Отсутствует интернет соединение!</item>
+        <item>Успешно сохранено!</item>
+        <item>Некорректное значение!</item>
+        <item>Включено на</item>
+        <item>секунд</item>
+        <item>Настройки</item>
+        <item>Подождите</item>
+
+    </string-array>
+</resources>
