@@ -22,6 +22,8 @@
         <item>секунд</item>
         <item>Настройки</item>
         <item>Подождите</item>
+        <item>Проблема подключения к серверу!</item>
+        <item>Я включил интернет</item>
 
     </string-array>
 </resources>

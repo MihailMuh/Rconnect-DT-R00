@@ -1,17 +1,19 @@
 package ru.warfare.esp8266.activity;
 
 import static ru.warfare.esp8266.services.ClientServer.IP;
+import static ru.warfare.esp8266.services.Service.activity;
+import static ru.warfare.esp8266.services.Service.post;
+import static ru.warfare.esp8266.services.Service.readFromFile;
+import static ru.warfare.esp8266.services.Service.vibrate;
+import static ru.warfare.esp8266.services.Service.writeToFile;
 
 import android.os.Bundle;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
-import ru.warfare.esp8266.services.Clerk;
-import ru.warfare.esp8266.services.ClientServer;
 import ru.warfare.esp8266.R;
-import ru.warfare.esp8266.services.ThreadPool;
-import ru.warfare.esp8266.services.Vibrator;
+import ru.warfare.esp8266.services.ClientServer;
 
 public class SettingsActivity extends BaseActivity {
     private String s_current;
@@ -26,29 +28,31 @@ public class SettingsActivity extends BaseActivity {
         confirmLanguage();
 
         EditText editText = findViewById(R.id.edit_ip);
-        editText.setText(Clerk.recoveryIP());
+        editText.setText(readFromFile("IP"));
 
         ((TextView) findViewById(R.id.current_ip_text)).setText(s_current);
 
         Button btnSettings = findViewById(R.id.button_save_settings);
         btnSettings.setText(s_save);
         btnSettings.setOnClickListener(view -> {
-            wrapperToast(s_wait, 700);
-            IP = editText.getText().toString();
-            ThreadPool.post(() -> {
-                Vibrator.vibrate(70);
-                try {
-                    ClientServer.getStatistics();
+            if (isOnline()) {
+                wrapperToast(s_wait, 600);
+                IP = editText.getText().toString();
+                post(() -> {
+                    vibrate(55);
+                    if (ClientServer.getRelaysStatus().length() > 1) {
+                        runOnUiThread(this::finish);
 
-                    runOnUiThread(this::finish);
+                        writeToFile("IP", IP);
 
-                    Clerk.saveIP(IP);
-
-                    makeToast(getIntent().getStringExtra("Successfully saved"));
-                } catch (Exception e) {
-                    makeToast(getIntent().getStringExtra("Incorrect IP"));
-                }
-            });
+                        makeToast(activity.s_saved);
+                    } else {
+                        makeToast(activity.s_incorrect_IP);
+                    }
+                });
+            } else {
+                noWiFi(activity.s_no_internet, activity.s_exit, activity.s_i_enable_wifi);
+            }
         });
     }
 
@@ -64,6 +68,6 @@ public class SettingsActivity extends BaseActivity {
     public void onBackPressed() {
         finish();
 
-        ThreadPool.post(() -> IP = Clerk.recoveryIP());
+        post(() -> IP = readFromFile("IP"));
     }
 }

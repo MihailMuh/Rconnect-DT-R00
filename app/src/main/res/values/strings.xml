@@ -20,5 +20,6 @@
     <string name="Exit">Выход</string>
     <string name="Settings">Настройки</string>
     <string name="Current_IP">Текущий IP</string>
+    <string name="i_enable_wifi">Я включил интернет</string>
 
 </resources>

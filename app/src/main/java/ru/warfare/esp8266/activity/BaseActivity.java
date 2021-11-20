@@ -1,24 +1,30 @@
 package ru.warfare.esp8266.activity;
 
+import static ru.warfare.esp8266.services.Service.post;
+import static ru.warfare.esp8266.services.Service.sleepMillis;
+import static ru.warfare.esp8266.services.Service.vibrate;
+
 import android.app.ActivityManager;
 import android.content.Context;
 import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.net.ConnectivityManager;
 import android.os.Bundle;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.Button;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
 import java.util.Objects;
 
 import ru.warfare.esp8266.R;
-import ru.warfare.esp8266.services.ThreadPool;
-import ru.warfare.esp8266.services.Time;
 
 public abstract class BaseActivity extends AppCompatActivity {
+    private ConnectivityManager connectivityManager;
     public Resources resources;
     public String packageName;
 
@@ -28,6 +34,7 @@ public abstract class BaseActivity extends AppCompatActivity {
 
         resources = getResources();
         packageName = getPackageName();
+        connectivityManager = (ConnectivityManager) getSystemService(CONNECTIVITY_SERVICE);
     }
 
     @Override
@@ -75,7 +82,7 @@ public abstract class BaseActivity extends AppCompatActivity {
     }
 
     public boolean isOnline() {
-        return ((ConnectivityManager) getSystemService(CONNECTIVITY_SERVICE)).getActiveNetworkInfo() != null;
+        return connectivityManager.getActiveNetworkInfo() != null;
     }
 
     public void makeToast(String text) {
@@ -83,24 +90,46 @@ public abstract class BaseActivity extends AppCompatActivity {
     }
 
     public void wrapperToast(String text, int millis) {
-        runOnUiThread(() -> {
-            Toast toast = Toast.makeText(this, text, Toast.LENGTH_LONG);
-            ThreadPool.post(() -> {
-                Time.sleepMillis(millis);
+        Toast toast = Toast.makeText(this, text, Toast.LENGTH_LONG);
+        post(() -> {
+            sleepMillis(millis);
 
-                runOnUiThread(toast::cancel);
-            });
-            toast.show();
+            runOnUiThread(toast::cancel);
         });
-    }
-
-    public int id(String name, String type) {
-        return resources.getIdentifier(name, type, packageName);
+        toast.show();
     }
 
     public int id(StringBuilder stringBuilder, String type) {
-        int id =  resources.getIdentifier(stringBuilder.toString(), type, packageName);
+        int id = resources.getIdentifier(stringBuilder.toString(), type, packageName);
         stringBuilder.setLength(0);
         return id;
+    }
+
+    public void noWiFi(String title, String button1, String button2) {
+        View view = LayoutInflater.from(this).inflate(R.layout.dialog_no_internet, null);
+        AlertDialog alertDialog = new AlertDialog.Builder(this)
+                .setView(view)
+                .setTitle(title)
+                .setCancelable(false)
+                .create();
+
+        Button button = view.findViewById(R.id.button_exit);
+        button.setOnClickListener(view1 -> {
+            vibrate(55);
+            Exit();
+        });
+        button.setText(button1);
+
+        button = view.findViewById(R.id.button_i_enable_wifi);
+        button.setOnClickListener(view1 -> {
+            vibrate(55);
+            alertDialog.dismiss();
+            if (!isOnline()) {
+                noWiFi(title, button1, button2);
+            }
+        });
+        button.setText(button2);
+
+        alertDialog.show();
     }
 }
