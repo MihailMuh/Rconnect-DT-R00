@@ -58,7 +58,7 @@ public final class Service {
     public static void writeToFile(String fileName, Object content) {
         try {
             OutputStreamWriter writer_str = new OutputStreamWriter(
-                    activity.openFileOutput(fileName + ".txt", Context.MODE_PRIVATE));
+                    activity.openFileOutput(fileName, Context.MODE_PRIVATE));
 
             writer_str.write(content.toString());
             writer_str.close();
@@ -69,7 +69,7 @@ public final class Service {
 
     public static String readFromFile(String fileName) {
         try {
-            InputStreamReader reader_cooler = new InputStreamReader(activity.openFileInput(fileName + ".txt"));
+            InputStreamReader reader_cooler = new InputStreamReader(activity.openFileInput(fileName));
 
             String string = new BufferedReader(reader_cooler).readLine();
 
@@ -84,6 +84,4 @@ public final class Service {
             return null;
         }
     }
-
-
 }

@@ -24,6 +24,9 @@
         <item>Подождите</item>
         <item>Проблема подключения к серверу!</item>
         <item>Я включил интернет</item>
+        <item>Задержка</item>
+        <item>Скрыть</item>
+        <item>Показать</item>
 
     </string-array>
 </resources>

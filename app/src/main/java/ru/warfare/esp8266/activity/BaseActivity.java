@@ -24,7 +24,9 @@ import java.util.Objects;
 import ru.warfare.esp8266.R;
 
 public abstract class BaseActivity extends AppCompatActivity {
+    private final StringBuilder stringBuilder = new StringBuilder();
     private ConnectivityManager connectivityManager;
+
     public Resources resources;
     public String packageName;
 
@@ -91,18 +93,24 @@ public abstract class BaseActivity extends AppCompatActivity {
 
     public void wrapperToast(String text, int millis) {
         Toast toast = Toast.makeText(this, text, Toast.LENGTH_LONG);
+        toast.show();
         post(() -> {
             sleepMillis(millis);
 
-            runOnUiThread(toast::cancel);
+            toast.cancel();
         });
-        toast.show();
     }
 
-    public int id(StringBuilder stringBuilder, String type) {
-        int id = resources.getIdentifier(stringBuilder.toString(), type, packageName);
+    public synchronized <T extends View> T findViewById(String name, int index) {
         stringBuilder.setLength(0);
-        return id;
+        return super.findViewById(resources.getIdentifier(
+                stringBuilder.append(name).append(index).toString(), "id", packageName));
+    }
+
+    public synchronized int id(String name, String index) {
+        stringBuilder.setLength(0);
+        return resources.getIdentifier(
+                stringBuilder.append(name).append(index).toString(), "id", packageName);
     }
 
     public void noWiFi(String title, String button1, String button2) {
