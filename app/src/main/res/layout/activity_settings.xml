@@ -12,7 +12,7 @@
         android:layout_marginBottom="24dp"
         android:autoSizeMinTextSize="1dp"
         android:autoSizeTextType="uniform"
-        android:text="v_1.0"
+        android:text="v_1.1"
         android:textColor="@color/black"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -37,14 +37,14 @@
         android:id="@+id/edit_ip"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginStart="20dp"
         android:backgroundTint="#004524"
         android:imeOptions="actionDone"
         android:inputType="text"
         android:minHeight="48dp"
         android:textColor="@color/black"
         app:layout_constraintBottom_toBottomOf="@+id/current_ip_text"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/r0"
+        app:layout_constraintStart_toEndOf="@+id/current_ip_text"
         app:layout_constraintTop_toTopOf="@+id/current_ip_text" />
 
     <EditText

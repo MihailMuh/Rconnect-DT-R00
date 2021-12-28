@@ -30,6 +30,18 @@ public final class ClientServer {
         return "";
     }
 
+    public static int login(String user, String password) {
+        try {
+            Response response = client.newCall(new Request.Builder().url("http://" + IP + "/login.cgi?user=" + user + "&passwd=" + password + "&").build()).execute();
+            int ans = Integer.parseInt(response.body().string().replace("&", ""));
+            response.close();
+            return ans;
+        } catch (Exception e) {
+            print("Can't login " + e);
+        }
+        return 404;
+    }
+
     public static void postToServer(byte type, int relay, int on, int time, Runnable onSucceeded, Runnable onError) {
         post(() -> {
             try {

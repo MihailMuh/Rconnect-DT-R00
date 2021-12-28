@@ -7,8 +7,6 @@
         <item>Включено</item>
         <item>Выключено</item>
         <item>Импульс</item>
-        <item>Время в сек</item>
-        <item>Установить</item>
         <item>адрес</item>
         <item>Сохранить</item>
         <item>Пример</item>
@@ -27,6 +25,13 @@
         <item>Задержка</item>
         <item>Скрыть</item>
         <item>Показать</item>
+        <item>Введите IP адрес устройства в формате:</item>
+        <item>Имя пользователя</item>
+        <item>Пароль</item>
+        <item>Подтвердить</item>
+        <item>Авторизация</item>
+        <item>Неверное имя пользователя или пароль!</item>
+        <item>Запомнить меня</item>
 
     </string-array>
 </resources>

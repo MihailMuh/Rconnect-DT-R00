@@ -2,6 +2,7 @@ package ru.warfare.esp8266.activity;
 
 import static ru.warfare.esp8266.Constants.DELAY;
 import static ru.warfare.esp8266.Constants.PRESS;
+import static ru.warfare.esp8266.Strings.*;
 import static ru.warfare.esp8266.services.ClientServer.IP;
 import static ru.warfare.esp8266.services.ClientServer.postToServer;
 import static ru.warfare.esp8266.services.Service.post;
@@ -13,14 +14,11 @@ import static ru.warfare.esp8266.services.Service.writeToFile;
 import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.content.res.AppCompatResources;
 
 import org.json.JSONArray;
@@ -35,6 +33,8 @@ import ru.warfare.esp8266.services.ClientServer;
 import ru.warfare.esp8266.services.Service;
 
 public class MainActivity extends BaseActivity {
+    private static boolean firstRun = true;
+
     private final Button[] buttonsOnOff = new Button[8];
     private final Button[] buttonsDelay = new Button[8];
     private final ImageView[] imageViews = new ImageView[8];
@@ -48,21 +48,6 @@ public class MainActivity extends BaseActivity {
 
     private Runnable onError;
 
-    String s_relay;
-    String s_on, s_off;
-    String s_enable, s_disable;
-    String s_enable_on_time_1, s_enable_on_time_2;
-    String s_exit;
-    String s_example;
-    String s_save;
-    String s_address;
-    String s_saved;
-    String s_incorrect_IP;
-    String s_settings;
-    String s_no_internet;
-    String s_cant_connect_server;
-    String s_i_enable_wifi;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -70,65 +55,53 @@ public class MainActivity extends BaseActivity {
 
         Service.init(this);
 
-        confirmLanguage();
         post(() -> {
             offImg = AppCompatResources.getDrawable(this, R.drawable.off);
             onImg = AppCompatResources.getDrawable(this, R.drawable.on);
 
-            onError = () -> {
-                if (isOnline()) {
-                    makeToast(s_cant_connect_server);
-                } else {
-                    noWiFi();
-                }
-            };
+            onError = () -> checkWIFI(() -> makeToast(CANT_CONNECT_SERVER));
 
-            IP = readFromFile("IP.txt");
-            if (IP == null) {
-                runOnUiThread(this::setIP);
+            for (int i = 0; i < buttonsOnOff.length; i++) {
+                final int finalI = i;
+
+                buttonsDelay[i] = findViewById("buttonDelay", i);
+                textRelays[i] = findViewById("relay", i);
+                imageViews[i] = findViewById("light", i);
+
+                buttonsOnOff[i] = findViewById("buttonRelay", i);
+                buttonsOnOff[i].setOnClickListener((ButtonListener) () -> {
+                    if (buttonsOnOff[finalI].getText().equals(ON)) {
+                        postToServer(PRESS, finalI, 1, 0, () -> {
+                            imageViews[finalI].setImageDrawable(onImg);
+                            buttonsOnOff[finalI].setText(OFF);
+
+                            wrapperToast(ENABLE, 500);
+                        }, onError);
+                    } else {
+                        postToServer(PRESS, finalI, 0, 0, () -> {
+                            imageViews[finalI].setImageDrawable(offImg);
+                            buttonsOnOff[finalI].setText(ON);
+                            wrapperToast(DISABLE, 500);
+                        }, onError);
+                    }
+                });
+
+                findViewById("buttonDelay", i).setOnClickListener((ButtonListener) () ->
+                        postToServer(DELAY, finalI, 1, delays[finalI], () -> {
+                            imageViews[finalI].setImageDrawable(onImg);
+                            buttonsOnOff[finalI].setText(OFF);
+                            makeToast(ENABLE_AT + " " + delays[finalI] + " " + SECONDS);
+
+                            post(() -> {
+                                sleep(delays[finalI]);
+                                updateRelays();
+                            });
+                        }, onError));
             }
         });
 
-        for (int i = 0; i < buttonsOnOff.length; i++) {
-            final int finalI = i;
-
-            buttonsDelay[i] = findViewById("buttonDelay", i);
-            textRelays[i] = findViewById("relay", i);
-            imageViews[i] = findViewById("light", i);
-
-            buttonsOnOff[i] = findViewById("buttonRelay", i);
-            buttonsOnOff[i].setOnClickListener((ButtonListener) () -> {
-                if (buttonsOnOff[finalI].getText().equals(s_on)) {
-                    postToServer(PRESS, finalI, 1, 0, () -> {
-                        imageViews[finalI].setImageDrawable(onImg);
-                        buttonsOnOff[finalI].setText(s_off);
-
-                        wrapperToast(s_enable, 500);
-                    }, onError);
-                } else {
-                    postToServer(PRESS, finalI, 0, 0, () -> {
-                        imageViews[finalI].setImageDrawable(offImg);
-                        buttonsOnOff[finalI].setText(s_on);
-                        wrapperToast(s_disable, 500);
-                    }, onError);
-                }
-            });
-
-            findViewById("buttonDelay", i).setOnClickListener((ButtonListener) () ->
-                    postToServer(DELAY, finalI, 1, delays[finalI], () -> {
-                        imageViews[finalI].setImageDrawable(onImg);
-                        buttonsOnOff[finalI].setText(s_off);
-                        makeToast(s_enable_on_time_1 + delays[finalI] + s_enable_on_time_2);
-
-                        post(() -> {
-                            sleep(delays[finalI]);
-                            updateRelays();
-                        });
-                    }, onError));
-        }
-
         Button button = findViewById(R.id.buttonSettings);
-        button.setText(s_settings);
+        button.setText(SETTINGS);
         button.setOnClickListener((ButtonListener) () ->
                 startActivity(new Intent(this, SettingsActivity.class)));
     }
@@ -152,7 +125,7 @@ public class MainActivity extends BaseActivity {
         }
     }
 
-    private boolean updateRelays() {
+    private void updateRelays() {
         String string = ClientServer.getRelaysStatus();
         final int len = string.length() - 1;
 
@@ -162,82 +135,21 @@ public class MainActivity extends BaseActivity {
                 for (int i = 5; i < len; i += 2) {
                     if (show[j]) {
                         if (Integer.parseInt(String.valueOf(string.charAt(i))) == 1) {
-                            buttonsOnOff[j].setText(s_off);
+                            buttonsOnOff[j].setText(OFF);
                             imageViews[j].setImageDrawable(onImg);
                         } else {
-                            buttonsOnOff[j].setText(s_on);
+                            buttonsOnOff[j].setText(ON);
                             imageViews[j].setImageDrawable(offImg);
                         }
                     }
                     j++;
                 }
             });
-            return true;
         }
-
-        return false;
     }
 
-    public void setIP() {
-        View view = LayoutInflater.from(this).inflate(R.layout.dialog_ip, null);
-
-        AlertDialog alertDialog = new AlertDialog.Builder(this)
-                .setView(view)
-                .setCancelable(false)
-                .create();
-
-        ((TextView) view.findViewById(R.id.text_example)).setText(s_example);
-
-        EditText editText = view.findViewById(R.id.input_ip);
-        editText.setHint(s_address);
-
-        Button button = view.findViewById(R.id.button_save);
-        button.setText(s_save);
-        button.setOnClickListener((ButtonListener) () -> {
-            IP = editText.getText().toString();
-            post(() -> {
-                if (updateRelays()) {
-                    alertDialog.dismiss();
-
-                    writeToFile("IP.txt", IP);
-
-                    makeToast(s_saved);
-                } else {
-                    makeToast(s_incorrect_IP);
-                }
-            });
-        });
-
-        alertDialog.show();
-    }
-
-    private void noWiFi() {
-        noWiFi(s_no_internet, s_exit, s_i_enable_wifi);
-    }
-
-    public void confirmLanguage() {
-        String[] strings = getResources().getStringArray(R.array.ru);
-
-        s_relay = strings[0];
-        s_on = strings[1];
-        s_off = strings[2];
-        s_enable = strings[3];
-        s_disable = strings[4];
-        s_address = "IP " + strings[8];
-        s_save = strings[9];
-        s_example = strings[10] + ": 192.168.60.60:8000";
-        s_exit = strings[11];
-        s_incorrect_IP = strings[12] + " " + s_address;
-        s_no_internet = strings[14];
-        s_saved = strings[15];
-
-        s_enable_on_time_1 = strings[17] + " ";
-        s_enable_on_time_2 = " " + strings[18];
-
-        s_settings = strings[19];
-
-        s_cant_connect_server = strings[21];
-        s_i_enable_wifi = strings[22];
+    private void login() {
+        runOnUiThread(() -> startActivity(new Intent(this, RegisterActivity.class)));
     }
 
     @Override
@@ -246,9 +158,11 @@ public class MainActivity extends BaseActivity {
 
         post(() -> {
             String data = readFromFile("SETTINGS.json");
+            String ip = readFromFile("IP.json");
 
             try {
-                if (data == null) {
+                if (data == null || ip == null) {
+                    login();
                     writeJSONAtFirst();
                 } else {
                     JSONObject jsonSettings = new JSONObject(data);
@@ -257,25 +171,26 @@ public class MainActivity extends BaseActivity {
                     JSONArray showArray = jsonSettings.getJSONArray("show");
                     JSONArray delayArray = jsonSettings.getJSONArray("delay");
 
+                    JSONObject jsonIP = new JSONObject(ip);
+                    if (firstRun && !jsonIP.getBoolean("remember")) {
+                        login();
+                    } else {
+                        IP = jsonIP.getString("IP");
+                    }
+
                     for (int i = 0; i < 8; i++) {
                         names[i] = nameArray.getString(i);
                         delays[i] = delayArray.getInt(i);
                         show[i] = showArray.getBoolean(i);
                     }
 
-                    runOnUiThread(() -> {
-                        updateUI();
-
-                        if (isOnline()) {
-                            post(this::updateRelays);
-                        } else {
-                            noWiFi();
-                        }
-                    });
+                    checkWIFI(this::updateRelays);
+                    runOnUiThread(this::updateUI);
                 }
             } catch (Exception e) {
                 print("Error working with JSON " + e);
             }
+            firstRun = false;
         });
     }
 
@@ -286,7 +201,7 @@ public class MainActivity extends BaseActivity {
         Arrays.fill(delays, 5);
         Arrays.fill(show, true);
         for (int i = 0; i < 8; i++) {
-            names[i] = stringBuilder.append(s_relay).append(" ").append(i + 1).toString();
+            names[i] = stringBuilder.append(RELAY).append(" ").append(i + 1).toString();
             stringBuilder.setLength(0);
         }
 

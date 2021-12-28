@@ -1,11 +1,11 @@
 package ru.warfare.esp8266.activity;
 
+import static ru.warfare.esp8266.Strings.I_ENABLE_WIFI;
+import static ru.warfare.esp8266.Strings.NO_WIFI;
+import static ru.warfare.esp8266.Strings.QUIT;
 import static ru.warfare.esp8266.services.Service.post;
 import static ru.warfare.esp8266.services.Service.sleepMillis;
-import static ru.warfare.esp8266.services.Service.vibrate;
 
-import android.app.ActivityManager;
-import android.content.Context;
 import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.net.ConnectivityManager;
@@ -21,6 +21,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import java.util.Objects;
 
+import ru.warfare.esp8266.ButtonListener;
 import ru.warfare.esp8266.R;
 
 public abstract class BaseActivity extends AppCompatActivity {
@@ -54,7 +55,7 @@ public abstract class BaseActivity extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
-        Exit();
+        finishAffinity();
     }
 
     @Override
@@ -63,28 +64,22 @@ public abstract class BaseActivity extends AppCompatActivity {
         fullscreen();
     }
 
-    public void Exit() {
-        ActivityManager activityManager = (ActivityManager) getSystemService(Context.ACTIVITY_SERVICE);
-        activityManager.killBackgroundProcesses(getApplication().getPackageName());
-        finishAndRemoveTask();
-        System.exit(0);
-    }
-
     public void fullscreen() {
         Objects.requireNonNull(getSupportActionBar()).hide();
         getWindow().getDecorView().setSystemUiVisibility(
                 View.SYSTEM_UI_FLAG_LAYOUT_STABLE
-                        | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY
-                        | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
                         | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
-                        | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
                         | View.SYSTEM_UI_FLAG_FULLSCREEN
                         | View.SYSTEM_UI_FLAG_LOW_PROFILE
         );
     }
 
-    public boolean isOnline() {
-        return connectivityManager.getActiveNetworkInfo() != null;
+    public void checkWIFI(Runnable runnable) {
+        if (connectivityManager.getActiveNetworkInfo() != null) {
+            post(runnable);
+        } else {
+            noWiFi();
+        }
     }
 
     public void makeToast(String text) {
@@ -92,12 +87,14 @@ public abstract class BaseActivity extends AppCompatActivity {
     }
 
     public void wrapperToast(String text, int millis) {
-        Toast toast = Toast.makeText(this, text, Toast.LENGTH_LONG);
-        toast.show();
-        post(() -> {
-            sleepMillis(millis);
+        runOnUiThread(() -> {
+            Toast toast = Toast.makeText(this, text, Toast.LENGTH_LONG);
+            toast.show();
+            post(() -> {
+                sleepMillis(millis);
 
-            toast.cancel();
+                toast.cancel();
+            });
         });
     }
 
@@ -107,36 +104,25 @@ public abstract class BaseActivity extends AppCompatActivity {
                 stringBuilder.append(name).append(index).toString(), "id", packageName));
     }
 
-    public synchronized int id(String name, String index) {
-        stringBuilder.setLength(0);
-        return resources.getIdentifier(
-                stringBuilder.append(name).append(index).toString(), "id", packageName);
-    }
-
-    public void noWiFi(String title, String button1, String button2) {
+    public void noWiFi() {
         View view = LayoutInflater.from(this).inflate(R.layout.dialog_no_internet, null);
         AlertDialog alertDialog = new AlertDialog.Builder(this)
                 .setView(view)
-                .setTitle(title)
+                .setTitle(NO_WIFI)
                 .setCancelable(false)
                 .create();
 
         Button button = view.findViewById(R.id.button_exit);
-        button.setOnClickListener(view1 -> {
-            vibrate(55);
-            Exit();
-        });
-        button.setText(button1);
+        button.setOnClickListener((ButtonListener) this::finishAffinity);
+        button.setText(QUIT);
 
         button = view.findViewById(R.id.button_i_enable_wifi);
-        button.setOnClickListener(view1 -> {
-            vibrate(55);
+        button.setOnClickListener((ButtonListener) () -> {
             alertDialog.dismiss();
-            if (!isOnline()) {
-                noWiFi(title, button1, button2);
-            }
+            checkWIFI(() -> {
+            });
         });
-        button.setText(button2);
+        button.setText(I_ENABLE_WIFI);
 
         alertDialog.show();
     }

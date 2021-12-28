@@ -1,7 +1,14 @@
 package ru.warfare.esp8266.activity;
 
+import static ru.warfare.esp8266.Strings.CURRENT_IP;
+import static ru.warfare.esp8266.Strings.DELAY;
+import static ru.warfare.esp8266.Strings.HIDE;
+import static ru.warfare.esp8266.Strings.INCORRECT_IP;
+import static ru.warfare.esp8266.Strings.SAVE;
+import static ru.warfare.esp8266.Strings.SHOW;
+import static ru.warfare.esp8266.Strings.SUCCESSFULLY_SAVED;
+import static ru.warfare.esp8266.Strings.WAIT;
 import static ru.warfare.esp8266.services.ClientServer.IP;
-import static ru.warfare.esp8266.services.Service.activity;
 import static ru.warfare.esp8266.services.Service.post;
 import static ru.warfare.esp8266.services.Service.print;
 import static ru.warfare.esp8266.services.Service.readFromFile;
@@ -28,15 +35,12 @@ public class SettingsActivity extends BaseActivity {
     private final Button[] buttons = new Button[8];
 
     private JSONObject jsonSettings = new JSONObject();
+    private JSONObject jsonIP;
     private final int[] delays = new int[8];
     private final boolean[] show = new boolean[8];
     private final String[] names = new String[8];
 
-    private String s_current;
-    private String s_save;
-    private String s_wait;
-    private String s_delay;
-    private String s_show, s_hide;
+    private final String oldIP = IP;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,6 +49,7 @@ public class SettingsActivity extends BaseActivity {
 
         try {
             jsonSettings = new JSONObject(readFromFile("SETTINGS.json"));
+            jsonIP = new JSONObject(readFromFile("IP.json"));
 
             JSONArray nameArray = jsonSettings.getJSONArray("name");
             JSONArray showArray = jsonSettings.getJSONArray("show");
@@ -59,17 +64,15 @@ public class SettingsActivity extends BaseActivity {
             print(e);
         }
 
-        confirmLanguage();
-
         EditText editText = findViewById(R.id.edit_ip);
         editText.setText(IP);
 
-        ((TextView) findViewById(R.id.current_ip_text)).setText(s_current);
+        ((TextView) findViewById(R.id.current_ip_text)).setText(CURRENT_IP);
 
         for (int i = 0; i < editDelays.length; i++) {
             final int finalI = i;
 
-            ((TextView) findViewById("text_delay", i)).setText(s_delay);
+            ((TextView) findViewById("text_delay", i)).setText(DELAY);
 
             editRelays[i] = findViewById("edit_relay", i);
             editRelays[i].setText(names[i]);
@@ -79,12 +82,12 @@ public class SettingsActivity extends BaseActivity {
 
             buttons[i] = findViewById("button_hide", i);
             buttons[i].setOnClickListener((ButtonListener) () -> {
-                if (buttons[finalI].getText().equals(s_show)) {
-                    buttons[finalI].setText(s_hide);
+                if (buttons[finalI].getText().equals(SHOW)) {
+                    buttons[finalI].setText(HIDE);
                     show[finalI] = true;
                     color(true, finalI);
                 } else {
-                    buttons[finalI].setText(s_show);
+                    buttons[finalI].setText(SHOW);
                     show[finalI] = false;
                     color(false, finalI);
                 }
@@ -93,48 +96,46 @@ public class SettingsActivity extends BaseActivity {
         }
 
         Button btnSettings = findViewById(R.id.button_save_settings);
-        btnSettings.setText(s_save);
-        btnSettings.setOnClickListener((ButtonListener) () -> {
-            if (isOnline()) {
-                wrapperToast(s_wait, 500);
+        btnSettings.setText(SAVE);
+        btnSettings.setOnClickListener((ButtonListener) () -> checkWIFI(() -> {
+            wrapperToast(WAIT, 500);
 
-                post(() -> {
-                    IP = editText.getText().toString();
+            post(() -> {
+                IP = editText.getText().toString();
 
-                    for (int i = 0; i < 8; i++) {
-                        delays[i] = Integer.parseInt(editDelays[i].getText().toString());
-                        names[i] = editRelays[i].getText().toString();
-                    }
-                    try {
-                        jsonSettings.put("name", new JSONArray(names));
-                        jsonSettings.put("delay", new JSONArray(delays));
-                        jsonSettings.put("show", new JSONArray(show));
-                    } catch (Exception e) {
-                        print(e);
-                    }
+                for (int i = 0; i < 8; i++) {
+                    delays[i] = Integer.parseInt(editDelays[i].getText().toString());
+                    names[i] = editRelays[i].getText().toString();
+                }
+                try {
+                    jsonSettings.put("name", new JSONArray(names));
+                    jsonSettings.put("delay", new JSONArray(delays));
+                    jsonSettings.put("show", new JSONArray(show));
 
-                    if (ClientServer.getRelaysStatus().length() > 1) {
-                        runOnUiThread(this::finish);
+                    jsonIP.put("IP", IP);
+                } catch (Exception e) {
+                    print(e);
+                }
 
-                        writeToFile("IP.txt", IP);
-                        writeToFile("SETTINGS.json", jsonSettings);
+                if (ClientServer.getRelaysStatus().length() > 1) {
+                    runOnUiThread(this::finish);
 
-                        makeToast(activity.s_saved);
-                    } else {
-                        makeToast(activity.s_incorrect_IP);
-                    }
-                });
-            } else {
-                noWiFi(activity.s_no_internet, activity.s_exit, activity.s_i_enable_wifi);
-            }
-        });
+                    writeToFile("IP.json", jsonIP);
+                    writeToFile("SETTINGS.json", jsonSettings);
+
+                    makeToast(SUCCESSFULLY_SAVED);
+                } else {
+                    makeToast(INCORRECT_IP);
+                }
+            });
+        }));
     }
 
     private void text(int i, boolean show) {
         if (show) {
-            buttons[i].setText(s_hide);
+            buttons[i].setText(HIDE);
         } else {
-            buttons[i].setText(s_show);
+            buttons[i].setText(SHOW);
         }
 
         color(show, i);
@@ -150,21 +151,9 @@ public class SettingsActivity extends BaseActivity {
         }
     }
 
-    public void confirmLanguage() {
-        String[] strings = getResources().getStringArray(R.array.ru);
-
-        s_current = strings[13] + " IP:";
-        s_save = strings[9];
-        s_wait = strings[20] + "...";
-        s_delay = strings[23] + ":";
-        s_hide = strings[24];
-        s_show = strings[25];
-    }
-
     @Override
     public void onBackPressed() {
+        IP = oldIP;
         finish();
-
-        post(() -> IP = readFromFile("IP.txt"));
     }
 }

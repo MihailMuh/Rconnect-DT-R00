@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">ESP8266</string>
+    <string name="app_name">Remote DT-R00</string>
     <string name="Relay_1">Реле 1</string>
     <string name="Relay_2">Реле 2</string>
     <string name="Relay_3">Реле 3</string>
@@ -23,5 +23,11 @@
     <string name="i_enable_wifi">Я включил интернет</string>
     <string name="delay">Задержка:</string>
     <string name="hide">Скрыть</string>
+    <string name="authorization">Авторизация</string>
+    <string name="enter_ip_192_168_50_10_6000">Введите IP адрес устройства в формате: 192.168.50.10:6000</string>
+    <string name="user_name">Имя пользователя</string>
+    <string name="password">Пароль</string>
+    <string name="apply">Подтвердить</string>
+    <string name="remember_me">Запомнить меня</string>
 
 </resources>
