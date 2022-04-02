@@ -7,27 +7,20 @@ import android.content.Context;
 import android.os.Vibrator;
 import android.util.Log;
 
+import com.mihalis.dtr00.activity.BaseActivity;
+
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-import com.mihalis.dtr00.activity.MainActivity;
-
 public final class Service {
     private static final ExecutorService threadPool = Executors.newCachedThreadPool();
     private static Vibrator vibrator;
 
-    public static MainActivity activity;
-
-    public static volatile int numRegisterActivity  = 0;
-    public static volatile int numMainActivity  = 0;
-    public static volatile int numSettingsActivity  = 0;
-
-    public static void init(MainActivity mainActivity) {
-        activity = mainActivity;
-        vibrator = (Vibrator) mainActivity.getSystemService(VIBRATOR_SERVICE);
+    public static void init(BaseActivity activity) {
+        vibrator = (Vibrator) activity.getSystemService(VIBRATOR_SERVICE);
     }
 
     public static void post(Runnable runnable) {
@@ -59,7 +52,7 @@ public final class Service {
         vibrator.vibrate(createOneShot(millis, 255));
     }
 
-    public static void writeToFile(String fileName, Object content) {
+    public static void writeToFile(BaseActivity activity, String fileName, Object content) {
         try {
             OutputStreamWriter writer_str = new OutputStreamWriter(
                     activity.openFileOutput(fileName, Context.MODE_PRIVATE));
@@ -71,7 +64,7 @@ public final class Service {
         }
     }
 
-    public static String readFromFile(String fileName) {
+    public static String readFromFile(BaseActivity activity, String fileName) {
         try {
             InputStreamReader reader_cooler = new InputStreamReader(activity.openFileInput(fileName));
 
@@ -83,7 +76,7 @@ public final class Service {
         } catch (Exception e) {
             print("Can't recovery " + fileName + " " + e);
             print("Creating new file...");
-            writeToFile(fileName, "");
+            writeToFile(activity, fileName, "");
             print("Successful");
             return null;
         }

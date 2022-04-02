@@ -1,0 +1,244 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <LinearLayout
+        android:id="@+id/deviceContainer1"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_marginTop="50dp"
+        android:gravity="center"
+        android:visibility="gone"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHeight_percent="0.09"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <LinearLayout
+            android:id="@+id/buttonContainer1"
+            android:layout_width="50dp"
+            android:layout_height="match_parent"
+            android:layout_gravity="center"
+            android:layout_marginEnd="10dp">
+
+            <Button
+                android:id="@+id/buttonDevice1"
+                android:layout_width="50dp"
+                android:layout_height="48dp"
+                android:layout_gravity="center"
+                android:autoSizeMinTextSize="1dp"
+                android:autoSizeTextType="uniform"
+                android:backgroundTint="#004524"
+                android:padding="5dp"
+                android:text="@string/enter" />
+        </LinearLayout>
+
+        <EditText
+            android:id="@+id/device1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:autoSizeMinTextSize="1dp"
+            android:autoSizeTextType="uniform"
+            android:backgroundTint="#004524"
+            android:enabled="false"
+            android:gravity="center"
+            android:imeOptions="actionDone"
+            android:inputType="text"
+            android:minWidth="52dp"
+            android:minHeight="48dp"
+            android:text="@string/ip"
+            android:textColor="@color/black"
+            android:textSize="20sp" />
+
+        <androidx.constraintlayout.utils.widget.ImageFilterButton
+            android:id="@+id/imageEditDevice1"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            app:srcCompat="@android:drawable/ic_menu_edit" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/deviceContainer2"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_marginTop="25dp"
+        android:gravity="center"
+        android:visibility="gone"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHeight_percent="0.09"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/deviceContainer1">
+
+        <LinearLayout
+            android:id="@+id/buttonContainer2"
+            android:layout_width="50dp"
+            android:layout_height="match_parent"
+            android:layout_gravity="center"
+            android:layout_marginEnd="10dp">
+
+            <Button
+                android:id="@+id/buttonDevice2"
+                android:layout_width="50dp"
+                android:layout_height="48dp"
+                android:layout_gravity="center"
+                android:autoSizeMinTextSize="1dp"
+                android:autoSizeTextType="uniform"
+                android:backgroundTint="#004524"
+                android:padding="5dp"
+                android:text="@string/enter" />
+        </LinearLayout>
+
+        <EditText
+            android:id="@+id/device2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:autoSizeMinTextSize="1dp"
+            android:autoSizeTextType="uniform"
+            android:backgroundTint="#004524"
+            android:enabled="false"
+            android:gravity="center"
+            android:imeOptions="actionDone"
+            android:inputType="text"
+            android:minWidth="52dp"
+            android:minHeight="48dp"
+            android:text="@string/ip"
+            android:textColor="@color/black"
+            android:textSize="20sp" />
+
+        <androidx.constraintlayout.utils.widget.ImageFilterButton
+            android:id="@+id/imageEditDevice2"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            app:srcCompat="@android:drawable/ic_menu_edit" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/deviceContainer3"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_marginTop="25dp"
+        android:gravity="center"
+        android:visibility="gone"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHeight_percent="0.09"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/deviceContainer2">
+
+        <LinearLayout
+            android:id="@+id/buttonContainer3"
+            android:layout_width="50dp"
+            android:layout_height="match_parent"
+            android:layout_gravity="center"
+            android:layout_marginEnd="10dp">
+
+            <Button
+                android:id="@+id/buttonDevice3"
+                android:layout_width="50dp"
+                android:layout_height="48dp"
+                android:layout_gravity="center"
+                android:autoSizeMinTextSize="1dp"
+                android:autoSizeTextType="uniform"
+                android:backgroundTint="#004524"
+                android:padding="5dp"
+                android:text="@string/enter" />
+        </LinearLayout>
+
+        <EditText
+            android:id="@+id/device3"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:autoSizeMinTextSize="1dp"
+            android:autoSizeTextType="uniform"
+            android:backgroundTint="#004524"
+            android:enabled="false"
+            android:gravity="center"
+            android:imeOptions="actionDone"
+            android:inputType="text"
+            android:minWidth="52dp"
+            android:minHeight="48dp"
+            android:text="@string/ip"
+            android:textColor="@color/black"
+            android:textSize="20sp" />
+
+        <androidx.constraintlayout.utils.widget.ImageFilterButton
+            android:id="@+id/imageEditDevice3"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            app:srcCompat="@android:drawable/ic_menu_edit" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/deviceContainer4"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_marginTop="25dp"
+        android:gravity="center"
+        android:visibility="gone"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHeight_percent="0.09"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/deviceContainer3">
+
+        <LinearLayout
+            android:id="@+id/buttonContainer4"
+            android:layout_width="50dp"
+            android:layout_height="match_parent"
+            android:layout_gravity="center"
+            android:layout_marginEnd="10dp">
+
+            <Button
+                android:id="@+id/buttonDevice4"
+                android:layout_width="50dp"
+                android:layout_height="48dp"
+                android:layout_gravity="center"
+                android:autoSizeMinTextSize="1dp"
+                android:autoSizeTextType="uniform"
+                android:backgroundTint="#004524"
+                android:padding="5dp"
+                android:text="@string/enter" />
+        </LinearLayout>
+
+        <EditText
+            android:id="@+id/device4"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:autoSizeMinTextSize="1dp"
+            android:autoSizeTextType="uniform"
+            android:backgroundTint="#004524"
+            android:enabled="false"
+            android:gravity="center"
+            android:imeOptions="actionDone"
+            android:inputType="text"
+            android:minWidth="52dp"
+            android:minHeight="48dp"
+            android:text="@string/ip"
+            android:textColor="@color/black"
+            android:textSize="20sp" />
+
+        <androidx.constraintlayout.utils.widget.ImageFilterButton
+            android:id="@+id/imageEditDevice4"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            app:srcCompat="@android:drawable/ic_menu_edit" />
+    </LinearLayout>
+
+    <Button
+        android:id="@+id/button_add_device"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginBottom="50dp"
+        android:autoSizeMinTextSize="1dp"
+        android:autoSizeTextType="uniform"
+        android:backgroundTint="#004524"
+        android:padding="5dp"
+        android:text="@string/add_device"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHeight_percent="0.08"
+        app:layout_constraintHorizontal_bias="0.498"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintWidth_percent="0.35" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

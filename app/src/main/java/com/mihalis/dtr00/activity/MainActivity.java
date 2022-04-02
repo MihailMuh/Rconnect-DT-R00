@@ -8,7 +8,6 @@ import static com.mihalis.dtr00.Strings.ENABLE_AT;
 import static com.mihalis.dtr00.Strings.OFF;
 import static com.mihalis.dtr00.Strings.ON;
 import static com.mihalis.dtr00.Strings.PULSE;
-import static com.mihalis.dtr00.Strings.RELAY;
 import static com.mihalis.dtr00.Strings.SECONDS;
 import static com.mihalis.dtr00.Strings.SETTINGS;
 import static com.mihalis.dtr00.Strings.UNEXPECTED_ERROR;
@@ -16,9 +15,7 @@ import static com.mihalis.dtr00.services.ClientServer.IP;
 import static com.mihalis.dtr00.services.ClientServer.postToServer;
 import static com.mihalis.dtr00.services.Service.post;
 import static com.mihalis.dtr00.services.Service.print;
-import static com.mihalis.dtr00.services.Service.readFromFile;
 import static com.mihalis.dtr00.services.Service.sleep;
-import static com.mihalis.dtr00.services.Service.writeToFile;
 
 import android.content.Intent;
 import android.graphics.drawable.Drawable;
@@ -36,11 +33,8 @@ import com.mihalis.dtr00.R;
 import com.mihalis.dtr00.services.ClientServer;
 import com.mihalis.dtr00.services.Service;
 
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-
-import java.util.Arrays;
 
 public class MainActivity extends BaseActivity {
     static volatile boolean afterRegister = false;
@@ -63,9 +57,6 @@ public class MainActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        Service.init(this);
-        post(() -> MobileAds.initialize(this, initializationStatus -> print("MobileAds has initialized")));
-
         offImg = AppCompatResources.getDrawable(this, R.drawable.off);
         onImg = AppCompatResources.getDrawable(this, R.drawable.on);
 
@@ -79,14 +70,14 @@ public class MainActivity extends BaseActivity {
 
             buttonsOnOff[i].setOnClickListener((ClickListener) () -> {
                 if (buttonsOnOff[finalI].getText().equals(ON)) {
-                    postToServer(PRESS, finalI, 1, 0, () -> {
+                    postToServer(this, PRESS, finalI, 1, 0, () -> {
                         imageViews[finalI].setImageDrawable(onImg);
                         buttonsOnOff[finalI].setText(OFF);
 
                         toast(ENABLE, 500);
                     }, onError);
                 } else {
-                    postToServer(PRESS, finalI, 0, 0, () -> {
+                    postToServer(this, PRESS, finalI, 0, 0, () -> {
                         imageViews[finalI].setImageDrawable(offImg);
                         buttonsOnOff[finalI].setText(ON);
 
@@ -97,7 +88,7 @@ public class MainActivity extends BaseActivity {
 
             buttonsDelay[i].setText(PULSE);
             buttonsDelay[i].setOnClickListener((ClickListener) () ->
-                    postToServer(DELAY, finalI, 1, delays[finalI], () -> {
+                    postToServer(this, DELAY, finalI, 1, delays[finalI], () -> {
                         imageViews[finalI].setImageDrawable(onImg);
                         buttonsOnOff[finalI].setText(OFF);
                         toast(ENABLE_AT + " " + delays[finalI] + " " + SECONDS);
@@ -166,24 +157,14 @@ public class MainActivity extends BaseActivity {
         super.onResume();
 
         post(() -> {
-            String settings = readFromFile("SETTINGS.json");
-            String ip = readFromFile("IP.json");
-
             try {
-                if (settings == null || ip == null) {
-                    register();
-                    writePrimarySettings();
-                    return;
-                }
-
-                var jsonIP = new JSONObject(ip);
-                if (!afterRegister && !jsonIP.getBoolean("remember")) {
+                var jsonDeviceData = getJSONDevices().getJSONObject(IP);
+                if (!afterRegister && !jsonDeviceData.getBoolean("remember")) {
                     register();
                     return;
                 }
 
-                parseSettings(settings);
-                IP = jsonIP.getString("IP");
+                parseSettings(jsonDeviceData.getJSONObject("settings"));
 
                 checkWIFI(this::updateRelays);
                 runOnUiThread(this::updateUI);
@@ -193,9 +174,7 @@ public class MainActivity extends BaseActivity {
         });
     }
 
-    private void parseSettings(String settings) throws JSONException {
-        var jsonSettings = new JSONObject(settings);
-
+    private void parseSettings(JSONObject jsonSettings) throws JSONException {
         var nameArray = jsonSettings.getJSONArray("name");
         var showArray = jsonSettings.getJSONArray("show");
         var delayArray = jsonSettings.getJSONArray("delay");
@@ -205,23 +184,5 @@ public class MainActivity extends BaseActivity {
             delays[i] = delayArray.getInt(i);
             show[i] = showArray.getBoolean(i);
         }
-    }
-
-    private void writePrimarySettings() throws JSONException {
-        var jsonSettings = new JSONObject();
-        var stringBuilder = new StringBuilder();
-
-        Arrays.fill(delays, 5);
-        Arrays.fill(show, true);
-        for (int i = 0; i < 8; i++) {
-            names[i] = stringBuilder.append(RELAY).append(" ").append(i + 1).toString();
-            stringBuilder.setLength(0);
-        }
-
-        jsonSettings.put("name", new JSONArray(names));
-        jsonSettings.put("delay", new JSONArray(delays));
-        jsonSettings.put("show", new JSONArray(show));
-
-        writeToFile("SETTINGS.json", jsonSettings);
     }
 }

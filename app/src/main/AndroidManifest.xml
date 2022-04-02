@@ -16,7 +16,7 @@
         android:usesCleartextTraffic="true"
         android:windowSoftInputMode="adjustResize">
         <activity
-            android:name="com.mihalis.dtr00.activity.MainActivity"
+            android:name="com.mihalis.dtr00.activity.DevicesActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -26,6 +26,8 @@
         </activity>
         <activity android:name="com.mihalis.dtr00.activity.SettingsActivity" />
         <activity android:name="com.mihalis.dtr00.activity.RegisterActivity" />
+        <activity android:name="com.mihalis.dtr00.activity.MainActivity" />
+
         <meta-data
             android:name="com.google.android.gms.ads.APPLICATION_ID"
             android:value="ca-app-pub-6694626552209820~5755651723" />

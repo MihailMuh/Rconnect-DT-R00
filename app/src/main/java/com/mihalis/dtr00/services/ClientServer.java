@@ -1,8 +1,9 @@
 package com.mihalis.dtr00.services;
 
-import static com.mihalis.dtr00.services.Service.activity;
 import static com.mihalis.dtr00.services.Service.post;
 import static com.mihalis.dtr00.services.Service.print;
+
+import com.mihalis.dtr00.activity.BaseActivity;
 
 import java.io.IOException;
 
@@ -42,7 +43,7 @@ public final class ClientServer {
         return 44_44_44;
     }
 
-    public static void postToServer(byte type, int relay, int on, int time, Runnable onSucceeded, Runnable onError) {
+    public static void postToServer(BaseActivity activity, byte type, int relay, int on, int time, Runnable onSucceeded, Runnable onError) {
         post(() -> {
             try {
                 postToServer("type=" + type + "&relay=" + relay + "&on=" + on + "&time=" + time);

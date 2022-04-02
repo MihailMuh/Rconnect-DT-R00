@@ -11,8 +11,6 @@ import static com.mihalis.dtr00.Strings.WAIT;
 import static com.mihalis.dtr00.services.ClientServer.IP;
 import static com.mihalis.dtr00.services.Service.post;
 import static com.mihalis.dtr00.services.Service.print;
-import static com.mihalis.dtr00.services.Service.readFromFile;
-import static com.mihalis.dtr00.services.Service.writeToFile;
 
 import android.graphics.Color;
 import android.os.Bundle;
@@ -25,7 +23,6 @@ import androidx.core.content.ContextCompat;
 import com.mihalis.dtr00.ClickListener;
 import com.mihalis.dtr00.R;
 import com.mihalis.dtr00.services.ClientServer;
-import com.mihalis.dtr00.services.Service;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -39,35 +36,19 @@ public class SettingsActivity extends BaseActivity {
     private final boolean[] show = new boolean[8];
     private final String[] names = new String[8];
 
-    private JSONObject jsonSettings;
-    private JSONObject jsonIP;
+    private JSONObject jsonSettings, jsonDeviceData, jsonDevices;
 
-    private final String oldIP = IP;
+    private final String oldIP = IP.concat("");
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_settings);
 
-        try {
-            jsonSettings = new JSONObject(readFromFile("SETTINGS.json"));
-            jsonIP = new JSONObject(readFromFile("IP.json"));
+        parseALLJSONes();
 
-            JSONArray nameArray = jsonSettings.getJSONArray("name");
-            JSONArray showArray = jsonSettings.getJSONArray("show");
-            JSONArray delayArray = jsonSettings.getJSONArray("delay");
-
-            for (int i = 0; i < 8; i++) {
-                names[i] = nameArray.getString(i);
-                delays[i] = delayArray.getInt(i);
-                show[i] = showArray.getBoolean(i);
-            }
-        } catch (Exception e) {
-            print(e);
-        }
-
-        EditText editText = findViewById(R.id.edit_ip);
-        editText.setText(IP);
+        EditText editIP = findViewById(R.id.edit_ip);
+        editIP.setText(IP);
 
         ((TextView) findViewById(R.id.current_ip_text)).setText(CURRENT_IP);
 
@@ -103,7 +84,7 @@ public class SettingsActivity extends BaseActivity {
             toast(WAIT, 500);
 
             post(() -> {
-                IP = editText.getText().toString();
+                IP = editIP.getText().toString();
 
                 for (int i = 0; i < 8; i++) {
                     delays[i] = Integer.parseInt(editDelays[i].getText().toString());
@@ -113,24 +94,45 @@ public class SettingsActivity extends BaseActivity {
                     jsonSettings.put("name", new JSONArray(names));
                     jsonSettings.put("delay", new JSONArray(delays));
                     jsonSettings.put("show", new JSONArray(show));
+                    jsonDeviceData.put("settings", jsonSettings);
 
-                    jsonIP.put("IP", IP);
+                    if (ClientServer.getRelaysStatus().length() > 1) {
+                        runOnUiThread(this::finish);
+
+                        if (!oldIP.equals(IP)) {
+                            jsonDevices.remove(oldIP);
+                        }
+                        updateJSONDevices(jsonDevices.put(IP, jsonDeviceData));
+
+                        toast(SUCCESSFULLY_SAVED);
+                    } else {
+                        toast(INCORRECT_IP);
+                    }
                 } catch (Exception e) {
-                    print(e);
-                }
-
-                if (ClientServer.getRelaysStatus().length() > 1) {
-                    runOnUiThread(this::finish);
-
-                    writeToFile("IP.json", jsonIP);
-                    writeToFile("SETTINGS.json", jsonSettings);
-
-                    toast(SUCCESSFULLY_SAVED);
-                } else {
-                    toast(INCORRECT_IP);
+                    print("Error in onCreate Settings " + e);
                 }
             });
         }));
+    }
+
+    private void parseALLJSONes() {
+        try {
+            jsonDevices = getJSONDevices();
+            jsonDeviceData = jsonDevices.getJSONObject(IP);
+            jsonSettings = jsonDeviceData.getJSONObject("settings");
+
+            var nameArray = jsonSettings.getJSONArray("name");
+            var showArray = jsonSettings.getJSONArray("show");
+            var delayArray = jsonSettings.getJSONArray("delay");
+
+            for (int i = 0; i < 8; i++) {
+                names[i] = nameArray.getString(i);
+                delays[i] = delayArray.getInt(i);
+                show[i] = showArray.getBoolean(i);
+            }
+        } catch (Exception e) {
+            print("Error in parseALLJSONes " + e);
+        }
     }
 
     private void text(int i, boolean show) {
@@ -143,8 +145,8 @@ public class SettingsActivity extends BaseActivity {
         color(show, i);
     }
 
-    private void color(boolean green, int i) {
-        if (green) {
+    private void color(boolean show, int i) {
+        if (show) {
             buttons[i].setBackgroundColor(Color.parseColor("#004524"));
             buttons[i].setTextColor(ContextCompat.getColor(this, R.color.white));
         } else {

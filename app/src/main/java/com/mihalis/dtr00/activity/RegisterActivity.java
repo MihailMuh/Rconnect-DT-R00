@@ -6,6 +6,7 @@ import static com.mihalis.dtr00.Strings.INCORRECT_USER_PASSWD;
 import static com.mihalis.dtr00.Strings.INPUT_IP;
 import static com.mihalis.dtr00.Strings.LOGIN;
 import static com.mihalis.dtr00.Strings.PASSWORD;
+import static com.mihalis.dtr00.Strings.RELAY;
 import static com.mihalis.dtr00.Strings.REMEMBER_ME;
 import static com.mihalis.dtr00.Strings.UNEXPECTED_ERROR;
 import static com.mihalis.dtr00.Strings.USER_NAME;
@@ -22,21 +23,18 @@ import com.mihalis.dtr00.ClickListener;
 import com.mihalis.dtr00.Constants;
 import com.mihalis.dtr00.R;
 import com.mihalis.dtr00.services.ClientServer;
-import com.mihalis.dtr00.services.Service;
 
+import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
+
+import java.util.Arrays;
 
 public class RegisterActivity extends BaseActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_register);
-
-        if (Service.numRegisterActivity >= 2) {
-            finishAffinity();
-            return;
-        }
-        Service.numRegisterActivity++;
 
         EditText editIP = findViewById(R.id.input_ip);
         editIP.setHint(ADDRESS);
@@ -79,16 +77,40 @@ public class RegisterActivity extends BaseActivity {
 
     private void enter(boolean remember) {
         try {
-            JSONObject jsonObject = new JSONObject();
-            jsonObject.put("IP", IP);
+            var jsonObject = new JSONObject();
+
             jsonObject.put("remember", remember);
-            Service.writeToFile("IP.json", jsonObject);
+            jsonObject.put("settings", getPrimarySettings());
+            jsonObject.put("deviceName", IP);
+
+            updateJSONDevices(getJSONDevices().put(IP, jsonObject));
 
             MainActivity.afterRegister = true;
             runOnUiThread(this::finish);
         } catch (Exception e) {
             print("Error in JSON while register " + e);
+            toast(UNEXPECTED_ERROR);
         }
+    }
+
+    private JSONObject getPrimarySettings() throws JSONException {
+        var jsonSettings = new JSONObject();
+        var delays = new int[8];
+        var show = new boolean[8];
+        var names = new String[8];
+
+        Arrays.fill(delays, 5);
+        Arrays.fill(show, true);
+
+        for (int i = 0; i < 8; i++) {
+            names[i] = RELAY + " " + (i + 1);
+        }
+
+        jsonSettings.put("name", new JSONArray(names));
+        jsonSettings.put("delay", new JSONArray(delays));
+        jsonSettings.put("show", new JSONArray(show));
+
+        return jsonSettings;
     }
 
     private String getRandomPassword() {

@@ -4,6 +4,7 @@ import static com.mihalis.dtr00.Strings.I_ENABLE_WIFI;
 import static com.mihalis.dtr00.Strings.NO_WIFI;
 import static com.mihalis.dtr00.Strings.QUIT;
 import static com.mihalis.dtr00.services.Service.post;
+import static com.mihalis.dtr00.services.Service.readFromFile;
 import static com.mihalis.dtr00.services.Service.sleepMillis;
 
 import android.content.res.Configuration;
@@ -21,6 +22,10 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.mihalis.dtr00.ClickListener;
 import com.mihalis.dtr00.R;
+import com.mihalis.dtr00.services.Service;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.Objects;
 
@@ -50,11 +55,6 @@ public abstract class BaseActivity extends AppCompatActivity {
     public void onConfigurationChanged(@NonNull Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
         fullscreen();
-    }
-
-    @Override
-    public void onBackPressed() {
-        finishAffinity();
     }
 
     @Override
@@ -120,5 +120,17 @@ public abstract class BaseActivity extends AppCompatActivity {
         button.setText(I_ENABLE_WIFI);
 
         alertDialog.show();
+    }
+
+    public JSONObject getJSONDevices() throws JSONException {
+        String devices = readFromFile(this, "DEVICES.json");
+        if (devices != null) {
+            return new JSONObject(devices);
+        }
+        return new JSONObject();
+    }
+
+    public void updateJSONDevices(JSONObject jsonDevices) {
+        Service.writeToFile(this, "DEVICES.json", jsonDevices);
     }
 }

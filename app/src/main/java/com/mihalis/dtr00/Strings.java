@@ -1,6 +1,6 @@
 package com.mihalis.dtr00;
 
-import static com.mihalis.dtr00.services.Service.activity;
+import com.mihalis.dtr00.activity.BaseActivity;
 
 import java.util.Locale;
 
@@ -35,7 +35,7 @@ public final class Strings {
     public static String INCORRECT_USER_PASSWD;
     public static String REMEMBER_ME;
 
-    static {
+    public static void init(BaseActivity activity) {
         String[] strings;
         if (Locale.getDefault().getLanguage().equals("ru")) {
             strings = activity.resources.getStringArray(R.array.ru);

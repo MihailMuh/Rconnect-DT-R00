@@ -29,5 +29,8 @@
     <string name="password">Пароль</string>
     <string name="apply">Подтвердить</string>
     <string name="remember_me">Запомнить меня</string>
+    <string name="add_device">Добавить устройство</string>
+    <string name="ip">192.168.60.60:80</string>
+    <string name="enter">Войти</string>
 
 </resources>
