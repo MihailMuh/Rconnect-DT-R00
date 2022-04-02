@@ -1,10 +1,10 @@
-package ru.warfare.esp8266.activity;
+package com.mihalis.dtr00.activity;
 
-import static ru.warfare.esp8266.Strings.I_ENABLE_WIFI;
-import static ru.warfare.esp8266.Strings.NO_WIFI;
-import static ru.warfare.esp8266.Strings.QUIT;
-import static ru.warfare.esp8266.services.Service.post;
-import static ru.warfare.esp8266.services.Service.sleepMillis;
+import static com.mihalis.dtr00.Strings.I_ENABLE_WIFI;
+import static com.mihalis.dtr00.Strings.NO_WIFI;
+import static com.mihalis.dtr00.Strings.QUIT;
+import static com.mihalis.dtr00.services.Service.post;
+import static com.mihalis.dtr00.services.Service.sleepMillis;
 
 import android.content.res.Configuration;
 import android.content.res.Resources;
@@ -19,10 +19,10 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
-import java.util.Objects;
+import com.mihalis.dtr00.ClickListener;
+import com.mihalis.dtr00.R;
 
-import ru.warfare.esp8266.ButtonListener;
-import ru.warfare.esp8266.R;
+import java.util.Objects;
 
 public abstract class BaseActivity extends AppCompatActivity {
     private final StringBuilder stringBuilder = new StringBuilder();
@@ -49,7 +49,6 @@ public abstract class BaseActivity extends AppCompatActivity {
     @Override
     public void onConfigurationChanged(@NonNull Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
-        setContentView(R.layout.activity_main);
         fullscreen();
     }
 
@@ -82,11 +81,11 @@ public abstract class BaseActivity extends AppCompatActivity {
         }
     }
 
-    public void makeToast(String text) {
+    public void toast(String text) {
         runOnUiThread(() -> Toast.makeText(this, text, Toast.LENGTH_SHORT).show());
     }
 
-    public void wrapperToast(String text, int millis) {
+    public void toast(String text, int millis) {
         runOnUiThread(() -> {
             Toast toast = Toast.makeText(this, text, Toast.LENGTH_LONG);
             toast.show();
@@ -109,19 +108,15 @@ public abstract class BaseActivity extends AppCompatActivity {
         AlertDialog alertDialog = new AlertDialog.Builder(this)
                 .setView(view)
                 .setTitle(NO_WIFI)
-                .setCancelable(false)
+                .setCancelable(true)
                 .create();
 
         Button button = view.findViewById(R.id.button_exit);
-        button.setOnClickListener((ButtonListener) this::finishAffinity);
+        button.setOnClickListener((ClickListener) this::finishAffinity);
         button.setText(QUIT);
 
         button = view.findViewById(R.id.button_i_enable_wifi);
-        button.setOnClickListener((ButtonListener) () -> {
-            alertDialog.dismiss();
-            checkWIFI(() -> {
-            });
-        });
+        button.setOnClickListener((ClickListener) alertDialog::dismiss);
         button.setText(I_ENABLE_WIFI);
 
         alertDialog.show();

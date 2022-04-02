@@ -1,11 +1,11 @@
-package ru.warfare.esp8266;
+package com.mihalis.dtr00;
 
-import static ru.warfare.esp8266.services.Service.vibrate;
+import static com.mihalis.dtr00.services.Service.vibrate;
 
 import android.view.View;
 import android.view.View.OnClickListener;
 
-public interface ButtonListener extends OnClickListener {
+public interface ClickListener extends OnClickListener {
     void click();
 
     @Override

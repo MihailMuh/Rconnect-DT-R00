@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Remote DT-R00</string>
+    <string name="app_name">Rconnect DT-R00</string>
     <string name="Relay_1">Реле 1</string>
     <string name="Relay_2">Реле 2</string>
     <string name="Relay_3">Реле 3</string>
@@ -10,7 +10,7 @@
     <string name="Relay_8">Реле 8</string>
 
     <string name="On">Вкл</string>
-    <string name="Delay">Импульс</string>
+    <string name="Pulse">Импульс</string>
     <string name="time">Время в сек</string>
     <string name="set_ip">Установить IP</string>
     <string name="ip_address">Ip адрес</string>
@@ -19,8 +19,8 @@
     <string name="no_internet">Отсутствует интернет соединение!</string>
     <string name="Exit">Выход</string>
     <string name="Settings">Настройки</string>
-    <string name="Current_IP">Текущий IP</string>
-    <string name="i_enable_wifi">Я включил интернет</string>
+    <string name="Current_IP">Текущий IP:</string>
+    <string name="i_enable_wifi">Ок</string>
     <string name="delay">Задержка:</string>
     <string name="hide">Скрыть</string>
     <string name="authorization">Авторизация</string>

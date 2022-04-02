@@ -1,8 +1,8 @@
-package ru.warfare.esp8266.services;
+package com.mihalis.dtr00.services;
 
-import static ru.warfare.esp8266.services.Service.activity;
-import static ru.warfare.esp8266.services.Service.post;
-import static ru.warfare.esp8266.services.Service.print;
+import static com.mihalis.dtr00.services.Service.activity;
+import static com.mihalis.dtr00.services.Service.post;
+import static com.mihalis.dtr00.services.Service.print;
 
 import java.io.IOException;
 
@@ -12,7 +12,7 @@ import okhttp3.Response;
 
 public final class ClientServer {
     private static final OkHttpClient client = new OkHttpClient();
-    public static String IP;
+    public static volatile String IP;
 
     private static void postToServer(String message) throws IOException {
         client.newCall(new Request.Builder().url("http://" + IP + "/relay_cgi.cgi?" + message + "&pwd=0&").build()).execute().close();
@@ -33,13 +33,13 @@ public final class ClientServer {
     public static int login(String user, String password) {
         try {
             Response response = client.newCall(new Request.Builder().url("http://" + IP + "/login.cgi?user=" + user + "&passwd=" + password + "&").build()).execute();
-            int ans = Integer.parseInt(response.body().string().replace("&", ""));
+            int answer = Integer.parseInt(response.body().string().split("&")[1]);
             response.close();
-            return ans;
+            return answer;
         } catch (Exception e) {
             print("Can't login " + e);
         }
-        return 404;
+        return 44_44_44;
     }
 
     public static void postToServer(byte type, int relay, int on, int time, Runnable onSucceeded, Runnable onError) {

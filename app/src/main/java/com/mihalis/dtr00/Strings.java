@@ -1,6 +1,8 @@
-package ru.warfare.esp8266;
+package com.mihalis.dtr00;
 
-import static ru.warfare.esp8266.services.Service.activity;
+import static com.mihalis.dtr00.services.Service.activity;
+
+import java.util.Locale;
 
 public final class Strings {
     public static String RELAY;
@@ -20,7 +22,7 @@ public final class Strings {
     public static String SECONDS;
     public static String SETTINGS;
     public static String WAIT;
-    public static String CANT_CONNECT_SERVER;
+    public static String UNEXPECTED_ERROR;
     public static String I_ENABLE_WIFI;
     public static String DELAY;
     public static String HIDE;
@@ -34,7 +36,12 @@ public final class Strings {
     public static String REMEMBER_ME;
 
     static {
-        String[] strings = activity.resources.getStringArray(R.array.ru);
+        String[] strings;
+        if (Locale.getDefault().getLanguage().equals("ru")) {
+            strings = activity.resources.getStringArray(R.array.ru);
+        } else {
+            strings = activity.resources.getStringArray(R.array.en);
+        }
 
         RELAY = strings[0];
         ON = strings[1];
@@ -55,12 +62,12 @@ public final class Strings {
         SECONDS = strings[16];
         SETTINGS = strings[17];
         WAIT = strings[18] + "...";
-        CANT_CONNECT_SERVER = strings[19];
+        UNEXPECTED_ERROR = strings[19];
         I_ENABLE_WIFI = strings[20];
-        DELAY = strings[21];
+        DELAY = strings[21] + ":";
         HIDE = strings[22];
         SHOW = strings[23];
-        INPUT_IP = strings[24] + " 192.168.50.10:6000";
+        INPUT_IP = strings[24] + " 192.168.1.100:80";
         USER_NAME = strings[25];
         PASSWORD = strings[26];
         APPLY = strings[27];

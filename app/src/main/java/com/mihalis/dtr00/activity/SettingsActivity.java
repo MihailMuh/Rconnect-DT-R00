@@ -1,18 +1,18 @@
-package ru.warfare.esp8266.activity;
+package com.mihalis.dtr00.activity;
 
-import static ru.warfare.esp8266.Strings.CURRENT_IP;
-import static ru.warfare.esp8266.Strings.DELAY;
-import static ru.warfare.esp8266.Strings.HIDE;
-import static ru.warfare.esp8266.Strings.INCORRECT_IP;
-import static ru.warfare.esp8266.Strings.SAVE;
-import static ru.warfare.esp8266.Strings.SHOW;
-import static ru.warfare.esp8266.Strings.SUCCESSFULLY_SAVED;
-import static ru.warfare.esp8266.Strings.WAIT;
-import static ru.warfare.esp8266.services.ClientServer.IP;
-import static ru.warfare.esp8266.services.Service.post;
-import static ru.warfare.esp8266.services.Service.print;
-import static ru.warfare.esp8266.services.Service.readFromFile;
-import static ru.warfare.esp8266.services.Service.writeToFile;
+import static com.mihalis.dtr00.Strings.CURRENT_IP;
+import static com.mihalis.dtr00.Strings.DELAY;
+import static com.mihalis.dtr00.Strings.HIDE;
+import static com.mihalis.dtr00.Strings.INCORRECT_IP;
+import static com.mihalis.dtr00.Strings.SAVE;
+import static com.mihalis.dtr00.Strings.SHOW;
+import static com.mihalis.dtr00.Strings.SUCCESSFULLY_SAVED;
+import static com.mihalis.dtr00.Strings.WAIT;
+import static com.mihalis.dtr00.services.ClientServer.IP;
+import static com.mihalis.dtr00.services.Service.post;
+import static com.mihalis.dtr00.services.Service.print;
+import static com.mihalis.dtr00.services.Service.readFromFile;
+import static com.mihalis.dtr00.services.Service.writeToFile;
 
 import android.graphics.Color;
 import android.os.Bundle;
@@ -22,23 +22,25 @@ import android.widget.TextView;
 
 import androidx.core.content.ContextCompat;
 
+import com.mihalis.dtr00.ClickListener;
+import com.mihalis.dtr00.R;
+import com.mihalis.dtr00.services.ClientServer;
+import com.mihalis.dtr00.services.Service;
+
 import org.json.JSONArray;
 import org.json.JSONObject;
-
-import ru.warfare.esp8266.ButtonListener;
-import ru.warfare.esp8266.R;
-import ru.warfare.esp8266.services.ClientServer;
 
 public class SettingsActivity extends BaseActivity {
     private final EditText[] editRelays = new EditText[8];
     private final EditText[] editDelays = new EditText[8];
     private final Button[] buttons = new Button[8];
 
-    private JSONObject jsonSettings = new JSONObject();
-    private JSONObject jsonIP;
     private final int[] delays = new int[8];
     private final boolean[] show = new boolean[8];
     private final String[] names = new String[8];
+
+    private JSONObject jsonSettings;
+    private JSONObject jsonIP;
 
     private final String oldIP = IP;
 
@@ -81,7 +83,7 @@ public class SettingsActivity extends BaseActivity {
             editDelays[i].setText(String.valueOf(delays[i]));
 
             buttons[i] = findViewById("button_hide", i);
-            buttons[i].setOnClickListener((ButtonListener) () -> {
+            buttons[i].setOnClickListener((ClickListener) () -> {
                 if (buttons[finalI].getText().equals(SHOW)) {
                     buttons[finalI].setText(HIDE);
                     show[finalI] = true;
@@ -97,8 +99,8 @@ public class SettingsActivity extends BaseActivity {
 
         Button btnSettings = findViewById(R.id.button_save_settings);
         btnSettings.setText(SAVE);
-        btnSettings.setOnClickListener((ButtonListener) () -> checkWIFI(() -> {
-            wrapperToast(WAIT, 500);
+        btnSettings.setOnClickListener((ClickListener) () -> checkWIFI(() -> {
+            toast(WAIT, 500);
 
             post(() -> {
                 IP = editText.getText().toString();
@@ -123,9 +125,9 @@ public class SettingsActivity extends BaseActivity {
                     writeToFile("IP.json", jsonIP);
                     writeToFile("SETTINGS.json", jsonSettings);
 
-                    makeToast(SUCCESSFULLY_SAVED);
+                    toast(SUCCESSFULLY_SAVED);
                 } else {
-                    makeToast(INCORRECT_IP);
+                    toast(INCORRECT_IP);
                 }
             });
         }));

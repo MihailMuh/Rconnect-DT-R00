@@ -20,8 +20,8 @@
         <item>секунд</item>
         <item>Настройки</item>
         <item>Подождите</item>
-        <item>Проблема подключения к серверу!</item>
-        <item>Я включил интернет</item>
+        <item>Неожиданная ошибка!</item>
+        <item>Ок</item>
         <item>Задержка</item>
         <item>Скрыть</item>
         <item>Показать</item>
@@ -32,6 +32,5 @@
         <item>Авторизация</item>
         <item>Неверное имя пользователя или пароль!</item>
         <item>Запомнить меня</item>
-
     </string-array>
 </resources>

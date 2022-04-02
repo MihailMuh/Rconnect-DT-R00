@@ -42,12 +42,14 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="10dp"
+        android:autofillHints="ip_address"
         android:backgroundTint="#004524"
         android:hint="@string/ip_address"
         android:imeOptions="actionDone"
         android:inputType="text"
         android:minHeight="48dp"
         android:textColor="@color/black"
+        android:textColorHint="#757575"
         app:layout_constraintEnd_toEndOf="@+id/text_enter_ip"
         app:layout_constraintStart_toStartOf="@+id/text_enter_ip"
         app:layout_constraintTop_toBottomOf="@+id/text_enter_ip" />
@@ -74,9 +76,11 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="10dp"
+        android:autofillHints="user_name"
         android:backgroundTint="#004524"
         android:imeOptions="actionDone"
         android:inputType="text"
+        android:minWidth="52dp"
         android:minHeight="48dp"
         android:textColor="@color/black"
         app:layout_constraintEnd_toEndOf="@+id/text_enter_user_name"
@@ -105,9 +109,11 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="10dp"
+        android:autofillHints="password"
         android:backgroundTint="#004524"
         android:imeOptions="actionDone"
         android:inputType="textPassword"
+        android:minWidth="52dp"
         android:minHeight="48dp"
         android:textColor="@color/black"
         app:layout_constraintEnd_toEndOf="@+id/text_enter_password"
@@ -118,7 +124,7 @@
         android:id="@+id/button_save"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:layout_marginBottom="60dp"
+        android:layout_marginBottom="50dp"
         android:autoSizeMinTextSize="1dp"
         android:autoSizeTextType="uniform"
         android:backgroundTint="#004524"
@@ -126,15 +132,15 @@
         android:text="@string/apply"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHeight_percent="0.06"
+        app:layout_constraintHeight_percent="0.08"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintWidth_percent="0.3" />
+        app:layout_constraintWidth_percent="0.35" />
 
     <CheckBox
         android:id="@+id/checkBox"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:layout_marginBottom="30dp"
+        android:layout_marginBottom="15dp"
         android:autoSizeMinTextSize="1dp"
         android:autoSizeTextType="uniform"
         android:checked="true"
@@ -143,9 +149,9 @@
         android:theme="@style/BoxRemember"
         app:layout_constraintBottom_toTopOf="@+id/button_save"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHeight_percent="0.05"
+        app:layout_constraintHeight_percent="0.07"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintWidth_percent="0.49" />
+        app:layout_constraintWidth_percent="0.5" />
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/guideline5"

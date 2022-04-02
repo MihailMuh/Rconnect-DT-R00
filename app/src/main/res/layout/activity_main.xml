@@ -276,7 +276,8 @@
         app:layout_constraintHeight_percent="0.065"
         app:layout_constraintStart_toEndOf="@+id/relay0"
         app:layout_constraintTop_toTopOf="@+id/guideline3"
-        app:layout_constraintWidth_percent="0.2" />
+        app:layout_constraintWidth_percent="0.2"
+        tools:ignore="DuplicateSpeakableTextCheck" />
 
     <Button
         android:id="@+id/buttonRelay1"
@@ -399,12 +400,13 @@
         android:autoSizeTextType="uniform"
         android:backgroundTint="#004524"
         android:padding="10dp"
-        android:text="@string/Delay"
+        android:text="@string/Pulse"
         app:layout_constraintBottom_toBottomOf="@+id/light0"
         app:layout_constraintHeight_percent="0.065"
         app:layout_constraintStart_toEndOf="@+id/light0"
         app:layout_constraintTop_toTopOf="@+id/light0"
-        app:layout_constraintWidth_percent="0.2" />
+        app:layout_constraintWidth_percent="0.2"
+        tools:ignore="DuplicateSpeakableTextCheck" />
 
     <Button
         android:id="@+id/buttonDelay1"
@@ -415,7 +417,7 @@
         android:autoSizeTextType="uniform"
         android:backgroundTint="#004524"
         android:padding="10dp"
-        android:text="@string/Delay"
+        android:text="@string/Pulse"
         app:layout_constraintBottom_toBottomOf="@+id/light1"
         app:layout_constraintHeight_percent="0.065"
         app:layout_constraintStart_toEndOf="@+id/light1"
@@ -431,7 +433,7 @@
         android:autoSizeTextType="uniform"
         android:backgroundTint="#004524"
         android:padding="10dp"
-        android:text="@string/Delay"
+        android:text="@string/Pulse"
         app:layout_constraintBottom_toBottomOf="@+id/light2"
         app:layout_constraintHeight_percent="0.065"
         app:layout_constraintStart_toEndOf="@+id/light2"
@@ -447,7 +449,7 @@
         android:autoSizeTextType="uniform"
         android:backgroundTint="#004524"
         android:padding="10dp"
-        android:text="@string/Delay"
+        android:text="@string/Pulse"
         app:layout_constraintBottom_toBottomOf="@+id/light3"
         app:layout_constraintHeight_percent="0.065"
         app:layout_constraintStart_toEndOf="@+id/light3"
@@ -463,7 +465,7 @@
         android:autoSizeTextType="uniform"
         android:backgroundTint="#004524"
         android:padding="10dp"
-        android:text="@string/Delay"
+        android:text="@string/Pulse"
         app:layout_constraintBottom_toBottomOf="@+id/light4"
         app:layout_constraintHeight_percent="0.065"
         app:layout_constraintStart_toEndOf="@+id/light4"
@@ -479,7 +481,7 @@
         android:autoSizeTextType="uniform"
         android:backgroundTint="#004524"
         android:padding="10dp"
-        android:text="@string/Delay"
+        android:text="@string/Pulse"
         app:layout_constraintBottom_toBottomOf="@+id/light5"
         app:layout_constraintHeight_percent="0.065"
         app:layout_constraintStart_toEndOf="@+id/light5"
@@ -495,7 +497,7 @@
         android:autoSizeTextType="uniform"
         android:backgroundTint="#004524"
         android:padding="10dp"
-        android:text="@string/Delay"
+        android:text="@string/Pulse"
         app:layout_constraintBottom_toBottomOf="@+id/light6"
         app:layout_constraintHeight_percent="0.065"
         app:layout_constraintStart_toEndOf="@+id/light6"
@@ -511,7 +513,7 @@
         android:autoSizeTextType="uniform"
         android:backgroundTint="#004524"
         android:padding="10dp"
-        android:text="@string/Delay"
+        android:text="@string/Pulse"
         app:layout_constraintBottom_toBottomOf="@+id/light7"
         app:layout_constraintHeight_percent="0.065"
         app:layout_constraintStart_toEndOf="@+id/light7"

@@ -1,4 +1,4 @@
-package ru.warfare.esp8266.services;
+package com.mihalis.dtr00.services;
 
 import static android.content.Context.VIBRATOR_SERVICE;
 import static android.os.VibrationEffect.createOneShot;
@@ -13,13 +13,17 @@ import java.io.OutputStreamWriter;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-import ru.warfare.esp8266.activity.MainActivity;
+import com.mihalis.dtr00.activity.MainActivity;
 
 public final class Service {
     private static final ExecutorService threadPool = Executors.newCachedThreadPool();
     private static Vibrator vibrator;
 
     public static MainActivity activity;
+
+    public static volatile int numRegisterActivity  = 0;
+    public static volatile int numMainActivity  = 0;
+    public static volatile int numSettingsActivity  = 0;
 
     public static void init(MainActivity mainActivity) {
         activity = mainActivity;
@@ -46,7 +50,7 @@ public final class Service {
         try {
             Thread.sleep(millis);
         } catch (InterruptedException e) {
-            print("Sleep " + e.toString());
+            print("Sleep " + e);
             sleepMillis(millis);
         }
     }
