@@ -27,11 +27,9 @@ import android.widget.TextView;
 
 import androidx.appcompat.content.res.AppCompatResources;
 
-import com.google.android.gms.ads.MobileAds;
 import com.mihalis.dtr00.ClickListener;
 import com.mihalis.dtr00.R;
 import com.mihalis.dtr00.services.ClientServer;
-import com.mihalis.dtr00.services.Service;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -169,7 +167,7 @@ public class MainActivity extends BaseActivity {
                 checkWIFI(this::updateRelays);
                 runOnUiThread(this::updateUI);
             } catch (Exception e) {
-                print("Error working with JSON " + e);
+                print("Error onResume MainActivity " + e);
             }
         });
     }

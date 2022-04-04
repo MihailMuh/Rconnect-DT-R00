@@ -9,6 +9,7 @@ import static com.mihalis.dtr00.services.Service.sleepMillis;
 
 import android.content.res.Configuration;
 import android.content.res.Resources;
+import android.graphics.Color;
 import android.net.ConnectivityManager;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -19,6 +20,7 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
 
 import com.mihalis.dtr00.ClickListener;
 import com.mihalis.dtr00.R;
@@ -132,5 +134,15 @@ public abstract class BaseActivity extends AppCompatActivity {
 
     public void updateJSONDevices(JSONObject jsonDevices) {
         Service.writeToFile(this, "DEVICES.json", jsonDevices);
+    }
+
+    public void setButtonState(Button button, boolean isEnable) {
+        if (isEnable) {
+            button.setBackgroundColor(Color.parseColor("#004524"));
+            button.setTextColor(ContextCompat.getColor(this, R.color.white));
+        } else {
+            button.setBackgroundColor(Color.parseColor("#DCDCDC"));
+            button.setTextColor(ContextCompat.getColor(this, R.color.black));
+        }
     }
 }

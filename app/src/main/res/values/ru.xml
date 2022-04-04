@@ -32,5 +32,8 @@
         <item>Авторизация</item>
         <item>Неверное имя пользователя или пароль!</item>
         <item>Запомнить меня</item>
+        <item>Добавить устройство</item>
+        <item>Войти</item>
+
     </string-array>
 </resources>

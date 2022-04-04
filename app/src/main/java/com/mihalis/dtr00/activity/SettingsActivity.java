@@ -12,13 +12,10 @@ import static com.mihalis.dtr00.services.ClientServer.IP;
 import static com.mihalis.dtr00.services.Service.post;
 import static com.mihalis.dtr00.services.Service.print;
 
-import android.graphics.Color;
 import android.os.Bundle;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
-
-import androidx.core.content.ContextCompat;
 
 import com.mihalis.dtr00.ClickListener;
 import com.mihalis.dtr00.R;
@@ -65,15 +62,16 @@ public class SettingsActivity extends BaseActivity {
 
             buttons[i] = findViewById("button_hide", i);
             buttons[i].setOnClickListener((ClickListener) () -> {
-                if (buttons[finalI].getText().equals(SHOW)) {
-                    buttons[finalI].setText(HIDE);
-                    show[finalI] = true;
-                    color(true, finalI);
+                Button button = buttons[finalI];
+                boolean enabled = button.getText().equals(SHOW);
+
+                if (enabled) {
+                    button.setText(HIDE);
                 } else {
-                    buttons[finalI].setText(SHOW);
-                    show[finalI] = false;
-                    color(false, finalI);
+                    button.setText(SHOW);
                 }
+                show[finalI] = enabled;
+                setButtonState(button, enabled);
             });
             text(i, show[i]);
         }
@@ -142,17 +140,7 @@ public class SettingsActivity extends BaseActivity {
             buttons[i].setText(SHOW);
         }
 
-        color(show, i);
-    }
-
-    private void color(boolean show, int i) {
-        if (show) {
-            buttons[i].setBackgroundColor(Color.parseColor("#004524"));
-            buttons[i].setTextColor(ContextCompat.getColor(this, R.color.white));
-        } else {
-            buttons[i].setBackgroundColor(Color.parseColor("#DCDCDC"));
-            buttons[i].setTextColor(ContextCompat.getColor(this, R.color.black));
-        }
+        setButtonState(buttons[i], show);
     }
 
     @Override

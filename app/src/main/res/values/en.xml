@@ -32,5 +32,8 @@
         <item>Authorization</item>
         <item>Incorrect login or password!</item>
         <item>Remember me</item>
+        <item>Add Device</item>
+        <item>Enter</item>
+
     </string-array>
 </resources>

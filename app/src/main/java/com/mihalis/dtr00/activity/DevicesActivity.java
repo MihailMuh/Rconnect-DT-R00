@@ -1,5 +1,7 @@
 package com.mihalis.dtr00.activity;
 
+import static com.mihalis.dtr00.Strings.ADD_DEVICE;
+import static com.mihalis.dtr00.Strings.ENTER;
 import static com.mihalis.dtr00.services.ClientServer.IP;
 import static com.mihalis.dtr00.services.Service.print;
 
@@ -7,10 +9,10 @@ import android.content.Intent;
 import android.content.res.ColorStateList;
 import android.os.Bundle;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 
-import androidx.constraintlayout.utils.widget.ImageFilterButton;
 import androidx.core.content.ContextCompat;
 
 import com.google.android.gms.ads.MobileAds;
@@ -25,64 +27,84 @@ import org.json.JSONObject;
 import java.util.Iterator;
 
 public class DevicesActivity extends BaseActivity {
+    private InputMethodManager inputMethodManager;
+
+    private ColorStateList greenTint;
+    private ColorStateList whiteTint;
+
+    private Button buttonAddDevice;
+
     private JSONObject jsonDevices;
+    private int numDevices;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_choose_device);
+
+        Strings.init(this);
         Service.post(() -> {
-            Strings.init(this);
             Service.init(this);
+            inputMethodManager = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
             MobileAds.initialize(this, initializationStatus -> print("MobileAds has initialized"));
         });
 
-        Button button = findViewById(R.id.button_add_device);
-        button.setOnClickListener((ClickListener) () -> startActivity(new Intent(this, RegisterActivity.class)));
+        greenTint = ColorStateList.valueOf(ContextCompat.getColor(this, R.color.green));
+        whiteTint = ColorStateList.valueOf(ContextCompat.getColor(this, R.color.white));
+
+        buttonAddDevice = findViewById(R.id.button_add_device);
+        buttonAddDevice.setText(ADD_DEVICE);
+        buttonAddDevice.setOnClickListener((ClickListener) () ->
+                startActivity(new Intent(this, RegisterActivity.class)));
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        try {
-            jsonDevices = getJSONDevices();
+        Service.post(() -> {
+            try {
+                jsonDevices = getJSONDevices();
 
-            if (jsonDevices.length() > 0) {
-                parseJsonDevices();
+                if (jsonDevices.length() > 0) {
+                    parseJsonDevices();
+                }
+            } catch (Exception e) {
+                print("Error in DEVICES Activity " + e);
             }
-        } catch (Exception e) {
-            print("Error in DEVICES Activity " + e);
-        }
+        });
+
+        setButtonState(buttonAddDevice, numDevices < 4);
     }
 
     private void parseJsonDevices() throws JSONException {
-        var greenTint = ColorStateList.valueOf(ContextCompat.getColor(this, R.color.green));
-        var whiteTint = ColorStateList.valueOf(ContextCompat.getColor(this, R.color.white));
-        int numDevices = 0;
+        numDevices = 1;
 
-        for (Iterator<String> it = jsonDevices.keys(); it.hasNext(); ) {
+        for (Iterator<String> it = jsonDevices.keys(); it.hasNext(); numDevices++) {
             String ip = it.next();
-            numDevices++;
+            String deviceName = jsonDevices.getJSONObject(ip).getString("deviceName");
 
-            findViewById("deviceContainer", numDevices).setVisibility(View.VISIBLE);
-
+            View deviceContainer = findViewById("deviceContainer", numDevices);
             EditText device = findViewById("device", numDevices);
-            device.setText(jsonDevices.getJSONObject(ip).getString("deviceName"));
+            Button buttonEnter = findViewById("buttonDevice", numDevices);
 
-            ImageFilterButton imageEdit = findViewById("imageEditDevice", numDevices);
-            imageEdit.setOnClickListener((ClickListener) () -> {
-                if (device.isEnabled()) {
+            runOnUiThread(() -> {
+                device.setText(deviceName);
+                buttonEnter.setText(ENTER);
+                setEditTestState(device, false);
+
+                deviceContainer.setVisibility(View.VISIBLE);
+            });
+
+            findViewById("imageEditDevice", numDevices).setOnClickListener((ClickListener) () -> {
+                boolean isEnabled = device.isEnabled();
+                setEditTestState(device, !isEnabled);
+
+                if (isEnabled) {
                     Service.post(() -> newNameForDevice(device.getText().toString(), ip));
-
-                    device.setEnabled(false);
-                    device.setBackgroundTintList(whiteTint);
-                } else {
-                    device.setEnabled(true);
-                    device.setBackgroundTintList(greenTint);
                 }
             });
 
-            findViewById("buttonDevice", numDevices).setOnClickListener((ClickListener) () -> {
+            buttonEnter.setOnClickListener((ClickListener) () -> {
                 if (!device.isEnabled()) {
                     IP = ip;
                     startActivity(new Intent(this, MainActivity.class));
@@ -97,6 +119,18 @@ public class DevicesActivity extends BaseActivity {
             updateJSONDevices(jsonDevices);
         } catch (Exception e) {
             print("Error newNameForDevice " + e);
+        }
+    }
+
+    private void setEditTestState(EditText editText, boolean isEnable) {
+        editText.setEnabled(isEnable);
+        if (isEnable) {
+            editText.setBackgroundTintList(greenTint);
+            editText.requestFocus();
+            editText.setSelection(editText.getText().length());
+            inputMethodManager.toggleSoftInput(InputMethodManager.SHOW_FORCED, InputMethodManager.HIDE_IMPLICIT_ONLY);
+        } else {
+            editText.setBackgroundTintList(whiteTint);
         }
     }
 }

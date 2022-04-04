@@ -34,6 +34,8 @@ public final class Strings {
     public static String LOGIN;
     public static String INCORRECT_USER_PASSWD;
     public static String REMEMBER_ME;
+    public static String ADD_DEVICE;
+    public static String ENTER;
 
     public static void init(BaseActivity activity) {
         String[] strings;
@@ -74,5 +76,7 @@ public final class Strings {
         LOGIN = strings[28];
         INCORRECT_USER_PASSWD = strings[29];
         REMEMBER_ME = strings[30];
+        ADD_DEVICE = strings[31];
+        ENTER = strings[32];
     }
 }
