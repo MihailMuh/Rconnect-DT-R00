@@ -7,7 +7,6 @@ import static com.mihalis.dtr00.services.Service.post;
 import static com.mihalis.dtr00.services.Service.readFromFile;
 import static com.mihalis.dtr00.services.Service.sleepMillis;
 
-import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.graphics.Color;
 import android.net.ConnectivityManager;
@@ -17,23 +16,21 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 
 import com.mihalis.dtr00.ClickListener;
 import com.mihalis.dtr00.R;
+import com.mihalis.dtr00.services.JSON;
 import com.mihalis.dtr00.services.Service;
-
-import org.json.JSONException;
-import org.json.JSONObject;
 
 import java.util.Objects;
 
 public abstract class BaseActivity extends AppCompatActivity {
-    private final StringBuilder stringBuilder = new StringBuilder();
     private ConnectivityManager connectivityManager;
+
+    protected volatile boolean onPause = false;
 
     public Resources resources;
     public String packageName;
@@ -48,21 +45,16 @@ public abstract class BaseActivity extends AppCompatActivity {
     }
 
     @Override
-    public void onWindowFocusChanged(boolean hasFocus) {
-        super.onWindowFocusChanged(hasFocus);
-        fullscreen();
-    }
-
-    @Override
-    public void onConfigurationChanged(@NonNull Configuration newConfig) {
-        super.onConfigurationChanged(newConfig);
-        fullscreen();
-    }
-
-    @Override
     protected void onResume() {
         super.onResume();
         fullscreen();
+        onPause = false;
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        onPause = true;
     }
 
     public void fullscreen() {
@@ -100,9 +92,7 @@ public abstract class BaseActivity extends AppCompatActivity {
     }
 
     public synchronized <T extends View> T findViewById(String name, int index) {
-        stringBuilder.setLength(0);
-        return super.findViewById(resources.getIdentifier(
-                stringBuilder.append(name).append(index).toString(), "id", packageName));
+        return super.findViewById(resources.getIdentifier(name + index, "id", packageName));
     }
 
     public void noWiFi() {
@@ -124,15 +114,11 @@ public abstract class BaseActivity extends AppCompatActivity {
         alertDialog.show();
     }
 
-    public JSONObject getJSONDevices() throws JSONException {
-        String devices = readFromFile(this, "DEVICES.json");
-        if (devices != null) {
-            return new JSONObject(devices);
-        }
-        return new JSONObject();
+    public JSON getJSONDevices() {
+        return readFromFile(this, "DEVICES.json");
     }
 
-    public void updateJSONDevices(JSONObject jsonDevices) {
+    public void updateJSONDevices(JSON jsonDevices) {
         Service.writeToFile(this, "DEVICES.json", jsonDevices);
     }
 

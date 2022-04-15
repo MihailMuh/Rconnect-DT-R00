@@ -52,19 +52,17 @@ public final class Service {
         vibrator.vibrate(createOneShot(millis, 255));
     }
 
-    public static void writeToFile(BaseActivity activity, String fileName, Object content) {
+    public static void writeToFile(BaseActivity activity, String fileName, JSON jsonObject) {
         try {
-            OutputStreamWriter writer_str = new OutputStreamWriter(
-                    activity.openFileOutput(fileName, Context.MODE_PRIVATE));
-
-            writer_str.write(content.toString());
+            OutputStreamWriter writer_str = new OutputStreamWriter(activity.openFileOutput(fileName, Context.MODE_PRIVATE));
+            writer_str.write(jsonObject.toString());
             writer_str.close();
         } catch (Exception e) {
             print("Can't save " + fileName + " " + e);
         }
     }
 
-    public static String readFromFile(BaseActivity activity, String fileName) {
+    public static JSON readFromFile(BaseActivity activity, String fileName) {
         try {
             InputStreamReader reader_cooler = new InputStreamReader(activity.openFileInput(fileName));
 
@@ -72,13 +70,15 @@ public final class Service {
 
             reader_cooler.close();
 
-            return string;
+            return new JSON(string);
         } catch (Exception e) {
+            var jsonObject = new JSON();
+
             print("Can't recovery " + fileName + " " + e);
             print("Creating new file...");
-            writeToFile(activity, fileName, "");
+            writeToFile(activity, fileName, jsonObject);
             print("Successful");
-            return null;
+            return jsonObject;
         }
     }
 }

@@ -34,6 +34,7 @@
         <item>Remember me</item>
         <item>Add Device</item>
         <item>Enter</item>
+        <item>Error accessing the relay</item>
 
     </string-array>
 </resources>

@@ -11,7 +11,6 @@ import static com.mihalis.dtr00.Strings.REMEMBER_ME;
 import static com.mihalis.dtr00.Strings.UNEXPECTED_ERROR;
 import static com.mihalis.dtr00.Strings.USER_NAME;
 import static com.mihalis.dtr00.services.ClientServer.IP;
-import static com.mihalis.dtr00.services.Service.print;
 
 import android.os.Bundle;
 import android.widget.Button;
@@ -23,10 +22,7 @@ import com.mihalis.dtr00.ClickListener;
 import com.mihalis.dtr00.Constants;
 import com.mihalis.dtr00.R;
 import com.mihalis.dtr00.services.ClientServer;
-
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
+import com.mihalis.dtr00.services.JSON;
 
 import java.util.Arrays;
 
@@ -76,25 +72,19 @@ public class RegisterActivity extends BaseActivity {
     }
 
     private void enter(boolean remember) {
-        try {
-            var jsonObject = new JSONObject();
+        var json = new JSON();
+        json.put("remember", remember);
+        json.put("settings", getPrimarySettings());
+        json.put("deviceName", IP);
 
-            jsonObject.put("remember", remember);
-            jsonObject.put("settings", getPrimarySettings());
-            jsonObject.put("deviceName", IP);
+        updateJSONDevices(getJSONDevices().put(IP, json));
 
-            updateJSONDevices(getJSONDevices().put(IP, jsonObject));
-
-            MainActivity.afterRegister = true;
-            runOnUiThread(this::finish);
-        } catch (Exception e) {
-            print("Error in JSON while register " + e);
-            toast(UNEXPECTED_ERROR);
-        }
+        MainActivity.afterRegister = true;
+        runOnUiThread(this::finish);
     }
 
-    private JSONObject getPrimarySettings() throws JSONException {
-        var jsonSettings = new JSONObject();
+    private JSON getPrimarySettings() {
+        var jsonSettings = new JSON();
         var delays = new int[8];
         var show = new boolean[8];
         var names = new String[8];
@@ -106,9 +96,9 @@ public class RegisterActivity extends BaseActivity {
             names[i] = RELAY + " " + (i + 1);
         }
 
-        jsonSettings.put("name", new JSONArray(names));
-        jsonSettings.put("delay", new JSONArray(delays));
-        jsonSettings.put("show", new JSONArray(show));
+        jsonSettings.put("name", JSON.createJSONArray(names));
+        jsonSettings.put("delay", JSON.createJSONArray(delays));
+        jsonSettings.put("show", JSON.createJSONArray(show));
 
         return jsonSettings;
     }
@@ -118,12 +108,12 @@ public class RegisterActivity extends BaseActivity {
         int symLen = Constants.symbols.length() - 1;
 
         for (int i = 0; i < 20; i++) {
-            stringBuilder.append(Constants.symbols.charAt(randInt(0, symLen)));
+            stringBuilder.append(Constants.symbols.charAt(randInt(symLen)));
         }
         return stringBuilder.toString();
     }
 
-    private int randInt(int min, int max) {
-        return (int) ((Math.random() * ((max - min) + 1)) + min);
+    private int randInt(int max) {
+        return (int) (Math.random() * ++max);
     }
 }

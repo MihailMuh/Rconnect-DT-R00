@@ -5,16 +5,15 @@ import static com.mihalis.dtr00.Constants.PRESS;
 import static com.mihalis.dtr00.Strings.DISABLE;
 import static com.mihalis.dtr00.Strings.ENABLE;
 import static com.mihalis.dtr00.Strings.ENABLE_AT;
+import static com.mihalis.dtr00.Strings.ERROR_ACCESSING_THE_RELAY;
 import static com.mihalis.dtr00.Strings.OFF;
 import static com.mihalis.dtr00.Strings.ON;
 import static com.mihalis.dtr00.Strings.PULSE;
 import static com.mihalis.dtr00.Strings.SECONDS;
 import static com.mihalis.dtr00.Strings.SETTINGS;
-import static com.mihalis.dtr00.Strings.UNEXPECTED_ERROR;
 import static com.mihalis.dtr00.services.ClientServer.IP;
 import static com.mihalis.dtr00.services.ClientServer.postToServer;
 import static com.mihalis.dtr00.services.Service.post;
-import static com.mihalis.dtr00.services.Service.print;
 import static com.mihalis.dtr00.services.Service.sleep;
 
 import android.content.Intent;
@@ -30,9 +29,7 @@ import androidx.appcompat.content.res.AppCompatResources;
 import com.mihalis.dtr00.ClickListener;
 import com.mihalis.dtr00.R;
 import com.mihalis.dtr00.services.ClientServer;
-
-import org.json.JSONException;
-import org.json.JSONObject;
+import com.mihalis.dtr00.services.JSON;
 
 public class MainActivity extends BaseActivity {
     static volatile boolean afterRegister = false;
@@ -48,7 +45,7 @@ public class MainActivity extends BaseActivity {
 
     private Drawable onImg, offImg;
 
-    private final Runnable onError = () -> checkWIFI(() -> toast(UNEXPECTED_ERROR));
+    private final Runnable onError = () -> checkWIFI(() -> toast(ERROR_ACCESSING_THE_RELAY));
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -59,7 +56,7 @@ public class MainActivity extends BaseActivity {
         onImg = AppCompatResources.getDrawable(this, R.drawable.on);
 
         for (int i = 0; i < buttonsOnOff.length; i++) {
-            final int finalI = i;
+            final int I = i;
 
             buttonsOnOff[i] = findViewById("buttonRelay", i);
             buttonsDelay[i] = findViewById("buttonDelay", i);
@@ -67,17 +64,17 @@ public class MainActivity extends BaseActivity {
             imageViews[i] = findViewById("light", i);
 
             buttonsOnOff[i].setOnClickListener((ClickListener) () -> {
-                if (buttonsOnOff[finalI].getText().equals(ON)) {
-                    postToServer(this, PRESS, finalI, 1, 0, () -> {
-                        imageViews[finalI].setImageDrawable(onImg);
-                        buttonsOnOff[finalI].setText(OFF);
+                if (buttonsOnOff[I].getText().equals(ON)) {
+                    postToServer(this, PRESS, I, 1, 0, () -> {
+                        imageViews[I].setImageDrawable(onImg);
+                        buttonsOnOff[I].setText(OFF);
 
                         toast(ENABLE, 500);
                     }, onError);
                 } else {
-                    postToServer(this, PRESS, finalI, 0, 0, () -> {
-                        imageViews[finalI].setImageDrawable(offImg);
-                        buttonsOnOff[finalI].setText(ON);
+                    postToServer(this, PRESS, I, 0, 0, () -> {
+                        imageViews[I].setImageDrawable(offImg);
+                        buttonsOnOff[I].setText(ON);
 
                         toast(DISABLE, 500);
                     }, onError);
@@ -86,13 +83,13 @@ public class MainActivity extends BaseActivity {
 
             buttonsDelay[i].setText(PULSE);
             buttonsDelay[i].setOnClickListener((ClickListener) () ->
-                    postToServer(this, DELAY, finalI, 1, delays[finalI], () -> {
-                        imageViews[finalI].setImageDrawable(onImg);
-                        buttonsOnOff[finalI].setText(OFF);
-                        toast(ENABLE_AT + " " + delays[finalI] + " " + SECONDS);
+                    postToServer(this, DELAY, I, 1, delays[I], () -> {
+                        imageViews[I].setImageDrawable(onImg);
+                        buttonsOnOff[I].setText(OFF);
+                        toast(ENABLE_AT + " " + delays[I] + " " + SECONDS);
 
                         post(() -> {
-                            sleep(delays[finalI]);
+                            sleep(delays[I]);
                             updateRelays();
                         });
                     }, onError));
@@ -100,14 +97,11 @@ public class MainActivity extends BaseActivity {
 
         Button button = findViewById(R.id.buttonSettings);
         button.setText(SETTINGS);
-        button.setOnClickListener((ClickListener) () ->
-                startActivity(new Intent(this, SettingsActivity.class)));
+        button.setOnClickListener((ClickListener) () -> startActivity(new Intent(this, SettingsActivity.class)));
     }
 
     private void updateUI() {
         for (int i = 0; i < 8; i++) {
-            textRelays[i].setText(names[i]);
-
             if (!show[i]) {
                 textRelays[i].setVisibility(View.GONE);
                 buttonsDelay[i].setVisibility(View.GONE);
@@ -124,30 +118,36 @@ public class MainActivity extends BaseActivity {
     }
 
     private void updateRelays() {
-        String string = ClientServer.getRelaysStatus();
-        final int len = string.length() - 1;
-
-        if (len > 0) {
-            runOnUiThread(() -> {
-                int j = 0;
-                for (int i = 5; i < len; i += 2) {
-                    if (show[j]) {
-                        if (Integer.parseInt(String.valueOf(string.charAt(i))) == 1) {
-                            buttonsOnOff[j].setText(OFF);
-                            imageViews[j].setImageDrawable(onImg);
-                        } else {
-                            buttonsOnOff[j].setText(ON);
-                            imageViews[j].setImageDrawable(offImg);
-                        }
-                    }
-                    j++;
-                }
-            });
+        if (onPause) {
+            return;
         }
+        String relayStatus = ClientServer.getRelaysStatus();
+        int startIndex = relayStatus.indexOf(getCountOfRelayChannels(relayStatus)) + 2;
+
+        runOnUiThread(() -> {
+            int j = 0;
+            for (int i = startIndex; i < relayStatus.length() - 1; i += 2) {
+                if (show[j]) {
+                    if (relayStatus.charAt(i) == '1') {
+                        buttonsOnOff[j].setText(OFF);
+                        imageViews[j].setImageDrawable(onImg);
+                    } else {
+                        buttonsOnOff[j].setText(ON);
+                        imageViews[j].setImageDrawable(offImg);
+                    }
+                }
+                j++;
+            }
+        });
     }
 
-    private void register() {
-        runOnUiThread(() -> startActivity(new Intent(this, RegisterActivity.class)));
+    private String getCountOfRelayChannels(String relayStatus) {
+        int relayChannels = 2;
+
+        while (!relayStatus.contains(String.valueOf(relayChannels))) {
+            relayChannels *= 2;
+        }
+        return String.valueOf(relayChannels);
     }
 
     @Override
@@ -155,32 +155,28 @@ public class MainActivity extends BaseActivity {
         super.onResume();
 
         post(() -> {
-            try {
-                var jsonDeviceData = getJSONDevices().getJSONObject(IP);
-                if (!afterRegister && !jsonDeviceData.getBoolean("remember")) {
-                    register();
-                    return;
-                }
-
-                parseSettings(jsonDeviceData.getJSONObject("settings"));
-
-                checkWIFI(this::updateRelays);
-                runOnUiThread(this::updateUI);
-            } catch (Exception e) {
-                print("Error onResume MainActivity " + e);
+            var jsonDeviceData = getJSONDevices().getJSON(IP);
+            if (!afterRegister && !jsonDeviceData.optBoolean("remember")) {
+                runOnUiThread(() -> startActivity(new Intent(this, RegisterActivity.class)));
+                return;
             }
+
+            parseSettings(jsonDeviceData.getJSON("settings"));
+
+            runOnUiThread(this::updateUI);
+            checkWIFI(this::updateRelays);
         });
     }
 
-    private void parseSettings(JSONObject jsonSettings) throws JSONException {
+    private void parseSettings(JSON jsonSettings) {
         var nameArray = jsonSettings.getJSONArray("name");
         var showArray = jsonSettings.getJSONArray("show");
         var delayArray = jsonSettings.getJSONArray("delay");
 
         for (int i = 0; i < 8; i++) {
-            names[i] = nameArray.getString(i);
-            delays[i] = delayArray.getInt(i);
-            show[i] = showArray.getBoolean(i);
+            names[i] = nameArray.optString(i);
+            delays[i] = delayArray.optInt(i);
+            show[i] = showArray.optBoolean(i);
         }
     }
 }

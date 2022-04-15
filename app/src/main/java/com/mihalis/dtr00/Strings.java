@@ -36,6 +36,7 @@ public final class Strings {
     public static String REMEMBER_ME;
     public static String ADD_DEVICE;
     public static String ENTER;
+    public static String ERROR_ACCESSING_THE_RELAY;
 
     public static void init(BaseActivity activity) {
         String[] strings;
@@ -78,5 +79,6 @@ public final class Strings {
         REMEMBER_ME = strings[30];
         ADD_DEVICE = strings[31];
         ENTER = strings[32];
+        ERROR_ACCESSING_THE_RELAY = strings[33];
     }
 }

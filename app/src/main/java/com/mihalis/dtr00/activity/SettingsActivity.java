@@ -9,8 +9,8 @@ import static com.mihalis.dtr00.Strings.SHOW;
 import static com.mihalis.dtr00.Strings.SUCCESSFULLY_SAVED;
 import static com.mihalis.dtr00.Strings.WAIT;
 import static com.mihalis.dtr00.services.ClientServer.IP;
+import static com.mihalis.dtr00.services.JSON.createJSONArray;
 import static com.mihalis.dtr00.services.Service.post;
-import static com.mihalis.dtr00.services.Service.print;
 
 import android.os.Bundle;
 import android.widget.Button;
@@ -20,9 +20,7 @@ import android.widget.TextView;
 import com.mihalis.dtr00.ClickListener;
 import com.mihalis.dtr00.R;
 import com.mihalis.dtr00.services.ClientServer;
-
-import org.json.JSONArray;
-import org.json.JSONObject;
+import com.mihalis.dtr00.services.JSON;
 
 public class SettingsActivity extends BaseActivity {
     private final EditText[] editRelays = new EditText[8];
@@ -33,7 +31,7 @@ public class SettingsActivity extends BaseActivity {
     private final boolean[] show = new boolean[8];
     private final String[] names = new String[8];
 
-    private JSONObject jsonSettings, jsonDeviceData, jsonDevices;
+    private JSON jsonSettings, jsonDeviceData, jsonDevices;
 
     private final String oldIP = IP.concat("");
 
@@ -88,48 +86,40 @@ public class SettingsActivity extends BaseActivity {
                     delays[i] = Integer.parseInt(editDelays[i].getText().toString());
                     names[i] = editRelays[i].getText().toString();
                 }
-                try {
-                    jsonSettings.put("name", new JSONArray(names));
-                    jsonSettings.put("delay", new JSONArray(delays));
-                    jsonSettings.put("show", new JSONArray(show));
-                    jsonDeviceData.put("settings", jsonSettings);
+                jsonSettings.put("name", createJSONArray(names));
+                jsonSettings.put("delay", createJSONArray(delays));
+                jsonSettings.put("show", createJSONArray(show));
+                jsonDeviceData.put("settings", jsonSettings);
 
-                    if (ClientServer.getRelaysStatus().length() > 1) {
-                        runOnUiThread(this::finish);
+                if (ClientServer.getRelaysStatus().length() > 1) {
+                    runOnUiThread(this::finish);
 
-                        if (!oldIP.equals(IP)) {
-                            jsonDevices.remove(oldIP);
-                        }
-                        updateJSONDevices(jsonDevices.put(IP, jsonDeviceData));
-
-                        toast(SUCCESSFULLY_SAVED);
-                    } else {
-                        toast(INCORRECT_IP);
+                    if (!oldIP.equals(IP)) {
+                        jsonDevices.remove(oldIP);
                     }
-                } catch (Exception e) {
-                    print("Error in onCreate Settings " + e);
+                    updateJSONDevices(jsonDevices.put(IP, jsonDeviceData));
+
+                    toast(SUCCESSFULLY_SAVED);
+                } else {
+                    toast(INCORRECT_IP);
                 }
             });
         }));
     }
 
     private void parseALLJSONes() {
-        try {
-            jsonDevices = getJSONDevices();
-            jsonDeviceData = jsonDevices.getJSONObject(IP);
-            jsonSettings = jsonDeviceData.getJSONObject("settings");
+        jsonDevices = getJSONDevices();
+        jsonDeviceData = jsonDevices.getJSON(IP);
+        jsonSettings = jsonDeviceData.getJSON("settings");
 
-            var nameArray = jsonSettings.getJSONArray("name");
-            var showArray = jsonSettings.getJSONArray("show");
-            var delayArray = jsonSettings.getJSONArray("delay");
+        var nameArray = jsonSettings.getJSONArray("name");
+        var showArray = jsonSettings.getJSONArray("show");
+        var delayArray = jsonSettings.getJSONArray("delay");
 
-            for (int i = 0; i < 8; i++) {
-                names[i] = nameArray.getString(i);
-                delays[i] = delayArray.getInt(i);
-                show[i] = showArray.getBoolean(i);
-            }
-        } catch (Exception e) {
-            print("Error in parseALLJSONes " + e);
+        for (int i = 0; i < 8; i++) {
+            names[i] = nameArray.optString(i);
+            delays[i] = delayArray.optInt(i);
+            show[i] = showArray.optBoolean(i);
         }
     }
 

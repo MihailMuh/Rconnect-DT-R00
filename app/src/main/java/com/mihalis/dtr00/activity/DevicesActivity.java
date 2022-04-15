@@ -3,6 +3,7 @@ package com.mihalis.dtr00.activity;
 import static com.mihalis.dtr00.Strings.ADD_DEVICE;
 import static com.mihalis.dtr00.Strings.ENTER;
 import static com.mihalis.dtr00.services.ClientServer.IP;
+import static com.mihalis.dtr00.services.Service.post;
 import static com.mihalis.dtr00.services.Service.print;
 
 import android.content.Intent;
@@ -19,10 +20,8 @@ import com.google.android.gms.ads.MobileAds;
 import com.mihalis.dtr00.ClickListener;
 import com.mihalis.dtr00.R;
 import com.mihalis.dtr00.Strings;
+import com.mihalis.dtr00.services.JSON;
 import com.mihalis.dtr00.services.Service;
-
-import org.json.JSONException;
-import org.json.JSONObject;
 
 import java.util.Iterator;
 
@@ -34,7 +33,7 @@ public class DevicesActivity extends BaseActivity {
 
     private Button buttonAddDevice;
 
-    private JSONObject jsonDevices;
+    private JSON jsonDevices;
     private int numDevices;
 
     @Override
@@ -43,7 +42,7 @@ public class DevicesActivity extends BaseActivity {
         setContentView(R.layout.activity_choose_device);
 
         Strings.init(this);
-        Service.post(() -> {
+        post(() -> {
             Service.init(this);
             inputMethodManager = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
             MobileAds.initialize(this, initializationStatus -> print("MobileAds has initialized"));
@@ -61,27 +60,20 @@ public class DevicesActivity extends BaseActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        Service.post(() -> {
-            try {
-                jsonDevices = getJSONDevices();
-
-                if (jsonDevices.length() > 0) {
-                    parseJsonDevices();
-                }
-            } catch (Exception e) {
-                print("Error in DEVICES Activity " + e);
-            }
+        post(() -> {
+            jsonDevices = getJSONDevices();
+            parseJsonDevices();
         });
 
         setButtonState(buttonAddDevice, numDevices < 4);
     }
 
-    private void parseJsonDevices() throws JSONException {
+    private void parseJsonDevices() {
         numDevices = 1;
 
         for (Iterator<String> it = jsonDevices.keys(); it.hasNext(); numDevices++) {
             String ip = it.next();
-            String deviceName = jsonDevices.getJSONObject(ip).getString("deviceName");
+            String deviceName = jsonDevices.getJSON(ip).optString("deviceName");
 
             View deviceContainer = findViewById("deviceContainer", numDevices);
             EditText device = findViewById("device", numDevices);
@@ -100,7 +92,7 @@ public class DevicesActivity extends BaseActivity {
                 setEditTestState(device, !isEnabled);
 
                 if (isEnabled) {
-                    Service.post(() -> newNameForDevice(device.getText().toString(), ip));
+                    post(() -> newNameForDevice(device.getText().toString(), ip));
                 }
             });
 
@@ -114,12 +106,8 @@ public class DevicesActivity extends BaseActivity {
     }
 
     private void newNameForDevice(String name, String ip) {
-        try {
-            jsonDevices.getJSONObject(ip).put("deviceName", name);
-            updateJSONDevices(jsonDevices);
-        } catch (Exception e) {
-            print("Error newNameForDevice " + e);
-        }
+        jsonDevices.put(ip, jsonDevices.getJSON(ip).put("deviceName", name));
+        updateJSONDevices(jsonDevices);
     }
 
     private void setEditTestState(EditText editText, boolean isEnable) {
