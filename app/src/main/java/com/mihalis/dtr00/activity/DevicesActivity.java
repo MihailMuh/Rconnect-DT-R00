@@ -1,13 +1,15 @@
 package com.mihalis.dtr00.activity;
 
-import static com.mihalis.dtr00.Strings.ADD_DEVICE;
-import static com.mihalis.dtr00.Strings.ENTER;
+import static com.mihalis.dtr00.constants.Strings.ADD_DEVICE;
+import static com.mihalis.dtr00.constants.Strings.ENTER;
+import static com.mihalis.dtr00.constants.Strings.ERROR_ACCESSING_THE_RELAY;
 import static com.mihalis.dtr00.services.ClientServer.IP;
 import static com.mihalis.dtr00.services.Service.post;
 import static com.mihalis.dtr00.services.Service.print;
 
 import android.content.Intent;
 import android.content.res.ColorStateList;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
@@ -17,10 +19,11 @@ import android.widget.EditText;
 import androidx.core.content.ContextCompat;
 
 import com.google.android.gms.ads.MobileAds;
-import com.mihalis.dtr00.ClickListener;
+import com.mihalis.dtr00.services.ClientServer;
+import com.mihalis.dtr00.utils.ClickListener;
 import com.mihalis.dtr00.R;
-import com.mihalis.dtr00.Strings;
-import com.mihalis.dtr00.services.JSON;
+import com.mihalis.dtr00.constants.Strings;
+import com.mihalis.dtr00.utils.JSON;
 import com.mihalis.dtr00.services.Service;
 
 import java.util.Iterator;
@@ -44,6 +47,7 @@ public class DevicesActivity extends BaseActivity {
         Strings.init(this);
         post(() -> {
             Service.init(this);
+            ClientServer.setOnErrorAction(() -> checkWIFI(() -> toast(ERROR_ACCESSING_THE_RELAY)));
             inputMethodManager = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
             MobileAds.initialize(this, initializationStatus -> print("MobileAds has initialized"));
         });
@@ -53,8 +57,7 @@ public class DevicesActivity extends BaseActivity {
 
         buttonAddDevice = findViewById(R.id.button_add_device);
         buttonAddDevice.setText(ADD_DEVICE);
-        buttonAddDevice.setOnClickListener((ClickListener) () ->
-                startActivity(new Intent(this, RegisterActivity.class)));
+        buttonAddDevice.setOnClickListener((ClickListener) () -> startActivity(new Intent(this, RegisterActivity.class)));
     }
 
     @Override
@@ -65,39 +68,42 @@ public class DevicesActivity extends BaseActivity {
             parseJsonDevices();
         });
 
-        setButtonState(buttonAddDevice, numDevices < 4);
+        if (numDevices > 4) {
+            disableButton(buttonAddDevice);
+        }
     }
 
     private void parseJsonDevices() {
         numDevices = 1;
 
-        for (Iterator<String> it = jsonDevices.keys(); it.hasNext(); numDevices++) {
-            String ip = it.next();
+
+        for (Iterator<String> iterator = jsonDevices.keys(); iterator.hasNext(); numDevices++) {
+            String ip = iterator.next();
             String deviceName = jsonDevices.getJSON(ip).optString("deviceName");
 
             View deviceContainer = findViewById("deviceContainer", numDevices);
-            EditText device = findViewById("device", numDevices);
+            EditText deviceEditText = findViewById("device", numDevices);
             Button buttonEnter = findViewById("buttonDevice", numDevices);
 
             runOnUiThread(() -> {
-                device.setText(deviceName);
+                deviceEditText.setText(deviceName);
                 buttonEnter.setText(ENTER);
-                setEditTestState(device, false);
+                setEditTextState(deviceEditText, false);
 
                 deviceContainer.setVisibility(View.VISIBLE);
             });
 
             findViewById("imageEditDevice", numDevices).setOnClickListener((ClickListener) () -> {
-                boolean isEnabled = device.isEnabled();
-                setEditTestState(device, !isEnabled);
+                boolean isEnabled = deviceEditText.isEnabled();
+                setEditTextState(deviceEditText, !isEnabled);
 
                 if (isEnabled) {
-                    post(() -> newNameForDevice(device.getText().toString(), ip));
+                    post(() -> newNameForDevice(deviceEditText.getText().toString(), ip));
                 }
             });
 
             buttonEnter.setOnClickListener((ClickListener) () -> {
-                if (!device.isEnabled()) {
+                if (!deviceEditText.isEnabled()) {
                     IP = ip;
                     startActivity(new Intent(this, MainActivity.class));
                 }
@@ -110,7 +116,7 @@ public class DevicesActivity extends BaseActivity {
         updateJSONDevices(jsonDevices);
     }
 
-    private void setEditTestState(EditText editText, boolean isEnable) {
+    private void setEditTextState(EditText editText, boolean isEnable) {
         editText.setEnabled(isEnable);
         if (isEnable) {
             editText.setBackgroundTintList(greenTint);
@@ -120,5 +126,11 @@ public class DevicesActivity extends BaseActivity {
         } else {
             editText.setBackgroundTintList(whiteTint);
         }
+    }
+
+    private void disableButton(Button button) {
+        button.setBackgroundColor(Color.parseColor("#DCDCDC"));
+        button.setTextColor(ContextCompat.getColor(this, R.color.black));
+        button.setOnClickListener((ClickListener) -> {});
     }
 }

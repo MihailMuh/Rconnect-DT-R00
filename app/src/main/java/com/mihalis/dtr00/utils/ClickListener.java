@@ -1,4 +1,4 @@
-package com.mihalis.dtr00;
+package com.mihalis.dtr00.utils;
 
 import static com.mihalis.dtr00.services.Service.vibrate;
 

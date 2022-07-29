@@ -1,4 +1,4 @@
-package com.mihalis.dtr00;
+package com.mihalis.dtr00.constants;
 
 public final class Constants {
     public static final byte DELAY = 2;

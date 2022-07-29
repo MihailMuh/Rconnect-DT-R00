@@ -1,14 +1,12 @@
 package com.mihalis.dtr00.activity;
 
-import static com.mihalis.dtr00.Strings.I_ENABLE_WIFI;
-import static com.mihalis.dtr00.Strings.NO_WIFI;
-import static com.mihalis.dtr00.Strings.QUIT;
+import static com.mihalis.dtr00.constants.Strings.I_ENABLE_WIFI;
+import static com.mihalis.dtr00.constants.Strings.NO_WIFI;
 import static com.mihalis.dtr00.services.Service.post;
 import static com.mihalis.dtr00.services.Service.readFromFile;
 import static com.mihalis.dtr00.services.Service.sleepMillis;
 
 import android.content.res.Resources;
-import android.graphics.Color;
 import android.net.ConnectivityManager;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -18,12 +16,11 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.content.ContextCompat;
 
-import com.mihalis.dtr00.ClickListener;
 import com.mihalis.dtr00.R;
-import com.mihalis.dtr00.services.JSON;
 import com.mihalis.dtr00.services.Service;
+import com.mihalis.dtr00.utils.ClickListener;
+import com.mihalis.dtr00.utils.JSON;
 
 import java.util.Objects;
 
@@ -67,11 +64,15 @@ public abstract class BaseActivity extends AppCompatActivity {
         );
     }
 
+    public boolean online() {
+        return connectivityManager.getActiveNetworkInfo() != null;
+    }
+
     public void checkWIFI(Runnable runnable) {
-        if (connectivityManager.getActiveNetworkInfo() != null) {
+        if (online()) {
             post(runnable);
         } else {
-            noWiFi();
+            alert(NO_WIFI, I_ENABLE_WIFI);
         }
     }
 
@@ -95,21 +96,21 @@ public abstract class BaseActivity extends AppCompatActivity {
         return super.findViewById(resources.getIdentifier(name + index, "id", packageName));
     }
 
-    public void noWiFi() {
-        View view = LayoutInflater.from(this).inflate(R.layout.dialog_no_internet, null);
+    public void alert(String alertText) {
+        alert(alertText, "Ok");
+    }
+
+    public void alert(String alertText, String buttonText) {
+        View view = LayoutInflater.from(this).inflate(R.layout.alert, null);
         AlertDialog alertDialog = new AlertDialog.Builder(this)
                 .setView(view)
-                .setTitle(NO_WIFI)
+                .setTitle(alertText)
                 .setCancelable(true)
                 .create();
 
-        Button button = view.findViewById(R.id.button_exit);
-        button.setOnClickListener((ClickListener) this::finishAffinity);
-        button.setText(QUIT);
-
-        button = view.findViewById(R.id.button_i_enable_wifi);
+        Button button = view.findViewById(R.id.buttonOk);
         button.setOnClickListener((ClickListener) alertDialog::dismiss);
-        button.setText(I_ENABLE_WIFI);
+        button.setText(buttonText);
 
         alertDialog.show();
     }
@@ -122,13 +123,11 @@ public abstract class BaseActivity extends AppCompatActivity {
         Service.writeToFile(this, "DEVICES.json", jsonDevices);
     }
 
-    public void setButtonState(Button button, boolean isEnable) {
-        if (isEnable) {
-            button.setBackgroundColor(Color.parseColor("#004524"));
-            button.setTextColor(ContextCompat.getColor(this, R.color.white));
+    public void setWidgetState(View widget, boolean enabled) {
+        if (enabled) {
+            widget.setAlpha(1);
         } else {
-            button.setBackgroundColor(Color.parseColor("#DCDCDC"));
-            button.setTextColor(ContextCompat.getColor(this, R.color.black));
+            widget.setAlpha(0.3f);
         }
     }
 }

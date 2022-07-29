@@ -35,6 +35,8 @@
         <item>Add Device</item>
         <item>Enter</item>
         <item>Error accessing the relay</item>
+        <item>Change layout</item>
+        <item>Tap on widget to show/hide him</item>
 
     </string-array>
 </resources>

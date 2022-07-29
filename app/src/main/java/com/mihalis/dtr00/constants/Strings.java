@@ -1,5 +1,6 @@
-package com.mihalis.dtr00;
+package com.mihalis.dtr00.constants;
 
+import com.mihalis.dtr00.R;
 import com.mihalis.dtr00.activity.BaseActivity;
 
 import java.util.Locale;
@@ -37,6 +38,8 @@ public final class Strings {
     public static String ADD_DEVICE;
     public static String ENTER;
     public static String ERROR_ACCESSING_THE_RELAY;
+    public static String CHANGE_LAYOUT;
+    public static String TAP_TO_HIDE_WIDGET;
 
     public static void init(BaseActivity activity) {
         String[] strings;
@@ -80,5 +83,7 @@ public final class Strings {
         ADD_DEVICE = strings[31];
         ENTER = strings[32];
         ERROR_ACCESSING_THE_RELAY = strings[33];
+        CHANGE_LAYOUT = strings[34];
+        TAP_TO_HIDE_WIDGET = strings[35];
     }
 }

@@ -17,16 +17,28 @@
         android:windowSoftInputMode="adjustResize">
         <activity
             android:name="com.mihalis.dtr00.activity.DevicesActivity"
-            android:exported="true">
+            android:configChanges="orientation|keyboardHidden"
+            android:exported="true"
+            android:launchMode="singleTask"
+            android:screenOrientation="portrait"
+            android:taskAffinity="">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name="com.mihalis.dtr00.activity.SettingsActivity" />
-        <activity android:name="com.mihalis.dtr00.activity.RegisterActivity" />
-        <activity android:name="com.mihalis.dtr00.activity.MainActivity" />
+        <activity
+            android:name="com.mihalis.dtr00.activity.SettingsActivity"
+            android:configChanges="orientation|keyboardHidden"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name="com.mihalis.dtr00.activity.RegisterActivity"
+            android:configChanges="orientation|keyboardHidden"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name="com.mihalis.dtr00.activity.MainActivity"
+            android:configChanges="orientation|keyboardHidden"
+            android:screenOrientation="portrait" />
 
         <meta-data
             android:name="com.google.android.gms.ads.APPLICATION_ID"

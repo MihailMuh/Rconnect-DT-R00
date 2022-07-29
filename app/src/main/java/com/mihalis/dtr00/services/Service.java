@@ -8,6 +8,7 @@ import android.os.Vibrator;
 import android.util.Log;
 
 import com.mihalis.dtr00.activity.BaseActivity;
+import com.mihalis.dtr00.utils.JSON;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
@@ -16,7 +17,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 public final class Service {
-    private static final ExecutorService threadPool = Executors.newCachedThreadPool();
+    private static final ExecutorService threadPool = Executors.newWorkStealingPool(8);
     private static Vibrator vibrator;
 
     public static void init(BaseActivity activity) {
@@ -27,11 +28,23 @@ public final class Service {
         threadPool.execute(runnable);
     }
 
-    public static void print(Object object) {
+    private static void print(String s) {
+        Log.e("DT-R00", s);
+    }
+
+    public synchronized static void print(Object... objects) {
+        var stringBuilder = new StringBuilder();
         try {
-            Log.e("ESP8266", object.toString());
-        } catch (Exception e) {
-            print(e);
+            if (objects.length == 1) {
+                print(objects[0].toString());
+                return;
+            }
+            for (Object o : objects) {
+                stringBuilder.append(o).append(" ");
+            }
+            print(stringBuilder.deleteCharAt(stringBuilder.length() - 1).toString());
+        } catch (Exception exception) {
+            print("Error When Log:", exception);
         }
     }
 
@@ -43,7 +56,7 @@ public final class Service {
         try {
             Thread.sleep(millis);
         } catch (InterruptedException e) {
-            print("Sleep " + e);
+            print("Sleep:", e);
             sleepMillis(millis);
         }
     }
@@ -58,7 +71,7 @@ public final class Service {
             writer_str.write(jsonObject.toString());
             writer_str.close();
         } catch (Exception e) {
-            print("Can't save " + fileName + " " + e);
+            print("Can't save", fileName, e);
         }
     }
 
@@ -74,7 +87,7 @@ public final class Service {
         } catch (Exception e) {
             var jsonObject = new JSON();
 
-            print("Can't recovery " + fileName + " " + e);
+            print("Can't recovery", fileName, e);
             print("Creating new file...");
             writeToFile(activity, fileName, jsonObject);
             print("Successful");

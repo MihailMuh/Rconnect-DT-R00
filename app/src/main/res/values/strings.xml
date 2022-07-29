@@ -19,6 +19,7 @@
     <string name="no_internet">Отсутствует интернет соединение!</string>
     <string name="Exit">Выход</string>
     <string name="Settings">Настройки</string>
+    <string name="ChangeLayout">Изменить рсположение</string>
     <string name="Current_IP">Текущий IP:</string>
     <string name="i_enable_wifi">Ок</string>
     <string name="delay">Задержка:</string>

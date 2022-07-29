@@ -1,6 +1,5 @@
 package com.mihalis.dtr00.services;
 
-import static com.mihalis.dtr00.services.Service.post;
 import static com.mihalis.dtr00.services.Service.print;
 
 import com.mihalis.dtr00.activity.BaseActivity;
@@ -13,7 +12,13 @@ import okhttp3.Response;
 
 public final class ClientServer {
     private static final OkHttpClient client = new OkHttpClient();
+    private static Runnable onError = () -> {
+    };
     public static volatile String IP;
+
+    public static void setOnErrorAction(Runnable onErrorAction) {
+        onError = onErrorAction;
+    }
 
     private static void postToServer(String message) throws IOException {
         client.newCall(new Request.Builder().url("http://" + IP + "/relay_cgi.cgi?" + message + "&pwd=0&").build()).execute().close();
@@ -43,15 +48,13 @@ public final class ClientServer {
         return 44_44_44;
     }
 
-    public static void postToServer(BaseActivity activity, byte type, int relay, int on, int time, Runnable onSucceeded, Runnable onError) {
-        post(() -> {
-            try {
-                postToServer("type=" + type + "&relay=" + relay + "&on=" + on + "&time=" + time);
-                activity.runOnUiThread(onSucceeded);
-            } catch (Exception e) {
-                activity.runOnUiThread(onError);
-                print(e);
-            }
-        });
+    public static void postToServer(BaseActivity activity, byte type, int relay, int on, int time, Runnable onSucceeded) {
+        try {
+            postToServer("type=" + type + "&relay=" + relay + "&on=" + on + "&time=" + time);
+            activity.runOnUiThread(onSucceeded);
+        } catch (Exception e) {
+            activity.runOnUiThread(onError);
+            print(e);
+        }
     }
 }

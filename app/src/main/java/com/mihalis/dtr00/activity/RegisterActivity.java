@@ -1,15 +1,15 @@
 package com.mihalis.dtr00.activity;
 
-import static com.mihalis.dtr00.Strings.ADDRESS;
-import static com.mihalis.dtr00.Strings.APPLY;
-import static com.mihalis.dtr00.Strings.INCORRECT_USER_PASSWD;
-import static com.mihalis.dtr00.Strings.INPUT_IP;
-import static com.mihalis.dtr00.Strings.LOGIN;
-import static com.mihalis.dtr00.Strings.PASSWORD;
-import static com.mihalis.dtr00.Strings.RELAY;
-import static com.mihalis.dtr00.Strings.REMEMBER_ME;
-import static com.mihalis.dtr00.Strings.UNEXPECTED_ERROR;
-import static com.mihalis.dtr00.Strings.USER_NAME;
+import static com.mihalis.dtr00.constants.Strings.ADDRESS;
+import static com.mihalis.dtr00.constants.Strings.APPLY;
+import static com.mihalis.dtr00.constants.Strings.INCORRECT_USER_PASSWD;
+import static com.mihalis.dtr00.constants.Strings.INPUT_IP;
+import static com.mihalis.dtr00.constants.Strings.LOGIN;
+import static com.mihalis.dtr00.constants.Strings.PASSWORD;
+import static com.mihalis.dtr00.constants.Strings.RELAY;
+import static com.mihalis.dtr00.constants.Strings.REMEMBER_ME;
+import static com.mihalis.dtr00.constants.Strings.UNEXPECTED_ERROR;
+import static com.mihalis.dtr00.constants.Strings.USER_NAME;
 import static com.mihalis.dtr00.services.ClientServer.IP;
 
 import android.os.Bundle;
@@ -18,11 +18,12 @@ import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.TextView;
 
-import com.mihalis.dtr00.ClickListener;
-import com.mihalis.dtr00.Constants;
+import com.mihalis.dtr00.utils.ArrayFiller;
+import com.mihalis.dtr00.utils.ClickListener;
+import com.mihalis.dtr00.constants.Constants;
 import com.mihalis.dtr00.R;
 import com.mihalis.dtr00.services.ClientServer;
-import com.mihalis.dtr00.services.JSON;
+import com.mihalis.dtr00.utils.JSON;
 
 import java.util.Arrays;
 
@@ -86,34 +87,31 @@ public class RegisterActivity extends BaseActivity {
     private JSON getPrimarySettings() {
         var jsonSettings = new JSON();
         var delays = new int[8];
-        var show = new boolean[8];
+        var disabledMask = new boolean[8][4];
         var names = new String[8];
 
         Arrays.fill(delays, 5);
-        Arrays.fill(show, true);
-
-        for (int i = 0; i < 8; i++) {
-            names[i] = RELAY + " " + (i + 1);
-        }
+        ArrayFiller.fill(disabledMask, true);
+        ArrayFiller.fill(names, (int index) -> RELAY + " " + (index + 1));
 
         jsonSettings.put("name", JSON.createJSONArray(names));
         jsonSettings.put("delay", JSON.createJSONArray(delays));
-        jsonSettings.put("show", JSON.createJSONArray(show));
+        jsonSettings.put("disabledMask", JSON.createJSONArray(disabledMask));
 
         return jsonSettings;
     }
 
     private String getRandomPassword() {
         var stringBuilder = new StringBuilder(20);
-        int symLen = Constants.symbols.length() - 1;
+        int numSymbols = Constants.symbols.length();
 
         for (int i = 0; i < 20; i++) {
-            stringBuilder.append(Constants.symbols.charAt(randInt(symLen)));
+            stringBuilder.append(Constants.symbols.charAt(randInt(numSymbols)));
         }
         return stringBuilder.toString();
     }
 
     private int randInt(int max) {
-        return (int) (Math.random() * ++max);
+        return (int) (Math.random() * max);
     }
 }

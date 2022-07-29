@@ -6,20 +6,53 @@
     android:layout_height="match_parent"
     tools:context=".activity.MainActivity">
 
+    <TextView
+        android:id="@+id/deviceName"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:autoSizeMinTextSize="1dp"
+        android:autoSizeTextType="uniform"
+        android:gravity="center"
+        android:textColor="@color/black"
+        android:textSize="20sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHeight_percent="0.05"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/guideline6"
+        app:layout_constraintWidth_percent="0.6" />
+
     <Button
         android:id="@+id/buttonSettings"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:layout_marginTop="40dp"
+        android:layout_marginBottom="50dp"
         android:autoSizeMinTextSize="1dp"
         android:autoSizeTextType="uniform"
         android:backgroundTint="#004524"
         android:padding="10dp"
         android:text="@string/Settings"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHeight_percent="0.07"
+        app:layout_constraintHorizontal_bias="0.3"
+        app:layout_constraintStart_toEndOf="@+id/centerView"
+        app:layout_constraintWidth_percent="0.3" />
+
+    <Button
+        android:id="@+id/buttonChangeLayout"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginBottom="50dp"
+        android:autoSizeMinTextSize="1dp"
+        android:autoSizeTextType="uniform"
+        android:backgroundTint="#004524"
+        android:padding="7dp"
+        android:text="@string/ChangeLayout"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/centerView"
+        app:layout_constraintHeight_percent="0.07"
+        app:layout_constraintHorizontal_bias="0.7"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/light7"
         app:layout_constraintWidth_percent="0.3" />
 
     <TextView
@@ -268,14 +301,16 @@
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:layout_marginStart="20dp"
+        android:layout_marginTop="40dp"
         android:autoSizeMinTextSize="1dp"
         android:autoSizeTextType="uniform"
         android:backgroundTint="#004524"
+        android:minHeight="48dp"
         android:padding="10dp"
         android:text="@string/On"
         app:layout_constraintHeight_percent="0.065"
         app:layout_constraintStart_toEndOf="@+id/relay0"
-        app:layout_constraintTop_toTopOf="@+id/guideline3"
+        app:layout_constraintTop_toBottomOf="@+id/deviceName"
         app:layout_constraintWidth_percent="0.2"
         tools:ignore="DuplicateSpeakableTextCheck" />
 
@@ -288,6 +323,7 @@
         android:autoSizeMinTextSize="1dp"
         android:autoSizeTextType="uniform"
         android:backgroundTint="#004524"
+        android:minHeight="48dp"
         android:padding="10dp"
         android:text="@string/On"
         app:layout_constraintHeight_percent="0.065"
@@ -304,6 +340,7 @@
         android:autoSizeMinTextSize="1dp"
         android:autoSizeTextType="uniform"
         android:backgroundTint="#004524"
+        android:minHeight="48dp"
         android:padding="10dp"
         android:text="@string/On"
         app:layout_constraintHeight_percent="0.065"
@@ -320,6 +357,7 @@
         android:autoSizeMinTextSize="1dp"
         android:autoSizeTextType="uniform"
         android:backgroundTint="#004524"
+        android:minHeight="48dp"
         android:padding="10dp"
         android:text="@string/On"
         app:layout_constraintHeight_percent="0.065"
@@ -336,6 +374,7 @@
         android:autoSizeMinTextSize="1dp"
         android:autoSizeTextType="uniform"
         android:backgroundTint="#004524"
+        android:minHeight="48dp"
         android:padding="10dp"
         android:text="@string/On"
         app:layout_constraintHeight_percent="0.065"
@@ -352,6 +391,7 @@
         android:autoSizeMinTextSize="1dp"
         android:autoSizeTextType="uniform"
         android:backgroundTint="#004524"
+        android:minHeight="48dp"
         android:padding="10dp"
         android:text="@string/On"
         app:layout_constraintHeight_percent="0.065"
@@ -368,6 +408,7 @@
         android:autoSizeMinTextSize="1dp"
         android:autoSizeTextType="uniform"
         android:backgroundTint="#004524"
+        android:minHeight="48dp"
         android:padding="10dp"
         android:text="@string/On"
         app:layout_constraintHeight_percent="0.065"
@@ -384,6 +425,7 @@
         android:autoSizeMinTextSize="1dp"
         android:autoSizeTextType="uniform"
         android:backgroundTint="#004524"
+        android:minHeight="48dp"
         android:padding="10dp"
         android:text="@string/On"
         app:layout_constraintHeight_percent="0.065"
@@ -432,6 +474,7 @@
         android:autoSizeMinTextSize="1dp"
         android:autoSizeTextType="uniform"
         android:backgroundTint="#004524"
+        android:minHeight="48dp"
         android:padding="10dp"
         android:text="@string/Pulse"
         app:layout_constraintBottom_toBottomOf="@+id/light2"
@@ -448,6 +491,7 @@
         android:autoSizeMinTextSize="1dp"
         android:autoSizeTextType="uniform"
         android:backgroundTint="#004524"
+        android:minHeight="48dp"
         android:padding="10dp"
         android:text="@string/Pulse"
         app:layout_constraintBottom_toBottomOf="@+id/light3"
@@ -464,6 +508,7 @@
         android:autoSizeMinTextSize="1dp"
         android:autoSizeTextType="uniform"
         android:backgroundTint="#004524"
+        android:minHeight="48dp"
         android:padding="10dp"
         android:text="@string/Pulse"
         app:layout_constraintBottom_toBottomOf="@+id/light4"
@@ -480,6 +525,7 @@
         android:autoSizeMinTextSize="1dp"
         android:autoSizeTextType="uniform"
         android:backgroundTint="#004524"
+        android:minHeight="48dp"
         android:padding="10dp"
         android:text="@string/Pulse"
         app:layout_constraintBottom_toBottomOf="@+id/light5"
@@ -496,6 +542,7 @@
         android:autoSizeMinTextSize="1dp"
         android:autoSizeTextType="uniform"
         android:backgroundTint="#004524"
+        android:minHeight="48dp"
         android:padding="10dp"
         android:text="@string/Pulse"
         app:layout_constraintBottom_toBottomOf="@+id/light6"
@@ -512,6 +559,7 @@
         android:autoSizeMinTextSize="1dp"
         android:autoSizeTextType="uniform"
         android:backgroundTint="#004524"
+        android:minHeight="48dp"
         android:padding="10dp"
         android:text="@string/Pulse"
         app:layout_constraintBottom_toBottomOf="@+id/light7"
@@ -521,17 +569,25 @@
         app:layout_constraintWidth_percent="0.2" />
 
     <androidx.constraintlayout.widget.Guideline
-        android:id="@+id/guideline3"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        app:layout_constraintGuide_begin="25dp" />
-
-    <androidx.constraintlayout.widget.Guideline
         android:id="@+id/guideline4"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="vertical"
         app:layout_constraintGuide_begin="10dp" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline6"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_begin="25dp" />
+
+    <TextView
+        android:id="@+id/centerView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
