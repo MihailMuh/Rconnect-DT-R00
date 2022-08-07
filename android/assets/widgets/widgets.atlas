@@ -1,0 +1,29 @@
+widgets.png
+	size: 2048, 1024
+	repeat: none
+alert
+	bounds: 2, 419, 700, 500
+button_not_pressed
+	bounds: 1244, 510, 268, 135
+button_not_pressed_deactivated
+	bounds: 217, 282, 268, 135
+button_pressed
+	bounds: 974, 510, 268, 135
+button_pressed_deactivated
+	bounds: 704, 510, 268, 135
+check_box_focused
+	bounds: 2, 148, 213, 269
+check_box_non_focused
+	bounds: 1606, 650, 213, 269
+cursor
+	bounds: 704, 468, 7, 40
+dark
+	bounds: 217, 270, 10, 10
+edit_text_focused
+	bounds: 704, 647, 900, 135
+edit_text_non_focused
+	bounds: 704, 784, 900, 135
+off_img
+	bounds: 1821, 775, 144, 144
+on_img
+	bounds: 2, 2, 144, 144

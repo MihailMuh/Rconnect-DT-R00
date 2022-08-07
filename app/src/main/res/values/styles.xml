@@ -1,7 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<resources>
-    <style name="BoxRemember" parent="Theme.AppCompat.Light">
-        <item name="colorControlNormal">#004524</item>
-        <item name="colorControlActivated">#004524</item>
-    </style>
-</resources>
