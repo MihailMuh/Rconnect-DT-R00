@@ -56,7 +56,7 @@ public abstract class Registration {
         return userDevice;
     }
 
-    void login(String login, String password, boolean rememberRegistration, Runnable runOnSocketTimeoutExceptionDialog) {
+    void login(String login, String password, boolean rememberRegistration) {
         String randomPassword = getRandomPassword();
         AsyncRequestHandler handler = new AsyncRequestHandler(3) {
             @Override
@@ -71,11 +71,6 @@ public abstract class Registration {
                 } else {
                     onIncorrect();
                 }
-            }
-
-            @Override
-            public void onSocketTimeoutException() {
-                runOnSocketTimeoutExceptionDialog.run();
             }
         };
 

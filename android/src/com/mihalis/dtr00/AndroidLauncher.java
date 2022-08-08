@@ -1,17 +1,19 @@
 package com.mihalis.dtr00;
 
 import static android.widget.Toast.LENGTH_SHORT;
-import static android.widget.Toast.makeText;
-import static com.mihalis.dtr00.systemd.service.Toast.subscribe;
+import static com.mihalis.dtr00.systemd.service.Toast.setToastManager;
 
 import android.os.Bundle;
+import android.widget.Toast;
 
 import com.badlogic.gdx.backends.android.AndroidApplication;
 import com.badlogic.gdx.backends.android.AndroidApplicationConfiguration;
 import com.mihalis.dtr00.systemd.MainApp;
-import com.mihalis.dtr00.utils.Subscriber;
+import com.mihalis.dtr00.systemd.service.Processor;
+import com.mihalis.dtr00.systemd.service.Service;
+import com.mihalis.dtr00.utils.ToastManager;
 
-public class AndroidLauncher extends AndroidApplication implements Subscriber<String> {
+public class AndroidLauncher extends AndroidApplication implements ToastManager {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -25,13 +27,26 @@ public class AndroidLauncher extends AndroidApplication implements Subscriber<St
         config.disableAudio = true;
         config.useGL30 = true;
 
-        subscribe(this);
+        setToastManager(this);
 
         initialize(new MainApp(), config);
     }
 
     @Override
-    public void onEvent(String text) {
-        runOnUiThread(() -> makeText(this, text, LENGTH_SHORT).show());
+    public void makeToast(String text) {
+        runOnUiThread(() -> Toast.makeText(this, text, LENGTH_SHORT).show());
+    }
+
+    @Override
+    public void makeToast(String text, int millis) {
+        runOnUiThread(() -> {
+            Toast toast = Toast.makeText(this, text, Toast.LENGTH_LONG);
+            toast.show();
+            Processor.postTask(() -> {
+                Service.sleep(millis);
+
+                toast.cancel();
+            });
+        });
     }
 }

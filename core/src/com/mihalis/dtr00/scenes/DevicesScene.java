@@ -2,33 +2,33 @@ package com.mihalis.dtr00.scenes;
 
 import static com.badlogic.gdx.utils.Align.center;
 import static com.badlogic.gdx.utils.Align.top;
-import static com.mihalis.dtr00.hub.FontHub.getTextWidth;
 import static com.mihalis.dtr00.hub.Resources.getImages;
 import static com.mihalis.dtr00.hub.Resources.getLocales;
 import static com.mihalis.dtr00.hub.Resources.getStyles;
 import static com.mihalis.dtr00.systemd.service.Windows.HALF_SCREEN_WIDTH;
 import static com.mihalis.dtr00.systemd.service.Windows.SCREEN_HEIGHT;
-import static com.mihalis.dtr00.systemd.service.Windows.SCREEN_WIDTH;
 import static com.mihalis.dtr00.utils.Intersector.underFinger;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
-import com.badlogic.gdx.scenes.scene2d.ui.TextField;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Array;
 import com.mihalis.dtr00.scenes.register.RegisterScene;
 import com.mihalis.dtr00.systemd.MainAppManager;
 import com.mihalis.dtr00.systemd.service.FileManager;
+import com.mihalis.dtr00.systemd.service.Networking;
 import com.mihalis.dtr00.utils.Scene;
 import com.mihalis.dtr00.utils.UserDevice;
 import com.mihalis.dtr00.widgets.Button;
+import com.mihalis.dtr00.widgets.EditText;
 
 import java.util.HashMap;
+import java.util.Map.Entry;
 
 public class DevicesScene extends Scene {
-    private Array<TextField> textFields;
+    private Array<EditText> editTexts;
 
     private int numDevices;
 
@@ -48,7 +48,7 @@ public class DevicesScene extends Scene {
         super.resume();
 
         stage.clear();
-        textFields = new Array<>(true, 4);
+        editTexts = new Array<>(true, 4, EditText.class);
 
         placeButtonAddDevice();
         placeTextYourDevices();
@@ -60,20 +60,21 @@ public class DevicesScene extends Scene {
         final HashMap<String, UserDevice> allUserDevices = FileManager.getUserDevicesData();
         float widgetsY = SCREEN_HEIGHT - 450;
 
-        for (UserDevice userDevice : allUserDevices.values()) {
-            placeButtonEnter(widgetsY, userDevice);
-            placeEditDeviceName(userDevice.deviceName, widgetsY);
-            placeTextHintOverTextField(stage.getActors().peek().getX(center), stage.getActors().peek().getY(top));
+        for (Entry<String, UserDevice> pair : allUserDevices.entrySet()) {
+            placeButtonEnter(widgetsY, pair);
+            placeEditDeviceName(pair.getValue().deviceName, widgetsY);
+            placeTextHintOverEditText(stage.getActors().peek().getX(center), stage.getActors().peek().getY(top));
 
             widgetsY -= 350;
         }
     }
 
-    private void placeButtonEnter(float y, UserDevice userDevice) {
+    private void placeButtonEnter(float y, Entry<String, UserDevice> pair) {
         Button buttonEnter = new Button(getLocales().enter) {
             @Override
             public void onClick() {
-                mainAppManager.startScene(new MainScene(mainAppManager, userDevice));
+                Networking.setIpAddress(pair.getKey());
+                mainAppManager.startScene(new MainScene(mainAppManager, pair.getValue()));
             }
         };
         buttonEnter.setSize(getImages().buttonWidth, getImages().buttonHeight);
@@ -86,23 +87,20 @@ public class DevicesScene extends Scene {
     }
 
     private void placeEditDeviceName(String currentDeviceName, float y) {
-        float x = getImages().buttonWidth + 20;
-        float width = Math.max(SCREEN_WIDTH - x, getTextWidth(currentDeviceName) + 100);
+        float x = getImages().buttonWidth + 40;
         y -= 13; // кнопка почему-то ниже отрисовывается, отнимаем, чтобы все по одной линии были
 
-        TextField editDeviceName = new TextField("", getStyles().textFieldStyle);
-        editDeviceName.setSize(width, getImages().editTextHeight);
+        EditText editDeviceName = new EditText(currentDeviceName, getStyles().editTextStyle);
         editDeviceName.setX(x);
         editDeviceName.setY(y, center);
-        editDeviceName.setAlignment(center);
-        editDeviceName.setText(currentDeviceName);
         editDeviceName.setName("editDevice");
+        editDeviceName.setMaxWidth(735); // методом тыка
 
         stage.addActor(editDeviceName);
-        textFields.add(editDeviceName);
+        editTexts.add(editDeviceName);
     }
 
-    private void placeTextHintOverTextField(float x, float y) {
+    private void placeTextHintOverEditText(float x, float y) {
         Label textHint = new Label(getLocales().deviceName, getStyles().hintStyle);
         textHint.setPosition(x, y + 45, center);
         textHint.setAlignment(center);
@@ -138,12 +136,12 @@ public class DevicesScene extends Scene {
         stage.addActor(buttonAddDevice);
     }
 
-    private void updateDeviceNameInAllUserDevices() {
+    private void updateDeviceNameInJSONFile() {
         final HashMap<String, UserDevice> allUserDevices = FileManager.getUserDevicesData();
         int i = 0;
 
         for (UserDevice userDevice : allUserDevices.values()) {
-            userDevice.deviceName = textFields.get(i++).getText();
+            userDevice.deviceName = editTexts.get(i++).getText();
         }
 
         FileManager.saveJsonFile();
@@ -159,7 +157,7 @@ public class DevicesScene extends Scene {
                     }
                 }
 
-                updateDeviceNameInAllUserDevices();
+                updateDeviceNameInJSONFile();
                 Gdx.input.setOnscreenKeyboardVisible(false);
                 stage.setKeyboardFocus(null);
             }

@@ -9,7 +9,8 @@ public class ImageHub extends BaseHub {
     public AtlasRegion buttonPressed, buttonNotPressed, buttonPressedDeactivated, buttonNotPressedDeactivated;
     public int buttonWidth, buttonHeight;
 
-    public AtlasRegion editTextFocused, editTextNonFocused;
+    public AtlasRegion editTextRightFocused, editTextCenterFocused, editTextLeftFocused;
+    public AtlasRegion editTextRightNonFocused, editTextCenterNonFocused, editTextLeftNonFocused;
     public int editTextWidth, editTextHeight;
 
     public AtlasRegion cursor;
@@ -40,12 +41,6 @@ public class ImageHub extends BaseHub {
         buttonWidth = buttonNotPressed.originalWidth;
         buttonHeight = buttonNotPressed.originalHeight;
 
-        editTextFocused = atlasWidgets.findRegion("edit_text_focused");
-        editTextNonFocused = atlasWidgets.findRegion("edit_text_non_focused");
-
-        editTextWidth = editTextNonFocused.originalWidth;
-        editTextHeight = editTextNonFocused.originalHeight;
-
         cursor = atlasWidgets.findRegion("cursor");
 
         checkBoxFocused = atlasWidgets.findRegion("check_box_focused");
@@ -62,5 +57,16 @@ public class ImageHub extends BaseHub {
 
         on = atlasWidgets.findRegion("on_img");
         off = atlasWidgets.findRegion("off_img");
+
+        editTextLeftFocused = atlasWidgets.findRegion("edit_text_focused", 0);
+        editTextCenterFocused = atlasWidgets.findRegion("edit_text_focused", 1);
+        editTextRightFocused = atlasWidgets.findRegion("edit_text_focused", 2);
+
+        editTextLeftNonFocused = atlasWidgets.findRegion("edit_text_non_focused", 0);
+        editTextCenterNonFocused = atlasWidgets.findRegion("edit_text_non_focused", 1);
+        editTextRightNonFocused = atlasWidgets.findRegion("edit_text_non_focused", 2);
+
+        editTextWidth = editTextCenterFocused.originalWidth;
+        editTextHeight = editTextCenterFocused.originalHeight;
     }
 }

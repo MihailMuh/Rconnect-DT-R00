@@ -70,14 +70,12 @@ public abstract class Button extends Label {
         }
     }
 
-    public void setBottomPod(float pod) {
-        this.pod = pod;
+    public void changeActivated() {
+        activate(deactivated);
     }
 
-    private void setBounds(float x, float y) {
-        sprite.setBounds(x, y, getWidth(), getHeight());
-        setY(y);
-        setX(x);
+    public void setBottomPod(float pod) {
+        this.pod = pod;
     }
 
     @Override
@@ -91,6 +89,16 @@ public abstract class Button extends Label {
         if (sprite != null) {
             sprite.setSize(getWidth(), getHeight());
         }
+    }
+
+    @Override
+    public void setColor(float r, float g, float b, float a) {
+        super.setColor(r, g, b, a);
+        sprite.setColor(r, g, b, a);
+    }
+
+    public String getString() {
+        return getText().toString();
     }
 
     @Override
@@ -113,10 +121,5 @@ public abstract class Button extends Label {
             super.draw(batch, parentAlpha); // рисуем текст
         }
         setY(getY() + pod);
-    }
-
-    public void render(Batch batch, int x, int y) {
-        setBounds(x, y);
-        draw(batch, 1);
     }
 }

@@ -10,17 +10,33 @@ import com.badlogic.gdx.Net.HttpResponse;
 import com.badlogic.gdx.net.HttpRequestBuilder;
 import com.mihalis.dtr00.utils.AsyncRequestHandler;
 
+import java.util.HashMap;
+
 public final class Networking {
     private static String IP_ADDRESS;
 
-    private static void baseResponse(String url, String tag, AsyncRequestHandler asyncRequestHandler) {
+    private static HttpRequest getRequest(String url) {
         HttpRequest request = new HttpRequestBuilder()
                 .newRequest()
                 .method(GET)
                 .url(url)
                 .build();
         request.setTimeOut(5000);
-        Gdx.net.sendHttpRequest(request, new Net.HttpResponseListener() {
+
+        return request;
+    }
+
+    private static void responseWithRunnable(String url, Runnable runnable) {
+        responseWithAsyncHandler(url, "action", new AsyncRequestHandler(1) {
+            @Override
+            public void action(HashMap<String, String> responses) {
+                runnable.run();
+            }
+        });
+    }
+
+    private static void responseWithAsyncHandler(String url, String tag, AsyncRequestHandler asyncRequestHandler) {
+        Gdx.net.sendHttpRequest(getRequest(url), new Net.HttpResponseListener() {
             @Override
             public void handleHttpResponse(HttpResponse httpResponse) {
                 asyncRequestHandler.handleResponse(tag, httpResponse.getResultAsString());
@@ -42,12 +58,28 @@ public final class Networking {
     }
 
     public static void login(String login, String password, AsyncRequestHandler asyncRequestHandler) {
-        baseResponse("http://" + IP_ADDRESS + "/login.cgi?user=" + login + "&passwd=" + password + "&",
+        responseWithAsyncHandler("http://" + IP_ADDRESS + "/login.cgi?user=" + login + "&passwd=" + password + "&",
                 password, asyncRequestHandler);
     }
 
     public static void getRelayStatus(AsyncRequestHandler asyncRequestHandler) {
-        baseResponse("http://" + IP_ADDRESS + "/relay_cgi_load.cgi?", "relayStatus", asyncRequestHandler);
+        responseWithAsyncHandler("http://" + IP_ADDRESS + "/relay_cgi_load.cgi?", "relayStatus", asyncRequestHandler);
+    }
+
+    private static void postToDevice(String primaryUrl, Runnable runnable) {
+        responseWithRunnable("http://" + IP_ADDRESS + "/relay_cgi.cgi?" + primaryUrl + "&pwd=0&", runnable);
+    }
+
+    public static void onRelay(int relayIndex, Runnable runnable) {
+        postToDevice("type=0&relay=" + relayIndex + "&on=1&time=0", runnable);
+    }
+
+    public static void offRelay(int relayIndex, Runnable runnable) {
+        postToDevice("type=0&relay=" + relayIndex + "&on=0&time=0", runnable);
+    }
+
+    public static void delayRelay(int relayIndex, int seconds, Runnable runnable) {
+        postToDevice("type=2&relay=" + relayIndex + "&on=1&time=" + seconds, runnable);
     }
 
     public static String getIpAddress() {

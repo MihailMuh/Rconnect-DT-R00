@@ -18,23 +18,21 @@ import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.ui.CheckBox;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
-import com.badlogic.gdx.scenes.scene2d.ui.TextField;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.mihalis.dtr00.systemd.MainAppManager;
 import com.mihalis.dtr00.systemd.service.Networking;
 import com.mihalis.dtr00.systemd.service.Toast;
 import com.mihalis.dtr00.utils.Scene;
-import com.mihalis.dtr00.widgets.AlertDialog;
 import com.mihalis.dtr00.widgets.Button;
+import com.mihalis.dtr00.widgets.EditText;
 
 public class RegisterScene extends Scene {
-    private TextField editIP, editLogin, editPassword;
+    private EditText editIP, editLogin, editPassword;
     private CheckBox rememberMeBox;
     private Button saveButton;
 
     private final float maxYForWidget = SCREEN_HEIGHT - 110;
     private float lastTapY;
-    private boolean dialogTime = false;
 
     public RegisterScene(MainAppManager mainAppManager) {
         super(mainAppManager);
@@ -57,13 +55,6 @@ public class RegisterScene extends Scene {
         setStageListener();
     }
 
-    private void runOnSocketTimeoutExceptionDialog() {
-        AlertDialog dialog = new AlertDialog(getLocales().socketTimeout, getStyles().dialogStyle);
-        dialog.text(getLocales().boostInternet, 0.6f);
-        dialog.button("OK", null, getStyles().textButtonStyle);
-        dialog.show(stage);
-    }
-
     private void placeButtonSave() {
         saveButton = new Button(getLocales().apply) {
             @Override
@@ -82,8 +73,7 @@ public class RegisterScene extends Scene {
                         mainAppManager.finishScene();
                     }
                 };
-                registration.login(editLogin.getText(), editPassword.getText(),
-                        rememberMeBox.isChecked(), RegisterScene.this::runOnSocketTimeoutExceptionDialog);
+                registration.login(editLogin.getText(), editPassword.getText(), rememberMeBox.isChecked());
             }
         };
         saveButton.setSize(getImages().buttonWidth * 1.6f, getImages().buttonHeight * 1.4f);
@@ -112,11 +102,9 @@ public class RegisterScene extends Scene {
     }
 
     private void placeEditPassword() {
-        editPassword = new TextField(null, getStyles().textFieldStyle);
-        editPassword.setSize(getImages().editTextWidth, getImages().editTextHeight);
-        editPassword.setPosition(HALF_SCREEN_WIDTH, SCREEN_HEIGHT - 1300, center);
-        editPassword.setAlignment(center);
+        editPassword = new EditText(getStyles().editTextStyle);
         editPassword.setMessageText(getLocales().password);
+        editPassword.setPosition(HALF_SCREEN_WIDTH, SCREEN_HEIGHT - 1300, center);
         editPassword.setPasswordMode(true);
         editPassword.setPasswordCharacter('*');
 
@@ -133,11 +121,9 @@ public class RegisterScene extends Scene {
     }
 
     private void placeEditLogin() {
-        editLogin = new TextField(null, getStyles().textFieldStyle);
-        editLogin.setSize(getImages().editTextWidth, getImages().editTextHeight);
-        editLogin.setPosition(HALF_SCREEN_WIDTH, SCREEN_HEIGHT - 940, center);
-        editLogin.setAlignment(center);
+        editLogin = new EditText(getStyles().editTextStyle);
         editLogin.setMessageText(getLocales().login);
+        editLogin.setPosition(HALF_SCREEN_WIDTH, SCREEN_HEIGHT - 940, center);
 
         stage.addActor(editLogin);
     }
@@ -162,11 +148,9 @@ public class RegisterScene extends Scene {
     }
 
     private void placeEditIp() {
-        editIP = new TextField(null, getStyles().textFieldStyle);
-        editIP.setSize(getImages().editTextWidth, getImages().editTextHeight);
-        editIP.setPosition(HALF_SCREEN_WIDTH, SCREEN_HEIGHT - 580, center);
-        editIP.setAlignment(center);
+        editIP = new EditText(getStyles().editTextStyle);
         editIP.setMessageText(getLocales().ipAddress);
+        editIP.setPosition(HALF_SCREEN_WIDTH, SCREEN_HEIGHT - 580, center);
 
         stage.addActor(editIP);
     }
@@ -216,7 +200,7 @@ public class RegisterScene extends Scene {
                 float firstWidgetY = stage.getActors().get(0).getY(center);
                 float lastWidgetY = stage.getActors().peek().getY(center);
 
-                if (firstWidgetY + deltaY < SCREEN_HEIGHT - 110 || lastWidgetY + deltaY > HALF_SCREEN_HEIGHT) {
+                if (firstWidgetY + deltaY < maxYForWidget || lastWidgetY + deltaY > HALF_SCREEN_HEIGHT) {
                     return;
                 }
 
@@ -234,12 +218,5 @@ public class RegisterScene extends Scene {
                 return true;
             }
         });
-    }
-
-    @Override
-    public void render() {
-        super.render();
-
-
     }
 }

@@ -23,21 +23,10 @@ import com.badlogic.gdx.scenes.scene2d.actions.RunnableAction;
 import com.badlogic.gdx.scenes.scene2d.ui.Button;
 import com.badlogic.gdx.scenes.scene2d.ui.Dialog;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
-import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
-import com.mihalis.dtr00.utils.Intersector;
+import com.mihalis.dtr00.hub.Resources;
 
 public class AlertDialog extends Dialog {
-    public AlertDialog(String title, Skin skin) {
-        super(title, skin);
-        init();
-    }
-
-    public AlertDialog(String title, Skin skin, String windowStyleName) {
-        super(title, skin, windowStyleName);
-        init();
-    }
-
     public AlertDialog(String title, WindowStyle windowStyle) {
         super(title, windowStyle);
         init();
@@ -78,18 +67,6 @@ public class AlertDialog extends Dialog {
         return super.button(button, object);
     }
 
-    public void hideAfterOutsideClick(Stage stage) {
-        stage.addListener(new ClickListener() {
-            @Override
-            public void clicked(InputEvent event, float x, float y) {
-                if (!Intersector.underFinger(AlertDialog.this, x, y)) {
-                    killDialog(stage);
-                    stage.removeListener(this);
-                }
-            }
-        });
-    }
-
     @Override
     public Dialog show(Stage stage) {
         Gdx.app.postRunnable(() -> {
@@ -99,14 +76,15 @@ public class AlertDialog extends Dialog {
         return this;
     }
 
-    private RunnableAction getDeleteAction(Stage stage) {
-        RunnableAction runnableAction = new RunnableAction();
-        runnableAction.setRunnable(() -> stage.getActors().removeValue(AlertDialog.this, true));
-        return runnableAction;
+    @Override
+    public void hide() {
+        hide(sequence(fadeOut(0.2f, Interpolation.fade), getDeleteAction()));
     }
 
-    public void killDialog(Stage stage) {
-        hide(sequence(fadeOut(0.2f, Interpolation.fade), getDeleteAction(stage)));
+    private RunnableAction getDeleteAction() {
+        RunnableAction runnableAction = new RunnableAction();
+        runnableAction.setRunnable(() -> Resources.getStage().getActors().removeValue(AlertDialog.this, true));
+        return runnableAction;
     }
 
     // Переопределяю метод, чтобы текстура на заднем фоне обходила ограничение FitViewport (черные/белые полосы по краям)

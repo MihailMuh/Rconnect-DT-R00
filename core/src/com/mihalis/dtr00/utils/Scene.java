@@ -7,11 +7,14 @@ import static com.mihalis.dtr00.systemd.service.Watch.delta;
 import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.mihalis.dtr00.hub.Resources;
 import com.mihalis.dtr00.systemd.MainAppManager;
 
 public class Scene implements ApplicationListener {
     protected final MainAppManager mainAppManager;
     public final Stage stage;
+
+    public volatile boolean onPause = false;
 
     public Scene(MainAppManager mainAppManager) {
         this.mainAppManager = mainAppManager;
@@ -21,6 +24,7 @@ public class Scene implements ApplicationListener {
 
     @Override
     public void create() {
+        Resources.setStage(stage);
     }
 
     @Override
@@ -30,12 +34,15 @@ public class Scene implements ApplicationListener {
 
     @Override
     public void pause() {
-
+        onPause = true;
     }
 
     @Override
     public void resume() {
+        onPause = false;
+
         Gdx.input.setInputProcessor(stage);
+        Resources.setStage(stage);
     }
 
     @Override

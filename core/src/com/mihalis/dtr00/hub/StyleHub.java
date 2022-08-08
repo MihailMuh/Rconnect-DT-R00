@@ -14,9 +14,10 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextField.TextFieldStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.Window.WindowStyle;
 import com.badlogic.gdx.scenes.scene2d.utils.SpriteDrawable;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
+import com.mihalis.dtr00.utils.EditTextDrawable;
 
 public class StyleHub extends BaseHub {
-    public TextFieldStyle textFieldStyle = new TextFieldStyle();
+    public TextFieldStyle editTextStyle = new TextFieldStyle();
     public LabelStyle labelStyle = new LabelStyle();
     public CheckBoxStyle checkBoxStyle = new CheckBoxStyle();
     public LabelStyle buttonStyle = new LabelStyle();
@@ -30,15 +31,15 @@ public class StyleHub extends BaseHub {
 
     @Override
     public void boot() {
-        textFieldStyle.font = getFonts().timesNewRoman;
-        textFieldStyle.fontColor = Color.BLACK;
-        textFieldStyle.disabledFontColor = Color.valueOf("505050");
-        textFieldStyle.background = new TextureRegionDrawable(getImages().editTextNonFocused);
-        textFieldStyle.focusedBackground = new TextureRegionDrawable(getImages().editTextFocused);
-        textFieldStyle.disabledBackground = new TextureRegionDrawable(getImages().editTextNonFocused);
-        textFieldStyle.cursor = new TextureRegionDrawable(getImages().cursor);
-        textFieldStyle.messageFont = getFonts().timesNewRomanHint;
-        textFieldStyle.messageFontColor = Color.GRAY;
+        editTextStyle.font = getFonts().timesNewRoman;
+        editTextStyle.fontColor = Color.BLACK;
+        editTextStyle.disabledFontColor = Color.valueOf("505050");
+        editTextStyle.background = new EditTextDrawable(false);
+        editTextStyle.focusedBackground = new EditTextDrawable(true);
+        editTextStyle.disabledBackground = new EditTextDrawable(false);
+        editTextStyle.cursor = new TextureRegionDrawable(getImages().cursor);
+        editTextStyle.messageFont = getFonts().timesNewRomanHint;
+        editTextStyle.messageFontColor = Color.GRAY;
 
         labelStyle.font = getFonts().timesNewRoman;
         labelStyle.fontColor = Color.BLACK;

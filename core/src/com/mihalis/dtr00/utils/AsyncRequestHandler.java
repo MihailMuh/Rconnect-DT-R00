@@ -37,7 +37,7 @@ public abstract class AsyncRequestHandler {
     public abstract void action(HashMap<String, String> responses);
 
     public void onSocketTimeoutException() {
-
+        Toast.runOnSocketTimeoutExceptionDialog();
     }
 
     private void errorAction() {

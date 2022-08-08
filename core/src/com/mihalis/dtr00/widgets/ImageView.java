@@ -33,6 +33,12 @@ public class ImageView extends Actor {
     }
 
     @Override
+    public void setColor(float r, float g, float b, float a) {
+        super.setColor(r, g, b, a);
+        sprite.setColor(r, g, b, a);
+    }
+
+    @Override
     public void draw(Batch batch, float parentAlpha) {
         sprite.draw(batch);
     }

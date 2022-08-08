@@ -1,6 +1,7 @@
 package com.mihalis.dtr00.hub;
 
-import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.graphics.Camera;
+import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.mihalis.dtr00.utils.SpriteBatchSuper;
 
@@ -10,9 +11,10 @@ public class Resources {
     private static LocaleHub localeHub;
     private static StyleHub styleHub;
 
-    private static OrthographicCamera camera;
+    private static Camera camera;
     private static Viewport viewport;
     private static SpriteBatchSuper spriteBatch;
+    private static Stage stage;
 
     public static void setProviders(ImageHub image, FontHub font, LocaleHub locales, StyleHub styles) {
         imageHub = image;
@@ -21,8 +23,7 @@ public class Resources {
         styleHub = styles;
     }
 
-    public static void setFrontendUtils(Viewport viewport, SpriteBatchSuper spriteBatch,
-                                        OrthographicCamera camera) {
+    public static void setFrontendUtils(Viewport viewport, SpriteBatchSuper spriteBatch, Camera camera) {
         Resources.viewport = viewport;
         Resources.spriteBatch = spriteBatch;
         Resources.camera = camera;
@@ -52,7 +53,15 @@ public class Resources {
         return styleHub;
     }
 
-    public static OrthographicCamera getCamera() {
+    public static Camera getCamera() {
         return camera;
+    }
+
+    public static Stage getStage() {
+        return stage;
+    }
+
+    public static void setStage(Stage stage) {
+        Resources.stage = stage;
     }
 }

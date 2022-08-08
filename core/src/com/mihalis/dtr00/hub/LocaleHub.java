@@ -29,6 +29,12 @@ public class LocaleHub extends BaseHub {
     public String on, off, pulse;
     public String changeLayout;
     public String settings;
+    public String enabled, disabled;
+    public String enabledAt, seconds;
+    public String save, cancel;
+    public String currentIP;
+    public String delay;
+    public String filledAllFields;
 
     public LocaleHub(AssetManagerSuper assetManager) {
         super(assetManager);
@@ -71,6 +77,15 @@ public class LocaleHub extends BaseHub {
         pulse = locale.get("pulse");
         changeLayout = locale.get("changeLayout");
         settings = locale.get("settings");
+        enabled = locale.get("enabled");
+        disabled = locale.get("disabled");
+        enabledAt = locale.get("enabledAt");
+        seconds = locale.get("seconds");
+        save = locale.get("save");
+        cancel = locale.get("cancel");
+        currentIP = locale.get("currentIP");
+        delay = locale.get("delay");
+        filledAllFields = locale.get("filledAllFields");
 
         assetManager.unload(LOCALES);
     }

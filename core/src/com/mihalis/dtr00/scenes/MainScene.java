@@ -4,6 +4,8 @@ import static com.badlogic.gdx.Input.Keys.BACK;
 import static com.badlogic.gdx.utils.Align.center;
 import static com.badlogic.gdx.utils.Align.left;
 import static com.badlogic.gdx.utils.Align.right;
+import static com.mihalis.dtr00.constants.Constant.WIDGETS_PAD;
+import static com.mihalis.dtr00.constants.Constant.WIDGETS_START_Y;
 import static com.mihalis.dtr00.hub.Resources.getImages;
 import static com.mihalis.dtr00.hub.Resources.getLocales;
 import static com.mihalis.dtr00.hub.Resources.getStyles;
@@ -11,32 +13,31 @@ import static com.mihalis.dtr00.systemd.service.Windows.HALF_SCREEN_WIDTH;
 import static com.mihalis.dtr00.systemd.service.Windows.SCREEN_HEIGHT;
 import static com.mihalis.dtr00.systemd.service.Windows.SCREEN_WIDTH;
 
-import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Array;
 import com.mihalis.dtr00.systemd.MainAppManager;
+import com.mihalis.dtr00.systemd.service.Networking;
+import com.mihalis.dtr00.utils.AsyncRequestHandler;
 import com.mihalis.dtr00.utils.Scene;
 import com.mihalis.dtr00.utils.UserDevice;
+import com.mihalis.dtr00.utils.WidgetsLine;
 import com.mihalis.dtr00.widgets.Button;
-import com.mihalis.dtr00.widgets.ImageView;
 
 import java.util.Arrays;
+import java.util.HashMap;
 
 public class MainScene extends Scene {
-    private static final int WIDGETS_START_X = 50;
-    private static final int WIDGETS_PAD = 40;
-
-    private final UserDevice userDevice;
-    private final Array<Array<Actor>> widgetMatrix;
+    protected final Array<WidgetsLine> widgetMatrix;
+    protected final UserDevice userDevice;
 
     public MainScene(MainAppManager mainAppManager, UserDevice userDevice) {
         super(mainAppManager);
 
         this.userDevice = userDevice;
-        widgetMatrix = new Array<>(true, userDevice.countOfRelayChannels, Array.class);
+        widgetMatrix = new Array<>(true, userDevice.countOfRelayChannels, WidgetsLine.class);
     }
 
     @Override
@@ -44,21 +45,20 @@ public class MainScene extends Scene {
         super.create();
 
         for (int i = 0; i < widgetMatrix.items.length; i++) {
-            Array<Actor> widgetLine = new Array<>(true, 4, Actor.class);
-            widgetLine.add(getRelayNameText(userDevice.userSettings.relayNames[i]));
-            widgetLine.add(getButton(getLocales().on, () -> {
-            }));
-            widgetLine.add(getImage());
-            widgetLine.add(getButton(getLocales().pulse, () -> {
-            }));
-
-            widgetMatrix.add(widgetLine);
+            widgetMatrix.add(new WidgetsLine(userDevice.userSettings, i, this::updateIndicatorsAndButtons));
         }
 
         placeDeviceNameView();
         placeButtonChangeVisibility();
         placeButtonSettings();
         setStageListener();
+    }
+
+    @Override
+    public void resume() {
+        super.resume();
+
+        updateIndicatorsAndButtons();
     }
 
     private void placeDeviceNameView() {
@@ -70,10 +70,11 @@ public class MainScene extends Scene {
         stage.addActor(deviceName);
     }
 
-    private void placeButtonChangeVisibility() {
+    protected void placeButtonChangeVisibility() {
         Button buttonChangeVisibility = new Button(getLocales().changeLayout) {
             @Override
             public void onClick() {
+                mainAppManager.replaceCurrentScene(new ChangeLayoutScene(mainAppManager, userDevice));
             }
         };
         buttonChangeVisibility.setSize(getImages().buttonWidth * 1.75f, getImages().buttonHeight * 1.2f);
@@ -85,10 +86,11 @@ public class MainScene extends Scene {
         stage.addActor(buttonChangeVisibility);
     }
 
-    private void placeButtonSettings() {
+    protected void placeButtonSettings() {
         Button buttonSettings = new Button(getLocales().settings) {
             @Override
             public void onClick() {
+                mainAppManager.replaceCurrentScene(new SettingsScene(mainAppManager, userDevice));
             }
         };
         buttonSettings.setSize(getImages().buttonWidth * 1.4f, getImages().buttonHeight * 1.2f);
@@ -100,60 +102,45 @@ public class MainScene extends Scene {
         stage.addActor(buttonSettings);
     }
 
-    private Label getRelayNameText(String name) {
-        Label relayName = new Label(name, getStyles().hintStyle);
-        relayName.setColor(Color.BLACK);
-        relayName.setAlignment(center);
-        relayName.setFontScale(1.3f);
-        stage.addActor(relayName);
+    protected void updateIndicatorsAndButtons() {
+        if (onPause) return;
 
-        return relayName;
-    }
-
-    private ImageView getImage() {
-        ImageView image = new ImageView();
-        stage.addActor(image);
-
-        return image;
-    }
-
-    private Button getButton(String text, Runnable runnable) {
-        Button button = new Button(text) {
+        Networking.getRelayStatus(new AsyncRequestHandler(1) {
             @Override
-            public void onClick() {
-                runnable.run();
-            }
-        };
-        stage.addActor(button);
+            public void action(HashMap<String, String> responses) {
+                // такой ответ &0&8&1&1&1&1&1&1&1&1&
+                final String relayStatus = responses.get("relayStatus").replace("&", "");
+                int startIndex = relayStatus.indexOf(userDevice.countOfRelayChannels + "") + 1;
+                int index = 0;
 
-        return button;
+                for (int i = startIndex; i < relayStatus.length(); i++) {
+                    boolean relayEnabled = relayStatus.charAt(i) == '1';
+                    if (relayEnabled) {
+                        widgetMatrix.get(index).getOnOffButton().setText(getLocales().off);
+                    } else {
+                        widgetMatrix.get(index).getOnOffButton().setText(getLocales().on);
+                    }
+
+                    widgetMatrix.get(index++).getImageIndicator().setEnabled(relayStatus.charAt(i) == '1');
+                }
+            }
+        });
     }
 
     @Override
     public void update() {
         super.update();
 
-        float y = SCREEN_HEIGHT - 450;
-        for (Array<Actor> lineWidgets : widgetMatrix) {
-            if (Arrays.stream(lineWidgets.items).noneMatch(Actor::isVisible)) continue;
+        float y = WIDGETS_START_Y;
+        for (WidgetsLine widgetsLine : widgetMatrix) {
+            if (Arrays.stream(widgetsLine.items).noneMatch(Actor::isVisible)) continue;
 
-            Actor relayName = lineWidgets.items[0];
-            relayName.setPosition(WIDGETS_START_X, y + 35);
-
-            Actor buttonOnOff = lineWidgets.items[1];
-            buttonOnOff.setPosition(relayName.getX(right) + WIDGETS_PAD + 35, y);
-
-            Actor image = lineWidgets.items[2];
-            image.setPosition(buttonOnOff.getX(right) + WIDGETS_PAD, y);
-
-            Actor buttonPulse = lineWidgets.items[3];
-            buttonPulse.setPosition(image.getX(right) + WIDGETS_PAD, y);
-
-            y = image.getY() - image.getWidth() - WIDGETS_PAD - 20;
+            widgetsLine.updatePositions(y);
+            y -= 200;
         }
     }
 
-    private void setStageListener() {
+    protected void setStageListener() {
         stage.addListener(new ClickListener() {
             @Override
             public boolean keyDown(InputEvent event, int keycode) {

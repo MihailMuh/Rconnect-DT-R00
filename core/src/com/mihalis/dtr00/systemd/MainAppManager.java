@@ -24,6 +24,22 @@ public class MainAppManager {
         });
     }
 
+    public void replaceCurrentScene(Scene newScene) {
+        Gdx.app.postRunnable(() -> {
+            Gdx.input.setOnscreenKeyboardVisible(false);
+
+            newScene.create();
+
+            Scene lastScene = scenesStack.pop();
+
+            scenesStack.push(newScene);
+            newScene.resume();
+
+            lastScene.pause();
+            lastScene.dispose();
+        });
+    }
+
     public void finishAllScenes() {
         scenesStack.clear();
     }
