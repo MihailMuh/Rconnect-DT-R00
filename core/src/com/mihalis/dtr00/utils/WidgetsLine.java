@@ -80,7 +80,6 @@ public class WidgetsLine extends Array<Actor> {
                 });
             }
         };
-        pulseButton.setFontScale(0.9f, 1);
         pulseButton.setWidth(getImages().buttonWidth * 0.9f);
 
         add(relayName, onOffButton, imageIndicator, pulseButton);

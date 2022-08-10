@@ -1,5 +1,6 @@
 package com.mihalis.dtr00.scenes;
 
+import static com.badlogic.gdx.Input.Keys.BACK;
 import static com.badlogic.gdx.utils.Align.center;
 import static com.badlogic.gdx.utils.Align.top;
 import static com.mihalis.dtr00.hub.Resources.getImages;
@@ -7,6 +8,7 @@ import static com.mihalis.dtr00.hub.Resources.getLocales;
 import static com.mihalis.dtr00.hub.Resources.getStyles;
 import static com.mihalis.dtr00.systemd.service.Windows.HALF_SCREEN_WIDTH;
 import static com.mihalis.dtr00.systemd.service.Windows.SCREEN_HEIGHT;
+import static com.mihalis.dtr00.systemd.service.Windows.SCREEN_WIDTH;
 import static com.mihalis.dtr00.utils.Intersector.underFinger;
 
 import com.badlogic.gdx.Gdx;
@@ -87,12 +89,11 @@ public class DevicesScene extends Scene {
     }
 
     private void placeEditDeviceName(String currentDeviceName, float y) {
-        float x = getImages().buttonWidth + 40;
+        float x = getImages().buttonWidth + 40 + (SCREEN_WIDTH - (getImages().buttonWidth + 40)) / 2f;
         y -= 13; // кнопка почему-то ниже отрисовывается, отнимаем, чтобы все по одной линии были
 
         EditText editDeviceName = new EditText(currentDeviceName, getStyles().editTextStyle);
-        editDeviceName.setX(x);
-        editDeviceName.setY(y, center);
+        editDeviceName.setPosition(x, y, center);
         editDeviceName.setName("editDevice");
         editDeviceName.setMaxWidth(735); // методом тыка
 
@@ -160,6 +161,14 @@ public class DevicesScene extends Scene {
                 updateDeviceNameInJSONFile();
                 Gdx.input.setOnscreenKeyboardVisible(false);
                 stage.setKeyboardFocus(null);
+            }
+
+            @Override
+            public boolean keyDown(InputEvent event, int keycode) {
+                if (keycode == BACK) {
+                    Gdx.app.exit();
+                }
+                return true;
             }
         });
     }

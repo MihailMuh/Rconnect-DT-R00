@@ -1,6 +1,7 @@
 package com.mihalis.dtr00.systemd.service;
 
 import static com.badlogic.gdx.Net.HttpMethods.GET;
+import static com.badlogic.gdx.Net.HttpMethods.POST;
 import static com.mihalis.dtr00.systemd.service.Service.print;
 
 import com.badlogic.gdx.Gdx;
@@ -88,5 +89,40 @@ public final class Networking {
 
     public static void setIpAddress(String ipAddress) {
         IP_ADDRESS = ipAddress;
+    }
+
+    public static void postErrorReport(String report, Runnable action) {
+        HttpRequest request = new HttpRequestBuilder()
+                .newRequest()
+                .content("{\"report\":\"" + report.replace("\n", "*") + "\"}")
+                .header("Content-Type", "application/json")
+                .method(POST)
+                .url("http://78.29.33.173:49144/email")
+                .build();
+        request.setTimeOut(5000);
+
+        Gdx.net.sendHttpRequest(request, new Net.HttpResponseListener() {
+            @Override
+            public void handleHttpResponse(HttpResponse httpResponse) {
+                action.run();
+            }
+
+            @Override
+            public void failed(Throwable throwable) {
+                print("Networking Error");
+                throwable.printStackTrace();
+
+                new AsyncRequestHandler(1) {
+                    @Override
+                    public void action(HashMap<String, String> responses) {
+                    }
+                }.handleError("sendMail", throwable.getClass().getSimpleName());
+            }
+
+            @Override
+            public void cancelled() {
+
+            }
+        });
     }
 }

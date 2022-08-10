@@ -35,6 +35,9 @@ public class LocaleHub extends BaseHub {
     public String currentIP;
     public String delay;
     public String filledAllFields;
+    public String changingLayout, tapToHide;
+    public String unexpectedError, pleaseReEnter, sendToDev, sendError;
+    public String thankYou;
 
     public LocaleHub(AssetManagerSuper assetManager) {
         super(assetManager);
@@ -86,6 +89,13 @@ public class LocaleHub extends BaseHub {
         currentIP = locale.get("currentIP");
         delay = locale.get("delay");
         filledAllFields = locale.get("filledAllFields");
+        tapToHide = locale.get("tapToHide");
+        changingLayout = locale.get("changingLayout");
+        unexpectedError = locale.get("unexpectedError");
+        pleaseReEnter = locale.get("pleaseReEnter");
+        sendToDev = locale.get("sendToDev");
+        sendError = locale.get("sendError");
+        thankYou = locale.get("thankYou");
 
         assetManager.unload(LOCALES);
     }

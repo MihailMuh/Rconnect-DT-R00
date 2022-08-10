@@ -1,19 +1,14 @@
 package com.mihalis.dtr00.utils;
 
 import com.badlogic.gdx.utils.Array;
-import com.mihalis.dtr00.systemd.service.Processor;
+import com.badlogic.gdx.utils.Disposable;
 
 import java.util.Iterator;
 
-public class ScenesStack implements Iterable<Scene> {
+public class ScenesStack implements Iterable<Scene>, Disposable {
     private final Array<Scene> scenes = new Array<>(true, 10, Scene.class);
-
-    public Scene lastScene;
-    public int size;
-
-    public Scene[] toArray() {
-        return scenes.toArray();
-    }
+    private Scene lastScene;
+    private int size;
 
     public void push(Scene scene) {
         lastScene = scene;
@@ -33,19 +28,6 @@ public class ScenesStack implements Iterable<Scene> {
         return removed;
     }
 
-    public void clear() {
-        lastScene.pause();
-
-        for (Iterator<Scene> iterator = iterator(); iterator.hasNext(); ) {
-            Scene scene = iterator.next();
-            Processor.postTask(scene::dispose);
-            iterator.remove();
-        }
-
-        lastScene = null;
-        size = 0;
-    }
-
     public void pauseScene() {
         if (lastScene != null) lastScene.pause();
     }
@@ -54,8 +36,33 @@ public class ScenesStack implements Iterable<Scene> {
         if (lastScene != null) lastScene.resume();
     }
 
+    public void updateScene() {
+        if (lastScene != null) lastScene.update();
+    }
+
+    public void renderScene() {
+        if (lastScene != null) lastScene.render();
+    }
+
+    public void clear() {
+        scenes.clear();
+        lastScene = null;
+        size = 0;
+    }
+
     @Override
     public Iterator<Scene> iterator() {
         return scenes.iterator();
+    }
+
+    @Override
+    public void dispose() {
+        pauseScene();
+
+        for (Scene scene : this) {
+            scene.dispose();
+        }
+
+        clear();
     }
 }

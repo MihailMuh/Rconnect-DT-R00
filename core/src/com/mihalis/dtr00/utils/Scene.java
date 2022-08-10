@@ -56,6 +56,6 @@ public class Scene implements ApplicationListener {
 
     @Override
     public void dispose() {
-        stage.clear();
+        stage.dispose();
     }
 }

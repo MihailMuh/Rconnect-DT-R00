@@ -25,6 +25,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Dialog;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.mihalis.dtr00.hub.Resources;
+import com.mihalis.dtr00.utils.Intersector;
 
 public class AlertDialog extends Dialog {
     public AlertDialog(String title, WindowStyle windowStyle) {
@@ -79,6 +80,18 @@ public class AlertDialog extends Dialog {
     @Override
     public void hide() {
         hide(sequence(fadeOut(0.2f, Interpolation.fade), getDeleteAction()));
+    }
+
+    public void hideAfterOutsideClick(Stage stage) {
+        stage.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                if (!Intersector.underFinger(AlertDialog.this, x, y)) {
+                    hide();
+                    stage.removeListener(this);
+                }
+            }
+        });
     }
 
     private RunnableAction getDeleteAction() {

@@ -4,6 +4,7 @@ import static android.widget.Toast.LENGTH_SHORT;
 import static com.mihalis.dtr00.systemd.service.Toast.setToastManager;
 
 import android.os.Bundle;
+import android.os.Process;
 import android.widget.Toast;
 
 import com.badlogic.gdx.backends.android.AndroidApplication;
@@ -48,5 +49,11 @@ public class AndroidLauncher extends AndroidApplication implements ToastManager 
                 toast.cancel();
             });
         });
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        Process.killProcess(Process.myPid());
     }
 }

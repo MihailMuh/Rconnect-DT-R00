@@ -8,11 +8,9 @@
 
     <application
         android:allowBackup="true"
-        android:appCategory="game"
         android:configChanges="keyboard|keyboardHidden|navigation|orientation|screenSize|screenLayout"
         android:hardwareAccelerated="true"
-        android:icon="@drawable/ic_launcher"
-        android:isGame="true"
+        android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:screenOrientation="portrait"
         android:theme="@style/GdxTheme"
@@ -26,5 +24,4 @@
             </intent-filter>
         </activity>
     </application>
-
 </manifest>

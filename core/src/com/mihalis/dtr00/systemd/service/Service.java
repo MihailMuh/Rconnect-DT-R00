@@ -10,7 +10,7 @@ public final class Service {
     private static final StringBuilder stringBuilder = new StringBuilder();
 
     private static void print(String s) {
-        app.error("DART", s);
+        app.error("DT-R00", s);
     }
 
     public synchronized static void print(Object... objects) {

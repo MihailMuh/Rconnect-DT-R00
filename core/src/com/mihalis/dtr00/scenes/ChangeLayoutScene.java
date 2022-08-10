@@ -6,8 +6,10 @@ import static com.badlogic.gdx.utils.Align.right;
 import static com.mihalis.dtr00.constants.Constant.WIDGETS_PAD;
 import static com.mihalis.dtr00.hub.Resources.getImages;
 import static com.mihalis.dtr00.hub.Resources.getLocales;
+import static com.mihalis.dtr00.hub.Resources.getStage;
+import static com.mihalis.dtr00.hub.Resources.getStyles;
+import static com.mihalis.dtr00.systemd.service.Service.vibrate;
 import static com.mihalis.dtr00.systemd.service.Windows.HALF_SCREEN_WIDTH;
-import static com.mihalis.dtr00.systemd.service.Windows.SCREEN_WIDTH;
 
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
@@ -17,6 +19,7 @@ import com.mihalis.dtr00.systemd.service.FileManager;
 import com.mihalis.dtr00.systemd.service.Toast;
 import com.mihalis.dtr00.utils.UserDevice;
 import com.mihalis.dtr00.utils.WidgetsLine;
+import com.mihalis.dtr00.widgets.AlertDialog;
 import com.mihalis.dtr00.widgets.Button;
 
 public class ChangeLayoutScene extends MainScene {
@@ -45,6 +48,8 @@ public class ChangeLayoutScene extends MainScene {
                 widget.addListener(new ClickListener() {
                     @Override
                     public void clicked(InputEvent event, float x, float y) {
+                        vibrate(50);
+
                         userDevice.userSettings.disabledMask[finalI][finalJ] = widget.getColor().a != 1;
 
                         changeWidgetVisibility(widget);
@@ -53,6 +58,13 @@ public class ChangeLayoutScene extends MainScene {
             }
             i++;
         }
+        updateIndicatorsAndButtons();
+
+        AlertDialog alertDialog = new AlertDialog(getLocales().changingLayout, getStyles().dialogStyle);
+        alertDialog.text(getLocales().tapToHide, 0.6f);
+        alertDialog.button("OK", null, getStyles().textButtonStyle);
+        alertDialog.hideAfterOutsideClick(stage);
+        alertDialog.show(getStage());
     }
 
     private void changeWidgetVisibility(Actor widget) {
@@ -68,7 +80,7 @@ public class ChangeLayoutScene extends MainScene {
     }
 
     @Override
-    protected void placeButtonChangeVisibility() {
+    protected void placeButtonChangeLayout() {
         Button buttonSaveDisabledMask = new Button(getLocales().save) {
             @Override
             public void onClick() {

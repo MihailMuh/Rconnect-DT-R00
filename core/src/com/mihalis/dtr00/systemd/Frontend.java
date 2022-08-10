@@ -32,7 +32,7 @@ public class Frontend implements Disposable {
     public void render() {
         ScreenUtils.clear(Color.WHITE);
 
-        scenesStack.lastScene.render();
+        scenesStack.renderScene();
     }
 
     @Override

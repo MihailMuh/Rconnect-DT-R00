@@ -40,10 +40,6 @@ public class MainAppManager {
         });
     }
 
-    public void finishAllScenes() {
-        scenesStack.clear();
-    }
-
     public void startScene(Scene scene) {
         Gdx.app.postRunnable(() -> {
             scene.create();

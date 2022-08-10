@@ -129,6 +129,10 @@ public class FontHub extends BaseHub {
     }
 
     public static float getTextHeight(Label label) {
-        return getGlyphLayout(label).height;
+        return getGlyphLayout(label).height * label.getFontScaleY();
+    }
+
+    public static float getTextHeight(String text) {
+        return getTextHeight(new Label(text, getStyles().labelStyle));
     }
 }

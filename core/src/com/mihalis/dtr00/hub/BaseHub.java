@@ -22,8 +22,4 @@ public abstract class BaseHub {
     public void boot() {
 
     }
-
-    public void lazyLoading() {
-
-    }
 }

@@ -49,7 +49,7 @@ public class MainScene extends Scene {
         }
 
         placeDeviceNameView();
-        placeButtonChangeVisibility();
+        placeButtonChangeLayout();
         placeButtonSettings();
         setStageListener();
     }
@@ -70,20 +70,20 @@ public class MainScene extends Scene {
         stage.addActor(deviceName);
     }
 
-    protected void placeButtonChangeVisibility() {
-        Button buttonChangeVisibility = new Button(getLocales().changeLayout) {
+    protected void placeButtonChangeLayout() {
+        Button buttonChangeLayout = new Button(getLocales().changeLayout) {
             @Override
             public void onClick() {
                 mainAppManager.replaceCurrentScene(new ChangeLayoutScene(mainAppManager, userDevice));
             }
         };
-        buttonChangeVisibility.setSize(getImages().buttonWidth * 1.75f, getImages().buttonHeight * 1.2f);
-        buttonChangeVisibility.setX(WIDGETS_PAD, left);
-        buttonChangeVisibility.setY(WIDGETS_PAD * 2);
-        buttonChangeVisibility.setFontScale(1.2f);
-        buttonChangeVisibility.setBottomPod(-5);
+        buttonChangeLayout.setSize(getImages().buttonWidth * 1.75f, getImages().buttonHeight * 1.2f);
+        buttonChangeLayout.setX(WIDGETS_PAD, left);
+        buttonChangeLayout.setY(WIDGETS_PAD * 2);
+        buttonChangeLayout.setFontScale(1.2f);
+        buttonChangeLayout.setBottomPod(-5);
 
-        stage.addActor(buttonChangeVisibility);
+        stage.addActor(buttonChangeLayout);
     }
 
     protected void placeButtonSettings() {
