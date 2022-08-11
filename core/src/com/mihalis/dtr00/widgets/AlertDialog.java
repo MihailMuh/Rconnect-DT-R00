@@ -2,7 +2,6 @@ package com.mihalis.dtr00.widgets;
 
 import static com.badlogic.gdx.scenes.scene2d.actions.Actions.fadeOut;
 import static com.badlogic.gdx.scenes.scene2d.actions.Actions.sequence;
-import static com.badlogic.gdx.utils.Align.bottom;
 import static com.badlogic.gdx.utils.Align.center;
 import static com.badlogic.gdx.utils.Align.top;
 import static com.mihalis.dtr00.hub.Resources.getCamera;
@@ -12,7 +11,6 @@ import static com.mihalis.dtr00.systemd.service.Service.vibrate;
 import static com.mihalis.dtr00.systemd.service.Windows.SCREEN_HEIGHT;
 import static com.mihalis.dtr00.systemd.service.Windows.SCREEN_WIDTH;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.glutils.HdpiUtils;
 import com.badlogic.gdx.math.Interpolation;
@@ -25,6 +23,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Dialog;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.mihalis.dtr00.hub.Resources;
+import com.mihalis.dtr00.systemd.service.Processor;
 import com.mihalis.dtr00.utils.Intersector;
 
 public class AlertDialog extends Dialog {
@@ -37,8 +36,8 @@ public class AlertDialog extends Dialog {
         pad(50);
         padTop(175);
         getTitleLabel().setFontScale(1.2f);
-        getTitleLabel().setAlignment(center, bottom);
-        getButtonTable().padTop(70);
+        getTitleLabel().setAlignment(center);
+        getContentTable().pad(70);
         getButtonTable().padBottom(10);
         setMovable(false);
     }
@@ -70,7 +69,7 @@ public class AlertDialog extends Dialog {
 
     @Override
     public Dialog show(Stage stage) {
-        Gdx.app.postRunnable(() -> {
+        Processor.postToGDX(() -> {
             show(stage, sequence(Actions.alpha(0), Actions.fadeIn(0.2f, Interpolation.fade)));
             setPosition(Math.round((stage.getWidth() - getWidth()) / 2), Math.round((stage.getHeight() - getHeight()) / 2));
         });

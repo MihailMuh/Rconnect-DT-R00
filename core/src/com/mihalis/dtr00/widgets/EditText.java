@@ -2,7 +2,6 @@ package com.mihalis.dtr00.widgets;
 
 import static com.badlogic.gdx.utils.Align.center;
 import static com.mihalis.dtr00.hub.Resources.getImages;
-import static com.mihalis.dtr00.systemd.service.Service.print;
 import static com.mihalis.dtr00.systemd.service.Windows.SCREEN_WIDTH;
 import static java.lang.Math.max;
 import static java.lang.Math.min;
@@ -30,10 +29,7 @@ public class EditText extends TextField {
         setGrowLeft(false);
         setMaxWidth(SCREEN_WIDTH);
         setSize(getTextWidth(), getImages().editTextHeight);
-        setTextFieldListener((textField, character) -> {
-            print(getTextWidth());
-            setWidth(getTextWidth());
-        });
+        setTextFieldListener((textField, character) -> setWidth(getTextWidth()));
     }
 
     private float getTextWidth() {

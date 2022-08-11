@@ -1,6 +1,7 @@
 package com.mihalis.dtr00.systemd;
 
 import com.badlogic.gdx.Gdx;
+import com.mihalis.dtr00.systemd.service.Processor;
 import com.mihalis.dtr00.utils.Scene;
 import com.mihalis.dtr00.utils.ScenesStack;
 
@@ -12,7 +13,7 @@ public class MainAppManager {
     }
 
     public void finishScene() {
-        Gdx.app.postRunnable(() -> {
+        Processor.postToGDX(() -> {
             Gdx.input.setOnscreenKeyboardVisible(false);
 
             Scene lastScene = scenesStack.pop();
@@ -25,7 +26,7 @@ public class MainAppManager {
     }
 
     public void replaceCurrentScene(Scene newScene) {
-        Gdx.app.postRunnable(() -> {
+        Processor.postToGDX(() -> {
             Gdx.input.setOnscreenKeyboardVisible(false);
 
             newScene.create();
@@ -41,7 +42,7 @@ public class MainAppManager {
     }
 
     public void startScene(Scene scene) {
-        Gdx.app.postRunnable(() -> {
+        Processor.postToGDX(() -> {
             scene.create();
 
             scenesStack.pauseScene();

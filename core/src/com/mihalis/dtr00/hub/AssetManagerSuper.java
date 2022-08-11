@@ -9,6 +9,7 @@ import com.badlogic.gdx.assets.loaders.FileHandleResolver;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.utils.Logger;
+import com.mihalis.dtr00.systemd.service.Processor;
 
 public class AssetManagerSuper extends AssetManager {
     public final FileHandleResolver resolver;
@@ -35,7 +36,7 @@ public class AssetManagerSuper extends AssetManager {
     @Override
     public synchronized void unload(String fileName) {
         if (Gdx.app.getType() == Desktop) {
-            Gdx.app.postRunnable(() -> super.unload(fileName));
+            Processor.postToGDX(() -> super.unload(fileName));
         } else {
             super.unload(fileName);
         }

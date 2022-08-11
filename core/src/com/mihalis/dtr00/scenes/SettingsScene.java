@@ -12,9 +12,11 @@ import static com.mihalis.dtr00.hub.Resources.getImages;
 import static com.mihalis.dtr00.hub.Resources.getLocales;
 import static com.mihalis.dtr00.hub.Resources.getStyles;
 import static com.mihalis.dtr00.systemd.service.Networking.getIpAddress;
+import static com.mihalis.dtr00.systemd.service.Watch.delta;
 import static com.mihalis.dtr00.systemd.service.Windows.HALF_SCREEN_HEIGHT;
 import static com.mihalis.dtr00.systemd.service.Windows.HALF_SCREEN_WIDTH;
 import static com.mihalis.dtr00.systemd.service.Windows.SCREEN_HEIGHT;
+import static com.mihalis.dtr00.systemd.service.Windows.SCREEN_WIDTH;
 import static com.mihalis.dtr00.utils.Intersector.underFinger;
 
 import com.badlogic.gdx.Gdx;
@@ -27,6 +29,8 @@ import com.mihalis.dtr00.hub.FontHub;
 import com.mihalis.dtr00.systemd.MainAppManager;
 import com.mihalis.dtr00.systemd.service.FileManager;
 import com.mihalis.dtr00.systemd.service.Networking;
+import com.mihalis.dtr00.systemd.service.Processor;
+import com.mihalis.dtr00.systemd.service.Service;
 import com.mihalis.dtr00.systemd.service.Toast;
 import com.mihalis.dtr00.utils.AsyncRequestHandler;
 import com.mihalis.dtr00.utils.Scene;
@@ -37,13 +41,17 @@ import com.mihalis.dtr00.widgets.EditText;
 import java.util.HashMap;
 
 public class SettingsScene extends Scene {
+    private static boolean logHarvested = false;
+
     private final String oldIP = Networking.getIpAddress();
     private final UserDevice userDevice;
     private final Array<EditText> editRelayNames;
     private final Array<EditText> editRelayDelays;
     private EditText editIP;
 
-    private final float maxYForWidget = SCREEN_HEIGHT - 40;
+    private Button buttonPostLogs, buttonBack;
+
+    private final float maxYForWidget = 2157.5f;
     private float lastTapY;
 
     public SettingsScene(MainAppManager mainAppManager, UserDevice userDevice) {
@@ -73,25 +81,86 @@ public class SettingsScene extends Scene {
         }
 
         placeSaveButton();
-        placeCancelButton();
+        placeFurtherButton();
         setStageListener();
     }
 
-    private void placeCancelButton() {
-        Button buttonCancel = new Button(getLocales().cancel) {
+    private void placePostLogsButton() {
+        buttonPostLogs = new Button(getLocales().postLogs) {
             @Override
             public void onClick() {
-                Networking.setIpAddress(oldIP);
-                back();
+                Networking.postErrorReport(Service.getAllLogs(), () -> {
+                    logHarvested = true;
+                    buttonPostLogs.activate(false);
+                    Toast.makeToast(getLocales().thankYou);
+                });
             }
         };
-        buttonCancel.setSize(getImages().buttonWidth * 1.4f, getImages().buttonHeight * 1.2f);
-        buttonCancel.setX(HALF_SCREEN_WIDTH + WIDGETS_PAD, left);
-        buttonCancel.setY(WIDGETS_PAD * 2);
-        buttonCancel.setFontScale(1.2f);
-        buttonCancel.setBottomPod(-5);
+        buttonPostLogs.setSize(getImages().buttonWidth * 1.7f, getImages().buttonHeight * 1.6f);
+        buttonPostLogs.setPosition(SCREEN_WIDTH + HALF_SCREEN_WIDTH, 500, center);
+        buttonPostLogs.setWrap(true);
+        buttonPostLogs.setBottomPod(-8);
+        buttonPostLogs.activate(!logHarvested);
 
-        stage.addActor(buttonCancel);
+        stage.addActor(buttonPostLogs);
+    }
+
+    private void placeBackButton() {
+        buttonBack = new Button(getLocales().back) {
+            @Override
+            public void onClick() {
+                Processor.postTask(() -> {
+                    for (int i = 0; i < SCREEN_WIDTH / 60; i++) {
+                        Service.sleep((int) (delta * 1000));
+                        Processor.postToGDX(() -> {
+                            for (Actor actor : stage.getActors()) {
+                                actor.setX(actor.getX() + 61);
+                            }
+                        });
+                    }
+
+                    Processor.postToGDX(() -> {
+                        stage.getActors().removeValue(buttonBack, true);
+                        stage.getActors().removeValue(buttonPostLogs, true);
+                        resetWidgetPositions();
+                    });
+                });
+            }
+        };
+        buttonBack.setSize(getImages().buttonWidth * 1.4f, getImages().buttonHeight * 1.2f);
+        buttonBack.setX(SCREEN_WIDTH + HALF_SCREEN_WIDTH, center);
+        buttonBack.setY(WIDGETS_PAD * 3.5f);
+        buttonBack.setFontScale(1.2f);
+
+        stage.addActor(buttonBack);
+    }
+
+    private void placeFurtherButton() {
+        Button buttonFurther = new Button(getLocales().further) {
+            @Override
+            public void onClick() {
+                resetWidgetPositions();
+                placePostLogsButton();
+                placeBackButton();
+
+                Processor.postTask(() -> {
+                    for (int i = 0; i < SCREEN_WIDTH / 60; i++) {
+                        Service.sleep(17);
+                        Processor.postToGDX(() -> {
+                            for (Actor actor : stage.getActors()) {
+                                actor.setX(actor.getX() - 61);
+                            }
+                        });
+                    }
+                });
+            }
+        };
+        buttonFurther.setSize(getImages().buttonWidth * 1.4f, getImages().buttonHeight * 1.2f);
+        buttonFurther.setX(HALF_SCREEN_WIDTH + WIDGETS_PAD, left);
+        buttonFurther.setY(WIDGETS_PAD * 2);
+        buttonFurther.setFontScale(1.2f);
+
+        stage.addActor(buttonFurther);
     }
 
     private void placeSaveButton() {
@@ -210,14 +279,7 @@ public class SettingsScene extends Scene {
                 }
 
                 if (!underFinger(editIP, x, y)) {
-                    Gdx.input.setOnscreenKeyboardVisible(false);
-                    stage.setKeyboardFocus(null);
-
-                    // возвращаем всех на свои позиции
-                    float firstWidgetY = stage.getActors().get(1).getY(center);
-                    for (Actor actor : stage.getActors()) {
-                        actor.setY(actor.getY(center) - (firstWidgetY - maxYForWidget), center);
-                    }
+                    resetWidgetPositions();
                 }
             }
 
@@ -246,5 +308,15 @@ public class SettingsScene extends Scene {
                 SettingsScene.this.lastTapY = y;
             }
         });
+    }
+
+    private void resetWidgetPositions() {
+        Gdx.input.setOnscreenKeyboardVisible(false);
+        stage.setKeyboardFocus(null);
+
+        float firstWidgetY = stage.getActors().get(1).getY(center);
+        for (Actor actor : stage.getActors()) {
+            actor.setY(actor.getY(center) - (firstWidgetY - maxYForWidget), center);
+        }
     }
 }

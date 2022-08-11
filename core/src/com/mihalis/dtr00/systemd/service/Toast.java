@@ -4,9 +4,6 @@ import static com.mihalis.dtr00.hub.Resources.getLocales;
 import static com.mihalis.dtr00.hub.Resources.getStage;
 import static com.mihalis.dtr00.hub.Resources.getStyles;
 
-import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.mihalis.dtr00.utils.Observable;
-import com.mihalis.dtr00.utils.Subscriber;
 import com.mihalis.dtr00.utils.ToastManager;
 import com.mihalis.dtr00.widgets.AlertDialog;
 

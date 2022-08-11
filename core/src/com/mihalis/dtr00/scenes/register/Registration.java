@@ -1,7 +1,9 @@
 package com.mihalis.dtr00.scenes.register;
 
+import static com.mihalis.dtr00.constants.Constant.INVALID_RESPONSE;
 import static com.mihalis.dtr00.hub.Resources.getLocales;
-import static java.lang.Integer.parseInt;
+import static com.mihalis.dtr00.systemd.service.Processor.postTask;
+import static com.mihalis.dtr00.systemd.service.Service.print;
 
 import com.badlogic.gdx.utils.Array;
 import com.mihalis.dtr00.systemd.service.FileManager;
@@ -61,9 +63,15 @@ public abstract class Registration {
         AsyncRequestHandler handler = new AsyncRequestHandler(3) {
             @Override
             public void action(HashMap<String, String> responses) {
-                int responseWithUserPasswd = parseInt(responses.get(password).replace("&", ""));
-                int responseWithRandomPasswd = parseInt(responses.get(randomPassword).replace("&", ""));
+                long responseWithUserPasswd = getLoginStatusFromResponse(responses.get(password));
+                long responseWithRandomPasswd = getLoginStatusFromResponse(responses.get(randomPassword));
 
+                if (responseWithUserPasswd == INVALID_RESPONSE || responseWithRandomPasswd == INVALID_RESPONSE) {
+                    postTask(() -> {
+                        throw new RuntimeException("Invalid response from relay: " +
+                                responses.get(password) + ", " + responses.get(randomPassword));
+                    });
+                }
                 if (responseWithUserPasswd > responseWithRandomPasswd) {
                     UserDevice userDevice = createUserJson(getCountOfRelayChannels(responses.get("relayStatus")), rememberRegistration);
                     FileManager.writeToJsonFile(Networking.getIpAddress(), userDevice);
@@ -77,6 +85,19 @@ public abstract class Registration {
         Networking.login(login, password, handler);
         Networking.login(login, randomPassword, handler);
         Networking.getRelayStatus(handler);
+    }
+
+    private long getLoginStatusFromResponse(String responseString) {
+//        Example: &0&, &302&/menu_page.html&
+        for (String responsePiece : responseString.split("&")) {
+            try {
+                return Integer.parseInt(responsePiece);
+            } catch (Exception exception) {
+                print("Can't parse string in response:", responsePiece);
+            }
+        }
+
+        return INVALID_RESPONSE;
     }
 
     abstract void onIncorrect();

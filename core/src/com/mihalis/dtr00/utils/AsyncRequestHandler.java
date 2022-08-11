@@ -11,6 +11,7 @@ public abstract class AsyncRequestHandler {
 
     private final int numRequestsToWait;
     private volatile int numberRequests = 0;
+    private boolean error = false, timeout = false;
 
     public AsyncRequestHandler(int numRequestsToWait) {
         this.numRequestsToWait = numRequestsToWait;
@@ -29,9 +30,7 @@ public abstract class AsyncRequestHandler {
     public synchronized void handleError(String tag, String errorName) {
         responses.put(tag, errorName);
 
-        if (++numberRequests == numRequestsToWait) {
-            errorAction();
-        }
+        errorAction();
     }
 
     public abstract void action(HashMap<String, String> responses);
@@ -40,14 +39,20 @@ public abstract class AsyncRequestHandler {
         Toast.runOnSocketTimeoutExceptionDialog();
     }
 
-    private void errorAction() {
+    private synchronized void errorAction() {
+        if (timeout) return;
+
         for (String errorName : responses.values()) {
             if (errorName.equals("SocketTimeoutException")) {
+                timeout = true;
                 onSocketTimeoutException();
                 return;
             }
         }
 
-        Toast.makeToast(getLocales().deviceConnectionErr);
+        if (!error) {
+            error = true;
+            Toast.makeToast(getLocales().deviceConnectionErr);
+        }
     }
 }

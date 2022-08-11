@@ -1,6 +1,7 @@
 package com.mihalis.dtr00;
 
 import static android.widget.Toast.LENGTH_SHORT;
+import static com.mihalis.dtr00.systemd.service.Service.setLogger;
 import static com.mihalis.dtr00.systemd.service.Toast.setToastManager;
 
 import android.os.Bundle;
@@ -12,9 +13,16 @@ import com.badlogic.gdx.backends.android.AndroidApplicationConfiguration;
 import com.mihalis.dtr00.systemd.MainApp;
 import com.mihalis.dtr00.systemd.service.Processor;
 import com.mihalis.dtr00.systemd.service.Service;
+import com.mihalis.dtr00.utils.DTR00Exception;
+import com.mihalis.dtr00.utils.LogManager;
 import com.mihalis.dtr00.utils.ToastManager;
 
-public class AndroidLauncher extends AndroidApplication implements ToastManager {
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+
+public class AndroidLauncher extends AndroidApplication implements ToastManager, LogManager {
+    private static final String processId = Integer.toString(android.os.Process.myPid());
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -29,6 +37,7 @@ public class AndroidLauncher extends AndroidApplication implements ToastManager 
         config.useGL30 = true;
 
         setToastManager(this);
+        setLogger(this);
 
         initialize(new MainApp(), config);
     }
@@ -55,5 +64,29 @@ public class AndroidLauncher extends AndroidApplication implements ToastManager 
     protected void onDestroy() {
         super.onDestroy();
         Process.killProcess(Process.myPid());
+    }
+
+    @Override
+    public String getLog() {
+        StringBuilder stringBuilder = new StringBuilder();
+
+        try {
+            String[] cmd = new String[]{"logcat", "-d", "-v", "threadtime"};
+
+            java.lang.Process process = Runtime.getRuntime().exec(cmd);
+
+            BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(process.getInputStream()));
+
+            String line;
+            while ((line = bufferedReader.readLine()) != null) {
+                if (line.contains(processId)) {
+                    stringBuilder.append(line).append("\n");
+                }
+            }
+        } catch (Exception exception) {
+            throw new DTR00Exception(exception.getMessage(), exception, true, true);
+        }
+
+        return stringBuilder.toString();
     }
 }

@@ -29,7 +29,7 @@ import com.mihalis.dtr00.widgets.EditText;
 public class RegisterScene extends Scene {
     private EditText editIP, editLogin, editPassword;
     private CheckBox rememberMeBox;
-    private Button saveButton;
+    private Button loginButton;
 
     private final float maxYForWidget = SCREEN_HEIGHT - 110;
     private float lastTapY;
@@ -56,15 +56,17 @@ public class RegisterScene extends Scene {
     }
 
     private void placeButtonSave() {
-        saveButton = new Button(getLocales().apply) {
+        loginButton = new Button(getLocales().apply) {
             @Override
             public void onClick() {
+                activate(false);
                 Networking.setIpAddress(editIP.getText().replace(" ", ""));
 
                 Registration registration = new Registration() {
                     @Override
                     void onIncorrect() {
                         Toast.makeToast(getLocales().incorrectLoginPasswd);
+                        activate(true);
                     }
 
                     @Override
@@ -76,13 +78,13 @@ public class RegisterScene extends Scene {
                 registration.login(editLogin.getText(), editPassword.getText(), rememberMeBox.isChecked());
             }
         };
-        saveButton.setSize(getImages().buttonWidth * 1.6f, getImages().buttonHeight * 1.4f);
-        saveButton.setPosition(HALF_SCREEN_WIDTH, 200, center);
-        saveButton.setAlignment(center);
-        saveButton.setFontScale(1.3f);
-        saveButton.setBottomPod(-8);
+        loginButton.setSize(getImages().buttonWidth * 1.6f, getImages().buttonHeight * 1.4f);
+        loginButton.setPosition(HALF_SCREEN_WIDTH, 200, center);
+        loginButton.setAlignment(center);
+        loginButton.setFontScale(1.3f);
+        loginButton.setBottomPod(-8);
 
-        stage.addActor(saveButton);
+        stage.addActor(loginButton);
     }
 
     private void placeCheckBoxRemember() {
@@ -171,7 +173,7 @@ public class RegisterScene extends Scene {
                 someoneHasFocus |= underFinger(editLogin, x, y);
                 someoneHasFocus |= underFinger(editPassword, x, y);
                 someoneHasFocus |= underFinger(rememberMeBox, x, y);
-                someoneHasFocus |= underFinger(saveButton, x, y);
+                someoneHasFocus |= underFinger(loginButton, x, y);
 
                 if (!someoneHasFocus) {
                     Gdx.input.setOnscreenKeyboardVisible(false);

@@ -38,6 +38,9 @@ public class LocaleHub extends BaseHub {
     public String changingLayout, tapToHide;
     public String unexpectedError, pleaseReEnter, sendToDev, sendError;
     public String thankYou;
+    public String further, back;
+    public String postLogs;
+    public String poorWifi;
 
     public LocaleHub(AssetManagerSuper assetManager) {
         super(assetManager);
@@ -96,6 +99,10 @@ public class LocaleHub extends BaseHub {
         sendToDev = locale.get("sendToDev");
         sendError = locale.get("sendError");
         thankYou = locale.get("thankYou");
+        further = locale.get("further");
+        back = locale.get("back");
+        postLogs = locale.get("postLogs");
+        poorWifi = locale.get("poorWifi");
 
         assetManager.unload(LOCALES);
     }

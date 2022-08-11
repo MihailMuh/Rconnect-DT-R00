@@ -32,7 +32,7 @@ import java.util.Map.Entry;
 public class DevicesScene extends Scene {
     private Array<EditText> editTexts;
 
-    private int numDevices;
+    private int numberDevices;
 
     public DevicesScene(MainAppManager mainAppManager) {
         super(mainAppManager);
@@ -61,6 +61,7 @@ public class DevicesScene extends Scene {
     private void readAllUserDeviceData() {
         final HashMap<String, UserDevice> allUserDevices = FileManager.getUserDevicesData();
         float widgetsY = SCREEN_HEIGHT - 450;
+        numberDevices = allUserDevices.keySet().size();
 
         for (Entry<String, UserDevice> pair : allUserDevices.entrySet()) {
             placeButtonEnter(widgetsY, pair);
@@ -122,7 +123,7 @@ public class DevicesScene extends Scene {
         Button buttonAddDevice = new Button(getLocales().addDevice) {
             @Override
             public void onClick() {
-                if (++numDevices >= 4) {
+                if (numberDevices >= 4) {
                     activate(false);
                 } else {
                     mainAppManager.startScene(new RegisterScene(mainAppManager));

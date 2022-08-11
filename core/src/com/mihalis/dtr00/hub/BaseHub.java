@@ -2,7 +2,7 @@ package com.mihalis.dtr00.hub;
 
 import static com.mihalis.dtr00.systemd.service.Watch.delta;
 
-import com.badlogic.gdx.Gdx;
+import com.mihalis.dtr00.systemd.service.Processor;
 import com.mihalis.dtr00.systemd.service.Service;
 
 public abstract class BaseHub {
@@ -15,7 +15,7 @@ public abstract class BaseHub {
     public void loadInCycle() {
         while (!assetManager.isFinished()) {
             Service.sleep((int) (delta * 2 * 1000));
-            Gdx.app.postRunnable(assetManager::update);
+            Processor.postToGDX(assetManager::update);
         }
     }
 
