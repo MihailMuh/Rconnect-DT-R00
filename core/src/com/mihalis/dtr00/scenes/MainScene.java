@@ -18,12 +18,14 @@ import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Array;
+import com.mihalis.dtr00.scenes.register.Registration;
 import com.mihalis.dtr00.systemd.MainAppManager;
 import com.mihalis.dtr00.systemd.service.Networking;
+import com.mihalis.dtr00.systemd.service.Processor;
 import com.mihalis.dtr00.utils.AsyncRequestHandler;
 import com.mihalis.dtr00.utils.Scene;
-import com.mihalis.dtr00.utils.UserDevice;
 import com.mihalis.dtr00.utils.WidgetsLine;
+import com.mihalis.dtr00.utils.jsonTypes.UserDevice;
 import com.mihalis.dtr00.widgets.Button;
 
 import java.util.Arrays;
@@ -56,9 +58,28 @@ public class MainScene extends Scene {
 
     @Override
     public void resume() {
-        super.resume();
+        Processor.postTask(() -> {
+            super.resume();
 
-        updateIndicatorsAndButtons();
+            checkRegistration();
+            updateIndicatorsAndButtons();
+        });
+    }
+
+    // если пароль реле изменили через браузер, то в приложении нужно заново зарегестрироваться
+    private void checkRegistration() {
+        Registration registration = new Registration() {
+            @Override
+            public void onIncorrect() {
+                mainAppManager.finishScene();
+                mainAppManager.startScene(new ChangePasswordScene(mainAppManager));
+            }
+
+            @Override
+            public void onCorrect() {
+            }
+        };
+        registration.login(userDevice.login, userDevice.password, userDevice.rememberRegistration, false);
     }
 
     private void placeDeviceNameView() {
@@ -145,7 +166,7 @@ public class MainScene extends Scene {
             @Override
             public boolean keyDown(InputEvent event, int keycode) {
                 if (keycode == BACK) {
-                    mainAppManager.finishScene();
+                    mainAppManager.finishAppIfOneSceneInStack();
                 }
                 return true;
             }

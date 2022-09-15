@@ -1,9 +1,9 @@
 package com.mihalis.dtr00.hub;
 
-import com.badlogic.gdx.graphics.Camera;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.utils.viewport.ExtendViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
-import com.mihalis.dtr00.utils.SpriteBatchSuper;
 
 public class Resources {
     private static ImageHub imageHub;
@@ -11,9 +11,9 @@ public class Resources {
     private static LocaleHub localeHub;
     private static StyleHub styleHub;
 
-    private static Camera camera;
     private static Viewport viewport;
-    private static SpriteBatchSuper spriteBatch;
+    private static ExtendViewport extendViewport;
+    private static SpriteBatch spriteBatch;
     private static Stage stage;
 
     public static void setProviders(ImageHub image, FontHub font, LocaleHub locales, StyleHub styles) {
@@ -23,10 +23,10 @@ public class Resources {
         styleHub = styles;
     }
 
-    public static void setFrontendUtils(Viewport viewport, SpriteBatchSuper spriteBatch, Camera camera) {
+    public static void setFrontendUtils(Viewport viewport, SpriteBatch spriteBatch, ExtendViewport extendViewport) {
         Resources.viewport = viewport;
         Resources.spriteBatch = spriteBatch;
-        Resources.camera = camera;
+        Resources.extendViewport = extendViewport;
     }
 
     public static ImageHub getImages() {
@@ -45,16 +45,12 @@ public class Resources {
         return viewport;
     }
 
-    public static SpriteBatchSuper getSpriteBatch() {
+    public static SpriteBatch getSpriteBatch() {
         return spriteBatch;
     }
 
     public static StyleHub getStyles() {
         return styleHub;
-    }
-
-    public static Camera getCamera() {
-        return camera;
     }
 
     public static Stage getStage() {
@@ -63,5 +59,9 @@ public class Resources {
 
     public static void setStage(Stage stage) {
         Resources.stage = stage;
+    }
+
+    public static ExtendViewport getExtendViewport() {
+        return extendViewport;
     }
 }

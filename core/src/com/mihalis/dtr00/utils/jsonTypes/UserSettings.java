@@ -1,4 +1,4 @@
-package com.mihalis.dtr00.utils;
+package com.mihalis.dtr00.utils.jsonTypes;
 
 public class UserSettings {
     public String[] relayNames;

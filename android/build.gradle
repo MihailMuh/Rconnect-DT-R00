@@ -14,14 +14,16 @@ android {
 
     }
     packagingOptions {
-        exclude 'META-INF/robovm/ios/robovm.xml'
+        resources {
+            excludes += ['META-INF/robovm/ios/robovm.xml']
+        }
     }
     defaultConfig {
         applicationId "com.mihalis.dtr00"
         minSdkVersion 26
         targetSdkVersion 32
-        versionCode 13
-        versionName "2.1"
+        versionCode 14
+        versionName "2.5"
     }
     buildTypes {
         release {

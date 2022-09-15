@@ -18,6 +18,7 @@ import com.mihalis.dtr00.systemd.service.Networking;
 import com.mihalis.dtr00.systemd.service.Processor;
 import com.mihalis.dtr00.systemd.service.Service;
 import com.mihalis.dtr00.systemd.service.Toast;
+import com.mihalis.dtr00.utils.jsonTypes.UserSettings;
 import com.mihalis.dtr00.widgets.Button;
 import com.mihalis.dtr00.widgets.ImageView;
 

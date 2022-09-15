@@ -41,6 +41,10 @@ public class LocaleHub extends BaseHub {
     public String further, back;
     public String postLogs;
     public String poorWifi;
+    public String maybeYouChangePasswd;
+    public String yes, no, areYouSure;
+    public String hideDevicesScene;
+    public String deviceToAutomatic;
 
     public LocaleHub(AssetManagerSuper assetManager) {
         super(assetManager);
@@ -103,6 +107,12 @@ public class LocaleHub extends BaseHub {
         back = locale.get("back");
         postLogs = locale.get("postLogs");
         poorWifi = locale.get("poorWifi");
+        maybeYouChangePasswd = locale.get("maybeYouChangePasswd");
+        yes = locale.get("yes");
+        no = locale.get("no");
+        areYouSure = locale.get("areYouSure");
+        hideDevicesScene = locale.get("hideDevicesScene");
+        deviceToAutomatic = locale.get("deviceToAutomatic");
 
         assetManager.unload(LOCALES);
     }

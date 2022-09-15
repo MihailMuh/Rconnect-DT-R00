@@ -4,15 +4,11 @@ import static com.badlogic.gdx.scenes.scene2d.actions.Actions.fadeOut;
 import static com.badlogic.gdx.scenes.scene2d.actions.Actions.sequence;
 import static com.badlogic.gdx.utils.Align.center;
 import static com.badlogic.gdx.utils.Align.top;
-import static com.mihalis.dtr00.hub.Resources.getCamera;
 import static com.mihalis.dtr00.hub.Resources.getStyles;
 import static com.mihalis.dtr00.hub.Resources.getViewport;
 import static com.mihalis.dtr00.systemd.service.Service.vibrate;
-import static com.mihalis.dtr00.systemd.service.Windows.SCREEN_HEIGHT;
-import static com.mihalis.dtr00.systemd.service.Windows.SCREEN_WIDTH;
 
 import com.badlogic.gdx.graphics.g2d.Batch;
-import com.badlogic.gdx.graphics.glutils.HdpiUtils;
 import com.badlogic.gdx.math.Interpolation;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
@@ -22,6 +18,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Button;
 import com.badlogic.gdx.scenes.scene2d.ui.Dialog;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+import com.badlogic.gdx.utils.viewport.ExtendViewport;
 import com.mihalis.dtr00.hub.Resources;
 import com.mihalis.dtr00.systemd.service.Processor;
 import com.mihalis.dtr00.utils.Intersector;
@@ -99,22 +96,22 @@ public class AlertDialog extends Dialog {
         return runnableAction;
     }
 
-    // Переопределяю метод, чтобы текстура на заднем фоне обходила ограничение FitViewport (черные/белые полосы по краям)
+    // Переопределяю метод, чтобы текстура на заднем фоне обходила ограничение FitViewport (белые полосы по краям)
     @Override
     protected void drawStageBackground(Batch batch, float parentAlpha, float x, float y, float width, float height) {
         batch.end();
 
-        HdpiUtils.glViewport(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT);
-        batch.getProjectionMatrix().idt().setToOrtho2D(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT);
-        batch.getTransformMatrix().idt();
+        ExtendViewport extendViewport = Resources.getExtendViewport();
+        extendViewport.apply();
 
+        batch.setProjectionMatrix(extendViewport.getCamera().combined);
         batch.begin();
         super.drawStageBackground(batch, parentAlpha, x, y, width, height);
         batch.end();
 
-        getViewport().apply(true);
-        batch.setProjectionMatrix(getCamera().combined);
-        batch.setTransformMatrix(getCamera().view);
+        getViewport().apply();
+        batch.setProjectionMatrix(getViewport().getCamera().combined);
+
         batch.begin();
     }
 }

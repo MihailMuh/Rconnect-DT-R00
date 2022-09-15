@@ -5,6 +5,7 @@ import static com.mihalis.dtr00.hub.Resources.getImages;
 import static com.mihalis.dtr00.hub.Resources.getLocales;
 import static com.mihalis.dtr00.hub.Resources.getSpriteBatch;
 import static com.mihalis.dtr00.hub.Resources.getStyles;
+import static com.mihalis.dtr00.systemd.service.FileManager.getJson;
 import static com.mihalis.dtr00.systemd.service.Service.print;
 
 import com.badlogic.gdx.Gdx;
@@ -17,15 +18,17 @@ import com.mihalis.dtr00.hub.Resources;
 import com.mihalis.dtr00.hub.StyleHub;
 import com.mihalis.dtr00.scenes.DevicesScene;
 import com.mihalis.dtr00.scenes.ErrorScene;
+import com.mihalis.dtr00.scenes.MainScene;
+import com.mihalis.dtr00.systemd.service.Networking;
 import com.mihalis.dtr00.systemd.service.Processor;
 import com.mihalis.dtr00.systemd.service.Watch;
 import com.mihalis.dtr00.systemd.service.Windows;
 import com.mihalis.dtr00.utils.BaseApp;
-import com.mihalis.dtr00.utils.ScenesStack;
+import com.mihalis.dtr00.utils.ScenesArray;
 
 public class MainApp extends BaseApp {
-    private final ScenesStack scenesStack = new ScenesStack();
-    private final MainAppManager mainAppManager = new MainAppManager(scenesStack);
+    private final ScenesArray scenesArray = new ScenesArray();
+    private final MainAppManager mainAppManager = new MainAppManager(scenesArray);
     private Frontend frontend;
     private ErrorScene errorScene;
 
@@ -35,7 +38,7 @@ public class MainApp extends BaseApp {
     public void create() {
         super.create();
         assetManager = new AssetManagerSuper();
-        frontend = new Frontend(scenesStack);
+        frontend = new Frontend(scenesArray);
 
         Resources.setProviders(new ImageHub(assetManager), new FontHub(assetManager),
                 new LocaleHub(assetManager), new StyleHub(assetManager));
@@ -46,7 +49,12 @@ public class MainApp extends BaseApp {
         getFonts().boot();
         getStyles().boot();
 
-        mainAppManager.startScene(new DevicesScene(mainAppManager));
+        if (getJson().relayIPToAutoEnter != null) {
+            Networking.setIpAddress(getJson().relayIPToAutoEnter);
+            mainAppManager.startScene(new MainScene(mainAppManager, getJson().allUserDevices.get(getJson().relayIPToAutoEnter)));
+        } else {
+            mainAppManager.startScene(new DevicesScene(mainAppManager));
+        }
 
         createErrorScene();
     }
@@ -65,7 +73,7 @@ public class MainApp extends BaseApp {
         try {
             Watch.update();
 
-            scenesStack.updateScene();
+            scenesArray.updateScene();
 
             frontend.render();
         } catch (IllegalStateException exception) {
@@ -88,19 +96,19 @@ public class MainApp extends BaseApp {
         try {
             mainAppManager.startScene(errorScene);
         } catch (Exception exception) {
-            errorScene.startWithoutMainAppManager(scenesStack);
+            errorScene.startWithoutMainAppManager(scenesArray);
         }
     }
 
     @Override
     public void resume() {
         Texture.setAssetManager(assetManager);
-        scenesStack.resumeScene();
+        scenesArray.resumeScene();
     }
 
     @Override
     public void pause() {
-        scenesStack.pauseScene();
+        scenesArray.pauseScene();
     }
 
     @Override
@@ -111,7 +119,7 @@ public class MainApp extends BaseApp {
 
     @Override
     public void dispose() {
-        scenesStack.dispose();
+        scenesArray.dispose();
         frontend.dispose();
         assetManager.dispose();
         Processor.dispose();

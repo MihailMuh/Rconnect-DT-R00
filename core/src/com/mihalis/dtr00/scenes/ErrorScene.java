@@ -23,7 +23,7 @@ import com.mihalis.dtr00.systemd.MainAppManager;
 import com.mihalis.dtr00.systemd.service.Networking;
 import com.mihalis.dtr00.systemd.service.Toast;
 import com.mihalis.dtr00.utils.Scene;
-import com.mihalis.dtr00.utils.ScenesStack;
+import com.mihalis.dtr00.utils.ScenesArray;
 import com.mihalis.dtr00.widgets.Button;
 
 public class ErrorScene extends Scene {
@@ -35,13 +35,13 @@ public class ErrorScene extends Scene {
         super(mainAppManager);
     }
 
-    public void startWithoutMainAppManager(ScenesStack scenesStack) {
+    public void startWithoutMainAppManager(ScenesArray scenesArray) {
         try {
-            scenesStack.pauseScene();
+            scenesArray.pauseScene();
         } catch (Exception ignored) {
         }
-        scenesStack.clear();
-        scenesStack.push(this);
+        scenesArray.clear();
+        scenesArray.add(this);
     }
 
     public synchronized void prepare(Throwable throwable) {

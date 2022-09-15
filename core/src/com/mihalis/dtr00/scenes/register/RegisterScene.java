@@ -27,7 +27,8 @@ import com.mihalis.dtr00.widgets.Button;
 import com.mihalis.dtr00.widgets.EditText;
 
 public class RegisterScene extends Scene {
-    private EditText editIP, editLogin, editPassword;
+    protected EditText editIP;
+    private EditText editLogin, editPassword;
     private CheckBox rememberMeBox;
     private Button loginButton;
 
@@ -50,12 +51,12 @@ public class RegisterScene extends Scene {
         placePasswordText();
         placeEditPassword();
         placeCheckBoxRemember();
-        placeButtonSave();
+        placeButtonLogin();
 
         setStageListener();
     }
 
-    private void placeButtonSave() {
+    private void placeButtonLogin() {
         loginButton = new Button(getLocales().apply) {
             @Override
             public void onClick() {
@@ -64,18 +65,22 @@ public class RegisterScene extends Scene {
 
                 Registration registration = new Registration() {
                     @Override
-                    void onIncorrect() {
+                    public void onIncorrect() {
                         Toast.makeToast(getLocales().incorrectLoginPasswd);
                         activate(true);
                     }
 
                     @Override
-                    void onCorrect() {
-                        Toast.makeToast(getLocales().successfullySaved);
-                        mainAppManager.finishScene();
+                    public void onCorrect() {
+                        onSuccessfulLogin();
+                    }
+
+                    @Override
+                    public void onSocketTimeoutException() {
+                        activate(true);
                     }
                 };
-                registration.login(editLogin.getText(), editPassword.getText(), rememberMeBox.isChecked());
+                registration.login(editLogin.getText(), editPassword.getText(), rememberMeBox.isChecked(), true);
             }
         };
         loginButton.setSize(getImages().buttonWidth * 1.6f, getImages().buttonHeight * 1.4f);
@@ -85,6 +90,11 @@ public class RegisterScene extends Scene {
         loginButton.setBottomPod(-8);
 
         stage.addActor(loginButton);
+    }
+
+    protected void onSuccessfulLogin() {
+        Toast.makeToast(getLocales().successfullySaved);
+        mainAppManager.finishScene();
     }
 
     private void placeCheckBoxRemember() {
@@ -139,7 +149,7 @@ public class RegisterScene extends Scene {
         stage.addActor(loginText);
     }
 
-    private void placeEnterIpDeviceText() {
+    protected void placeEnterIpDeviceText() {
         Label enterIpDeviceText = new Label(getLocales().enterIpDevice, getStyles().labelStyle);
         enterIpDeviceText.setX(HALF_SCREEN_WIDTH, center);
         enterIpDeviceText.setY(SCREEN_HEIGHT - 400, center);
@@ -149,7 +159,7 @@ public class RegisterScene extends Scene {
         stage.addActor(enterIpDeviceText);
     }
 
-    private void placeEditIp() {
+    protected void placeEditIp() {
         editIP = new EditText(getStyles().editTextStyle);
         editIP.setMessageText(getLocales().ipAddress);
         editIP.setPosition(HALF_SCREEN_WIDTH, SCREEN_HEIGHT - 580, center);
@@ -157,7 +167,7 @@ public class RegisterScene extends Scene {
         stage.addActor(editIP);
     }
 
-    private void placeAuthorizationText() {
+    protected void placeAuthorizationText() {
         Label authorizationText = new Label(getLocales().authorization, getStyles().labelStyle);
         authorizationText.setPosition(HALF_SCREEN_WIDTH, SCREEN_HEIGHT - 110, center);
         authorizationText.setAlignment(center);

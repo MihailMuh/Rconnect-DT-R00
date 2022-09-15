@@ -12,6 +12,7 @@ import com.badlogic.gdx.graphics.g2d.freetype.FreetypeFontLoader.FreeTypeFontLoa
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 import com.mihalis.dtr00.systemd.service.Processor;
+import com.mihalis.dtr00.utils.CollectionManipulator;
 
 public class FontHub extends BaseHub {
     private static final String RUSSIAN = "АБВГДЕЁЖЗИЙКЛМНОПРСТУФХЦЧШЩЪЫЬЭЮЯабвгдеёжзийклмнопрстуфхцчшщъыьэюя";
@@ -88,25 +89,7 @@ public class FontHub extends BaseHub {
         if (!Processor.isUIThread()) throw new GdxRuntimeException("No OpenGL context found!");
 
         GlyphLayout glyph = new GlyphLayout();
-
-        if (texts.length > 1) {
-            float maxTextWidth = -1;
-            int indexOfWordWithMaxLen = 0;
-
-            for (int i = 0; i < texts.length; i++) {
-                String word = texts[i];
-
-                glyph.setText(font, word);
-                if (glyph.width > maxTextWidth) {
-                    maxTextWidth = glyph.width;
-                    indexOfWordWithMaxLen = i;
-                }
-            }
-
-            glyph.setText(font, texts[indexOfWordWithMaxLen]);
-        } else {
-            glyph.setText(font, texts[0]);
-        }
+        glyph.setText(font, CollectionManipulator.getLongestString(texts));
 
         return maxWidth / glyph.width;
     }
@@ -126,6 +109,12 @@ public class FontHub extends BaseHub {
 
     public static float getTextWidth(String text) {
         return getTextWidth(new Label(text, getStyles().labelStyle));
+    }
+
+    public static float getTextWidth(String text, BitmapFont font) {
+        Label.LabelStyle labelStyle = new Label.LabelStyle();
+        labelStyle.font = font;
+        return getTextWidth(new Label(text, labelStyle));
     }
 
     public static float getTextHeight(Label label) {

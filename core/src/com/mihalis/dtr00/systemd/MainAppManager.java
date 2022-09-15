@@ -3,22 +3,30 @@ package com.mihalis.dtr00.systemd;
 import com.badlogic.gdx.Gdx;
 import com.mihalis.dtr00.systemd.service.Processor;
 import com.mihalis.dtr00.utils.Scene;
-import com.mihalis.dtr00.utils.ScenesStack;
+import com.mihalis.dtr00.utils.ScenesArray;
 
 public class MainAppManager {
-    private final ScenesStack scenesStack;
+    private final ScenesArray scenesArray;
 
-    public MainAppManager(ScenesStack scenesStack) {
-        this.scenesStack = scenesStack;
+    public MainAppManager(ScenesArray scenesArray) {
+        this.scenesArray = scenesArray;
+    }
+
+    public void finishAppIfOneSceneInStack() {
+        if (scenesArray.size == 1) {
+            Gdx.app.exit();
+        } else {
+            finishScene();
+        }
     }
 
     public void finishScene() {
         Processor.postToGDX(() -> {
             Gdx.input.setOnscreenKeyboardVisible(false);
 
-            Scene lastScene = scenesStack.pop();
+            Scene lastScene = scenesArray.pop();
 
-            scenesStack.resumeScene();
+            scenesArray.resumeScene();
 
             lastScene.pause();
             lastScene.dispose();
@@ -31,9 +39,9 @@ public class MainAppManager {
 
             newScene.create();
 
-            Scene lastScene = scenesStack.pop();
+            Scene lastScene = scenesArray.pop();
 
-            scenesStack.push(newScene);
+            scenesArray.add(newScene);
             newScene.resume();
 
             lastScene.pause();
@@ -45,8 +53,8 @@ public class MainAppManager {
         Processor.postToGDX(() -> {
             scene.create();
 
-            scenesStack.pauseScene();
-            scenesStack.push(scene);
+            scenesArray.pauseScene();
+            scenesArray.add(scene);
 
             scene.resume();
         });

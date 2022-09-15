@@ -7,14 +7,14 @@ buildscript {
         google()
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:3.5.4'
+        classpath 'com.android.tools.build:gradle:7.2.2'
     }
 }
 
 allprojects {
     apply plugin: "eclipse"
 
-    version = '2.1'
+    version = '2.5'
     ext {
         appName = "DT-R00"
         gdxVersion = '1.10.0'

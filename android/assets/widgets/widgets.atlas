@@ -3,41 +3,55 @@ widgets.png
 	repeat: none
 alert
 	bounds: 2, 2, 700, 500
+bin
+	bounds: 1944, 354, 100, 148
 button_not_pressed
-	bounds: 1674, 367, 268, 135
+	bounds: 1404, 230, 268, 135
 button_not_pressed_deactivated
 	bounds: 1134, 367, 268, 135
-button_pressed
+button_not_pressed_red
 	bounds: 1404, 367, 268, 135
+button_pressed
+	bounds: 1674, 367, 268, 135
 button_pressed_deactivated
 	bounds: 704, 96, 268, 135
+button_pressed_red
+	bounds: 1134, 230, 268, 135
 check_box_focused
 	bounds: 704, 233, 213, 269
 check_box_non_focused
 	bounds: 919, 233, 213, 269
 cursor
-	bounds: 704, 54, 7, 40
+	bounds: 1997, 312, 7, 40
 dark
-	bounds: 1111, 221, 10, 10
+	bounds: 704, 84, 10, 10
 edit_text_focused
 	index: 0
-	bounds: 1944, 367, 60, 135
+	bounds: 1811, 230, 60, 135
 edit_text_focused
 	index: 2
-	bounds: 1333, 230, 60, 135
+	bounds: 1935, 217, 60, 135
 edit_text_focused
 	index: 1
-	bounds: 1457, 230, 60, 135
+	bounds: 1297, 93, 60, 135
 edit_text_non_focused
 	index: 0
-	bounds: 1271, 230, 60, 135
+	bounds: 1873, 230, 60, 135
 edit_text_non_focused
 	index: 2
-	bounds: 1395, 230, 60, 135
+	bounds: 1235, 93, 60, 135
 edit_text_non_focused
 	index: 1
-	bounds: 1519, 230, 60, 135
+	bounds: 1483, 93, 60, 135
 off_img
-	bounds: 1134, 230, 135, 135
-on_img
 	bounds: 974, 96, 135, 135
+on_img
+	bounds: 1674, 230, 135, 135
+select_box_focused_left
+	bounds: 1111, 93, 60, 135
+select_box_focused_right
+	bounds: 1359, 93, 60, 135
+select_box_non_focused_left
+	bounds: 1421, 93, 60, 135
+select_box_non_focused_right
+	bounds: 1173, 93, 60, 135

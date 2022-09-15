@@ -5,23 +5,27 @@ import static com.mihalis.dtr00.systemd.service.Windows.SCREEN_WIDTH;
 
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.utils.Disposable;
 import com.badlogic.gdx.utils.ScreenUtils;
+import com.badlogic.gdx.utils.viewport.ExtendViewport;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.mihalis.dtr00.hub.Resources;
-import com.mihalis.dtr00.utils.ScenesStack;
-import com.mihalis.dtr00.utils.SpriteBatchSuper;
+import com.mihalis.dtr00.utils.ScenesArray;
 
 public class Frontend implements Disposable {
-    private final ScenesStack scenesStack;
+    private final ScenesArray scenesArray;
 
     private final OrthographicCamera camera = new OrthographicCamera(SCREEN_WIDTH, SCREEN_HEIGHT);
     private final FitViewport viewport = new FitViewport(SCREEN_WIDTH, SCREEN_HEIGHT, camera);
-    private final SpriteBatchSuper spriteBatch = new SpriteBatchSuper(100);
+    private final SpriteBatch spriteBatch = new SpriteBatch(100);
 
-    Frontend(ScenesStack scenesStack) {
-        this.scenesStack = scenesStack;
-        Resources.setFrontendUtils(viewport, spriteBatch, camera);
+    Frontend(ScenesArray scenesArray) {
+        this.scenesArray = scenesArray;
+
+        ExtendViewport extendViewport = new ExtendViewport(SCREEN_WIDTH, SCREEN_HEIGHT, camera);
+        extendViewport.update(SCREEN_WIDTH, SCREEN_HEIGHT, true);
+        Resources.setFrontendUtils(viewport, spriteBatch, extendViewport);
     }
 
     void resize(int width, int height) {
@@ -32,7 +36,7 @@ public class Frontend implements Disposable {
     public void render() {
         ScreenUtils.clear(Color.WHITE);
 
-        scenesStack.renderScene();
+        scenesArray.renderScene();
     }
 
     @Override

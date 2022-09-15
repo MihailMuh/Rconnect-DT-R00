@@ -1,38 +1,45 @@
 package com.mihalis.dtr00.systemd.service;
 
+import static com.mihalis.dtr00.constants.Constant.DTR00_JSON;
+
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.utils.Json;
-import com.mihalis.dtr00.utils.UserDevice;
+import com.mihalis.dtr00.utils.jsonTypes.JsonFile;
+import com.mihalis.dtr00.utils.jsonTypes.UserDevice;
 
 import java.util.HashMap;
 
 public final class FileManager {
-    private static HashMap<String, UserDevice> allUserDevices;
+    private static JsonFile jsonFile;
 
     public static void saveJsonFile() {
-        String stringJson = new Json().toJson(allUserDevices);
+        String stringJson = new Json().toJson(jsonFile, JsonFile.class);
 
-        Gdx.files.local("DT-R00.json").writeString(stringJson, false);
+        Gdx.files.local(DTR00_JSON).writeString(stringJson, false);
     }
 
     public static void writeToJsonFile(String ip, UserDevice userDevice) {
-        allUserDevices.put(ip, userDevice);
+        jsonFile.allUserDevices.put(ip, userDevice);
 
         saveJsonFile();
     }
 
     public static void readFromJsonFile() {
-        if (!Gdx.files.local("DT-R00.json").exists()) {
-            Gdx.files.local("DT-R00.json").writeString("", false);
+        if (!Gdx.files.local(DTR00_JSON).exists()) {
+            jsonFile = new JsonFile();
+            jsonFile.allUserDevices = new HashMap<>();
+            saveJsonFile();
             return;
         }
-        allUserDevices = new Json().fromJson(HashMap.class, Gdx.files.local("DT-R00.json").readString());
+
+        jsonFile = new Json().fromJson(JsonFile.class, Gdx.files.local(DTR00_JSON).readString());
+    }
+
+    public static JsonFile getJson() {
+        return jsonFile;
     }
 
     public static HashMap<String, UserDevice> getUserDevicesData() {
-        if (allUserDevices == null) {
-            allUserDevices = new HashMap<>();
-        }
-        return allUserDevices;
+        return jsonFile.allUserDevices;
     }
 }

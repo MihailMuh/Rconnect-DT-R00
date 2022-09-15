@@ -7,7 +7,7 @@ import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 
 public class ImageView extends Actor {
-    private final Sprite sprite = new Sprite();
+    protected final Sprite sprite = new Sprite();
 
     public ImageView() {
         setEnabled(false);

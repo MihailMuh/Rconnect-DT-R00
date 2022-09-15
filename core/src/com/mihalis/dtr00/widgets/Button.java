@@ -12,17 +12,14 @@ import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+import com.mihalis.dtr00.utils.Clicker;
 
-public abstract class Button extends Label {
+public abstract class Button extends Label implements Clicker {
     private final Sprite sprite = new Sprite();
     private AtlasRegion buttonPressed, buttonNotPressed;
 
     private boolean pressed = false, deactivated = false;
     private float pod;
-
-    public Button() {
-        this("");
-    }
 
     public Button(String text) {
         super(text, getStyles().buttonStyle);
@@ -56,8 +53,6 @@ public abstract class Button extends Label {
         });
     }
 
-    public abstract void onClick();
-
     public void activate(boolean activated) {
         deactivated = !activated;
 
@@ -68,10 +63,6 @@ public abstract class Button extends Label {
             buttonPressed = getImages().buttonNotPressedDeactivated;
             buttonNotPressed = getImages().buttonPressedDeactivated;
         }
-    }
-
-    public void changeActivated() {
-        activate(deactivated);
     }
 
     public void setBottomPod(float pod) {

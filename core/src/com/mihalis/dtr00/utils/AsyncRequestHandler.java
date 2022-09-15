@@ -26,7 +26,6 @@ public abstract class AsyncRequestHandler {
         }
     }
 
-
     public synchronized void handleError(String tag, String errorName) {
         responses.put(tag, errorName);
 

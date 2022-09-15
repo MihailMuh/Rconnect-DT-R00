@@ -28,11 +28,10 @@ public class EditText extends TextField {
         setAlignment(center);
         setGrowLeft(false);
         setMaxWidth(SCREEN_WIDTH);
-        setSize(getTextWidth(), getImages().editTextHeight);
         setTextFieldListener((textField, character) -> setWidth(getTextWidth()));
     }
 
-    private float getTextWidth() {
+    public float getTextWidth() {
         return min(maxWidth, max(FontHub.getTextWidth(getText()), FontHub.getTextWidth(getMessageText())) + minWidth);
     }
 
@@ -42,6 +41,7 @@ public class EditText extends TextField {
 
     public void setMaxWidth(float maxWidth) {
         this.maxWidth = maxWidth;
+        setSize(getTextWidth(), getImages().editTextHeight);
     }
 
     @Override

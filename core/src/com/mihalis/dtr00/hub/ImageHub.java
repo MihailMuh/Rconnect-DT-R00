@@ -9,9 +9,14 @@ public class ImageHub extends BaseHub {
     public AtlasRegion buttonPressed, buttonNotPressed, buttonPressedDeactivated, buttonNotPressedDeactivated;
     public int buttonWidth, buttonHeight;
 
+    public AtlasRegion buttonPressedRed, buttonNotPressedRed;
+
     public AtlasRegion editTextRightFocused, editTextCenterFocused, editTextLeftFocused;
     public AtlasRegion editTextRightNonFocused, editTextCenterNonFocused, editTextLeftNonFocused;
     public int editTextWidth, editTextHeight;
+
+    public AtlasRegion selectBoxFocusedRight, selectBoxNonFocusedRight;
+    public AtlasRegion selectBoxFocusedLeft, selectBoxNonFocusedLeft;
 
     public AtlasRegion cursor;
 
@@ -22,6 +27,8 @@ public class ImageHub extends BaseHub {
     public int alertWidth, alertHeight;
 
     public AtlasRegion on, off;
+
+    public AtlasRegion bin;
 
     public ImageHub(AssetManagerSuper assetManager) {
         super(assetManager);
@@ -68,5 +75,15 @@ public class ImageHub extends BaseHub {
 
         editTextWidth = editTextCenterFocused.originalWidth;
         editTextHeight = editTextCenterFocused.originalHeight;
+
+        bin = atlasWidgets.findRegion("bin");
+
+        buttonPressedRed = atlasWidgets.findRegion("button_pressed_red");
+        buttonNotPressedRed = atlasWidgets.findRegion("button_not_pressed_red");
+
+        selectBoxFocusedRight = atlasWidgets.findRegion("select_box_focused_right");
+        selectBoxNonFocusedRight = atlasWidgets.findRegion("select_box_non_focused_right");
+        selectBoxFocusedLeft = atlasWidgets.findRegion("select_box_focused_left");
+        selectBoxNonFocusedLeft = atlasWidgets.findRegion("select_box_non_focused_left");
     }
 }

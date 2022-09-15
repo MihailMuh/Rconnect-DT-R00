@@ -8,10 +8,10 @@ import static com.mihalis.dtr00.systemd.service.Service.print;
 import com.badlogic.gdx.utils.Array;
 import com.mihalis.dtr00.systemd.service.FileManager;
 import com.mihalis.dtr00.systemd.service.Networking;
-import com.mihalis.dtr00.utils.ArrayFiller;
+import com.mihalis.dtr00.utils.CollectionManipulator;
 import com.mihalis.dtr00.utils.AsyncRequestHandler;
-import com.mihalis.dtr00.utils.UserDevice;
-import com.mihalis.dtr00.utils.UserSettings;
+import com.mihalis.dtr00.utils.jsonTypes.UserDevice;
+import com.mihalis.dtr00.utils.jsonTypes.UserSettings;
 
 import java.util.Arrays;
 import java.util.HashMap;
@@ -40,16 +40,18 @@ public abstract class Registration {
         userSettings.relayDelays = new int[countOfRelayChannels];
         userSettings.disabledMask = new boolean[countOfRelayChannels][4];
 
-        ArrayFiller.fill(userSettings.relayNames, (int index) -> getLocales().relay + " " + (index + 1));
-        ArrayFiller.fill(userSettings.disabledMask, true);
+        CollectionManipulator.fill(userSettings.relayNames, (int index) -> getLocales().relay + " " + (index + 1));
+        CollectionManipulator.fill(userSettings.disabledMask, true);
         Arrays.fill(userSettings.relayDelays, 5);
 
         return userSettings;
     }
 
-    UserDevice createUserJson(int countOfRelayChannels, boolean rememberRegistration) {
+    UserDevice createUserJson(int countOfRelayChannels, boolean rememberRegistration, String login, String password) {
         UserDevice userDevice = new UserDevice();
 
+        userDevice.login = login;
+        userDevice.password = password;
         userDevice.rememberRegistration = rememberRegistration;
         userDevice.userSettings = getPrimaryUserSettings(countOfRelayChannels);
         userDevice.deviceName = Networking.getIpAddress();
@@ -58,7 +60,7 @@ public abstract class Registration {
         return userDevice;
     }
 
-    void login(String login, String password, boolean rememberRegistration) {
+    public void login(String login, String password, boolean rememberRegistration, boolean saveDeviceToJson) {
         String randomPassword = getRandomPassword();
         AsyncRequestHandler handler = new AsyncRequestHandler(3) {
             @Override
@@ -73,18 +75,27 @@ public abstract class Registration {
                     });
                 }
                 if (responseWithUserPasswd > responseWithRandomPasswd) {
-                    UserDevice userDevice = createUserJson(getCountOfRelayChannels(responses.get("relayStatus")), rememberRegistration);
-                    FileManager.writeToJsonFile(Networking.getIpAddress(), userDevice);
+                    if (saveDeviceToJson) {
+                        UserDevice userDevice = createUserJson(getCountOfRelayChannels(responses.get("relayStatus")),
+                                rememberRegistration, login, password);
+                        FileManager.writeToJsonFile(Networking.getIpAddress(), userDevice);
+                    }
                     onCorrect();
                 } else {
                     onIncorrect();
                 }
             }
+
+            @Override
+            public void onSocketTimeoutException() {
+                super.onSocketTimeoutException();
+                Registration.this.onSocketTimeoutException();
+            }
         };
 
         Networking.login(login, password, handler);
         Networking.login(login, randomPassword, handler);
-        Networking.getRelayStatus(handler);
+        Networking.getRelayStatus(handler); // get count of relay channels
     }
 
     private long getLoginStatusFromResponse(String responseString) {
@@ -100,7 +111,11 @@ public abstract class Registration {
         return INVALID_RESPONSE;
     }
 
-    abstract void onIncorrect();
+    public abstract void onIncorrect();
 
-    abstract void onCorrect();
+    public abstract void onCorrect();
+
+    public void onSocketTimeoutException() {
+
+    }
 }
