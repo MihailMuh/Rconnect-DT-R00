@@ -32,7 +32,14 @@ public final class FileManager {
             return;
         }
 
-        jsonFile = new Json().fromJson(JsonFile.class, Gdx.files.local(DTR00_JSON).readString());
+        try {
+            jsonFile = new Json().fromJson(JsonFile.class, Gdx.files.local(DTR00_JSON).readString());
+        } catch (Exception exception) {
+            exception.printStackTrace();
+
+            Gdx.files.local(DTR00_JSON).delete();
+            readFromJsonFile();
+        }
     }
 
     public static JsonFile getJson() {

@@ -5,11 +5,10 @@ import static com.mihalis.dtr00.hub.Resources.getLocales;
 import static com.mihalis.dtr00.systemd.service.Processor.postTask;
 import static com.mihalis.dtr00.systemd.service.Service.print;
 
-import com.badlogic.gdx.utils.Array;
 import com.mihalis.dtr00.systemd.service.FileManager;
 import com.mihalis.dtr00.systemd.service.Networking;
-import com.mihalis.dtr00.utils.CollectionManipulator;
 import com.mihalis.dtr00.utils.AsyncRequestHandler;
+import com.mihalis.dtr00.utils.CollectionManipulator;
 import com.mihalis.dtr00.utils.jsonTypes.UserDevice;
 import com.mihalis.dtr00.utils.jsonTypes.UserSettings;
 
@@ -25,13 +24,6 @@ public abstract class Registration {
             relayChannels *= 2;
         }
         return relayChannels;
-    }
-
-    private String getRandomPassword() {
-        Array<String> latin = new Array<>(26);
-        latin.addAll("A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z");
-        latin.shuffle();
-        return latin.toString("");
     }
 
     private UserSettings getPrimaryUserSettings(int countOfRelayChannels) {
@@ -61,17 +53,16 @@ public abstract class Registration {
     }
 
     public void login(String login, String password, boolean rememberRegistration, boolean saveDeviceToJson) {
-        String randomPassword = getRandomPassword();
         AsyncRequestHandler handler = new AsyncRequestHandler(3) {
             @Override
             public void action(HashMap<String, String> responses) {
                 long responseWithUserPasswd = getLoginStatusFromResponse(responses.get(password));
-                long responseWithRandomPasswd = getLoginStatusFromResponse(responses.get(randomPassword));
+                long responseWithRandomPasswd = getLoginStatusFromResponse(responses.get(""));
 
                 if (responseWithUserPasswd == INVALID_RESPONSE || responseWithRandomPasswd == INVALID_RESPONSE) {
                     postTask(() -> {
                         throw new RuntimeException("Invalid response from relay: " +
-                                responses.get(password) + ", " + responses.get(randomPassword));
+                                responses.get(password) + ", " + responses.get(""));
                     });
                 }
                 if (responseWithUserPasswd > responseWithRandomPasswd) {
@@ -94,7 +85,7 @@ public abstract class Registration {
         };
 
         Networking.login(login, password, handler);
-        Networking.login(login, randomPassword, handler);
+        Networking.login(login, "", handler);
         Networking.getRelayStatus(handler); // get count of relay channels
     }
 
@@ -104,7 +95,7 @@ public abstract class Registration {
             try {
                 return Integer.parseInt(responsePiece);
             } catch (Exception exception) {
-                print("Can't parse string in response:", responsePiece);
+                print("Can't parse '", responsePiece, "' in response:", responseString);
             }
         }
 
