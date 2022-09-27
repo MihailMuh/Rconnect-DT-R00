@@ -22,7 +22,7 @@ public final class Networking {
                 .method(GET)
                 .url(url)
                 .build();
-        request.setTimeOut(5000);
+        request.setTimeOut(50);
 
         return request;
     }
@@ -40,7 +40,11 @@ public final class Networking {
         Gdx.net.sendHttpRequest(getRequest(url), new Net.HttpResponseListener() {
             @Override
             public void handleHttpResponse(HttpResponse httpResponse) {
-                asyncRequestHandler.handleResponse(tag, httpResponse.getResultAsString());
+                if (httpResponse.getStatus().getStatusCode() == -1) {
+                    asyncRequestHandler.handleError(tag, "TimeOutIn_handleHttpResponse");
+                } else {
+                    asyncRequestHandler.handleResponse(tag, httpResponse.getResultAsString());
+                }
             }
 
             @Override

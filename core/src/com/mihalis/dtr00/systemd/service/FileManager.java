@@ -47,6 +47,7 @@ public final class FileManager {
     }
 
     public static HashMap<String, UserDevice> getUserDevicesData() {
+        if (jsonFile.allUserDevices == null) jsonFile.allUserDevices = new HashMap<>();
         return jsonFile.allUserDevices;
     }
 }
