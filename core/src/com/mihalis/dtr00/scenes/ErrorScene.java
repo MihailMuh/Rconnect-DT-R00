@@ -20,7 +20,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.StringBuilder;
 import com.mihalis.dtr00.systemd.MainAppManager;
-import com.mihalis.dtr00.systemd.service.Networking;
+import com.mihalis.dtr00.systemd.service.networking.NetworkManager;
 import com.mihalis.dtr00.systemd.service.Toast;
 import com.mihalis.dtr00.utils.Scene;
 import com.mihalis.dtr00.utils.ScenesArray;
@@ -109,7 +109,7 @@ public class ErrorScene extends Scene {
         Button buttonSend = new Button(getLocales().sendError) {
             @Override
             public void onClick() {
-                Networking.postErrorReport(reportStringBuilder.toString(), () -> {
+                NetworkManager.postErrorReport(reportStringBuilder.toString(), () -> {
                     activate(false);
                     Toast.makeToast(getLocales().thankYou);
                 });

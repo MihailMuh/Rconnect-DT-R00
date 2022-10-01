@@ -12,7 +12,7 @@ import com.badlogic.gdx.graphics.g2d.freetype.FreetypeFontLoader.FreeTypeFontLoa
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 import com.mihalis.dtr00.systemd.service.Processor;
-import com.mihalis.dtr00.utils.CollectionManipulator;
+import com.mihalis.dtr00.utils.CollectionsManipulator;
 
 public class FontHub extends BaseHub {
     private static final String RUSSIAN = "АБВГДЕЁЖЗИЙКЛМНОПРСТУФХЦЧШЩЪЫЬЭЮЯабвгдеёжзийклмнопрстуфхцчшщъыьэюя";
@@ -89,7 +89,7 @@ public class FontHub extends BaseHub {
         if (!Processor.isUIThread()) throw new GdxRuntimeException("No OpenGL context found!");
 
         GlyphLayout glyph = new GlyphLayout();
-        glyph.setText(font, CollectionManipulator.getLongestString(texts));
+        glyph.setText(font, CollectionsManipulator.getLongestString(texts));
 
         return maxWidth / glyph.width;
     }

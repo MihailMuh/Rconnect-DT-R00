@@ -12,7 +12,7 @@ import com.mihalis.dtr00.hub.FontHub;
 import com.mihalis.dtr00.scenes.register.RegisterScene;
 import com.mihalis.dtr00.systemd.MainAppManager;
 import com.mihalis.dtr00.systemd.service.FileManager;
-import com.mihalis.dtr00.systemd.service.Networking;
+import com.mihalis.dtr00.systemd.service.networking.NetworkManager;
 
 public class ChangePasswordScene extends RegisterScene {
     public ChangePasswordScene(MainAppManager mainAppManager) {
@@ -44,7 +44,7 @@ public class ChangePasswordScene extends RegisterScene {
     protected void placeEditIp() {
         super.placeEditIp();
 
-        editIP.setText(Networking.getIpAddress());
+        editIP.setText(NetworkManager.getIpAddress());
         editIP.setWidth(editIP.getTextWidth() + 40);
     }
 
@@ -53,6 +53,6 @@ public class ChangePasswordScene extends RegisterScene {
         super.onSuccessfulLogin();
 
         mainAppManager.startScene(new MainScene(mainAppManager,
-                FileManager.getUserDevicesData().get(Networking.getIpAddress())));
+                FileManager.getUserDevicesData().get(NetworkManager.getIpAddress())));
     }
 }

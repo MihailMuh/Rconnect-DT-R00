@@ -14,7 +14,7 @@ import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.utils.Array;
 import com.mihalis.dtr00.hub.FontHub;
-import com.mihalis.dtr00.systemd.service.Networking;
+import com.mihalis.dtr00.systemd.service.networking.NetworkManager;
 import com.mihalis.dtr00.systemd.service.Processor;
 import com.mihalis.dtr00.systemd.service.Service;
 import com.mihalis.dtr00.systemd.service.Toast;
@@ -46,14 +46,14 @@ public class WidgetsLine extends Array<Actor> {
             @Override
             public void onClick() {
                 if (getText().toString().equals(on)) {
-                    Networking.onRelay(index, () -> {
+                    NetworkManager.onRelay(index, () -> {
                         setText(off);
                         imageIndicator.setEnabled(true);
 
                         Toast.makeToast(getLocales().enabled, 500);
                     });
                 } else {
-                    Networking.offRelay(index, () -> {
+                    NetworkManager.offRelay(index, () -> {
                         setText(on);
                         imageIndicator.setEnabled(false);
 
@@ -68,7 +68,7 @@ public class WidgetsLine extends Array<Actor> {
         pulseButton = new Button(getLocales().pulse) {
             @Override
             public void onClick() {
-                Networking.delayRelay(index, delaySeconds, () -> {
+                NetworkManager.delayRelay(index, delaySeconds, () -> {
                     imageIndicator.setEnabled(true);
                     onOffButton.setText(off);
 

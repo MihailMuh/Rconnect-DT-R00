@@ -19,7 +19,7 @@ import com.mihalis.dtr00.hub.StyleHub;
 import com.mihalis.dtr00.scenes.DevicesScene;
 import com.mihalis.dtr00.scenes.ErrorScene;
 import com.mihalis.dtr00.scenes.MainScene;
-import com.mihalis.dtr00.systemd.service.Networking;
+import com.mihalis.dtr00.systemd.service.networking.NetworkManager;
 import com.mihalis.dtr00.systemd.service.Processor;
 import com.mihalis.dtr00.systemd.service.Watch;
 import com.mihalis.dtr00.systemd.service.Windows;
@@ -50,7 +50,7 @@ public class MainApp extends BaseApp {
         getStyles().boot();
 
         if (getJson().relayIPToAutoEnter != null) {
-            Networking.setIpAddress(getJson().relayIPToAutoEnter);
+            NetworkManager.setIpAddress(getJson().relayIPToAutoEnter);
             mainAppManager.startScene(new MainScene(mainAppManager, getJson().allUserDevices.get(getJson().relayIPToAutoEnter)));
         } else {
             mainAppManager.startScene(new DevicesScene(mainAppManager));

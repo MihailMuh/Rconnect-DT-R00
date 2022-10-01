@@ -14,7 +14,7 @@ buildscript {
 allprojects {
     apply plugin: "eclipse"
 
-    version = '2.7'
+    version = '2.8'
     ext {
         appName = "DT-R00"
         gdxVersion = '1.10.0'

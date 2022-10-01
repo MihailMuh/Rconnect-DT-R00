@@ -20,7 +20,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.CheckBox;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.mihalis.dtr00.systemd.MainAppManager;
-import com.mihalis.dtr00.systemd.service.Networking;
+import com.mihalis.dtr00.systemd.service.networking.NetworkManager;
 import com.mihalis.dtr00.systemd.service.Toast;
 import com.mihalis.dtr00.utils.Scene;
 import com.mihalis.dtr00.widgets.Button;
@@ -61,7 +61,7 @@ public class RegisterScene extends Scene {
             @Override
             public void onClick() {
                 activate(false);
-                Networking.setIpAddress(editIP.getText().replace(" ", ""));
+                NetworkManager.setIpAddress(editIP.getText().replace(" ", ""));
 
                 Registration registration = new Registration() {
                     @Override

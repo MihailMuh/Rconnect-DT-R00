@@ -2,7 +2,7 @@ package com.mihalis.dtr00.utils;
 
 import java.util.Arrays;
 
-public class CollectionManipulator {
+public class CollectionsManipulator {
     public static void fill(String[] strings, StringAction action) {
         for (int i = 0; i < strings.length; i++) {
             strings[i] = action.get(i);

@@ -45,6 +45,7 @@ public class LocaleHub extends BaseHub {
     public String yes, no, areYouSure;
     public String hideDevicesScene;
     public String deviceToAutomatic;
+    public String weakWifi;
 
     public LocaleHub(AssetManagerSuper assetManager) {
         super(assetManager);
@@ -113,6 +114,7 @@ public class LocaleHub extends BaseHub {
         areYouSure = locale.get("areYouSure");
         hideDevicesScene = locale.get("hideDevicesScene");
         deviceToAutomatic = locale.get("deviceToAutomatic");
+        weakWifi = locale.get("weakWifi");
 
         assetManager.unload(LOCALES);
     }

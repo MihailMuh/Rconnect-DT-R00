@@ -14,13 +14,13 @@ import static com.mihalis.dtr00.hub.FontHub.resizeFont;
 import static com.mihalis.dtr00.hub.Resources.getImages;
 import static com.mihalis.dtr00.hub.Resources.getLocales;
 import static com.mihalis.dtr00.hub.Resources.getStyles;
-import static com.mihalis.dtr00.systemd.service.Networking.getIpAddress;
+import static com.mihalis.dtr00.systemd.service.networking.NetworkManager.getIpAddress;
 import static com.mihalis.dtr00.systemd.service.Service.vibrate;
 import static com.mihalis.dtr00.systemd.service.Windows.HALF_SCREEN_HEIGHT;
 import static com.mihalis.dtr00.systemd.service.Windows.HALF_SCREEN_WIDTH;
 import static com.mihalis.dtr00.systemd.service.Windows.SCREEN_HEIGHT;
 import static com.mihalis.dtr00.systemd.service.Windows.SCREEN_WIDTH;
-import static com.mihalis.dtr00.utils.CollectionManipulator.getLongestString;
+import static com.mihalis.dtr00.utils.CollectionsManipulator.getLongestString;
 import static com.mihalis.dtr00.utils.Intersector.underFinger;
 
 import com.badlogic.gdx.Gdx;
@@ -33,7 +33,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Array;
 import com.mihalis.dtr00.systemd.MainAppManager;
 import com.mihalis.dtr00.systemd.service.FileManager;
-import com.mihalis.dtr00.systemd.service.Networking;
+import com.mihalis.dtr00.systemd.service.networking.NetworkManager;
 import com.mihalis.dtr00.systemd.service.Processor;
 import com.mihalis.dtr00.systemd.service.Service;
 import com.mihalis.dtr00.systemd.service.Toast;
@@ -50,7 +50,7 @@ import java.util.Map;
 public class SettingsScene extends Scene {
     private static boolean logHarvested = false;
 
-    private final String oldIP = Networking.getIpAddress();
+    private final String oldIP = NetworkManager.getIpAddress();
     private final UserDevice userDevice;
     private final Array<EditText> editRelayNames;
     private final Array<EditText> editRelayDelays;
@@ -112,7 +112,7 @@ public class SettingsScene extends Scene {
         buttonPostLogs = new Button(getLocales().postLogs) {
             @Override
             public void onClick() {
-                Networking.postErrorReport(Service.getAllLogs(), () -> {
+                NetworkManager.postErrorReport(Service.getAllLogs(), () -> {
                     logHarvested = true;
                     buttonPostLogs.activate(false);
                     Toast.makeToast(getLocales().thankYou);
@@ -268,12 +268,12 @@ public class SettingsScene extends Scene {
             public void onClick() {
                 if (!parseEditNames() || !parseEditDelays()) return;
 
-                Networking.setIpAddress(editIP.getText());
-                Networking.getRelayStatus(new AsyncRequestHandler(1) {
+                NetworkManager.setIpAddress(editIP.getText());
+                NetworkManager.getRelayStatus(new AsyncRequestHandler(1) {
                     @Override
                     public void action(HashMap<String, String> responses) {
                         Toast.makeToast(getLocales().successfullySaved);
-                        FileManager.writeToJsonFile(Networking.getIpAddress(), userDevice);
+                        FileManager.writeToJsonFile(NetworkManager.getIpAddress(), userDevice);
                         back();
                     }
                 });
@@ -360,7 +360,7 @@ public class SettingsScene extends Scene {
             @Override
             public boolean keyDown(InputEvent event, int keycode) {
                 if (keycode == BACK) {
-                    Networking.setIpAddress(oldIP);
+                    NetworkManager.setIpAddress(oldIP);
                     back();
                 }
                 return true;

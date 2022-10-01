@@ -21,7 +21,7 @@ import com.badlogic.gdx.utils.Array;
 import com.mihalis.dtr00.scenes.register.RegisterScene;
 import com.mihalis.dtr00.systemd.MainAppManager;
 import com.mihalis.dtr00.systemd.service.FileManager;
-import com.mihalis.dtr00.systemd.service.Networking;
+import com.mihalis.dtr00.systemd.service.networking.NetworkManager;
 import com.mihalis.dtr00.utils.Scene;
 import com.mihalis.dtr00.utils.jsonTypes.UserDevice;
 import com.mihalis.dtr00.widgets.Button;
@@ -80,7 +80,7 @@ public class DevicesScene extends Scene {
         Button buttonEnter = new Button(getLocales().enter) {
             @Override
             public void onClick() {
-                Networking.setIpAddress(pair.getKey());
+                NetworkManager.setIpAddress(pair.getKey());
                 mainAppManager.startScene(new MainScene(mainAppManager, pair.getValue()));
             }
         };

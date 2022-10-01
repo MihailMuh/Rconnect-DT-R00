@@ -6,9 +6,9 @@ import static com.mihalis.dtr00.systemd.service.Processor.postTask;
 import static com.mihalis.dtr00.systemd.service.Service.print;
 
 import com.mihalis.dtr00.systemd.service.FileManager;
-import com.mihalis.dtr00.systemd.service.Networking;
+import com.mihalis.dtr00.systemd.service.networking.NetworkManager;
 import com.mihalis.dtr00.utils.AsyncRequestHandler;
-import com.mihalis.dtr00.utils.CollectionManipulator;
+import com.mihalis.dtr00.utils.CollectionsManipulator;
 import com.mihalis.dtr00.utils.jsonTypes.UserDevice;
 import com.mihalis.dtr00.utils.jsonTypes.UserSettings;
 
@@ -32,8 +32,8 @@ public abstract class Registration {
         userSettings.relayDelays = new int[countOfRelayChannels];
         userSettings.disabledMask = new boolean[countOfRelayChannels][4];
 
-        CollectionManipulator.fill(userSettings.relayNames, (int index) -> getLocales().relay + " " + (index + 1));
-        CollectionManipulator.fill(userSettings.disabledMask, true);
+        CollectionsManipulator.fill(userSettings.relayNames, (int index) -> getLocales().relay + " " + (index + 1));
+        CollectionsManipulator.fill(userSettings.disabledMask, true);
         Arrays.fill(userSettings.relayDelays, 5);
 
         return userSettings;
@@ -46,7 +46,7 @@ public abstract class Registration {
         userDevice.password = password;
         userDevice.rememberRegistration = rememberRegistration;
         userDevice.userSettings = getPrimaryUserSettings(countOfRelayChannels);
-        userDevice.deviceName = Networking.getIpAddress();
+        userDevice.deviceName = NetworkManager.getIpAddress();
         userDevice.countOfRelayChannels = countOfRelayChannels;
 
         return userDevice;
@@ -69,7 +69,7 @@ public abstract class Registration {
                     if (saveDeviceToJson) {
                         UserDevice userDevice = createUserJson(getCountOfRelayChannels(responses.get("relayStatus")),
                                 rememberRegistration, login, password);
-                        FileManager.writeToJsonFile(Networking.getIpAddress(), userDevice);
+                        FileManager.writeToJsonFile(NetworkManager.getIpAddress(), userDevice);
                     }
                     onCorrect();
                 } else {
@@ -84,9 +84,9 @@ public abstract class Registration {
             }
         };
 
-        Networking.login(login, password, handler);
-        Networking.login(login, "", handler);
-        Networking.getRelayStatus(handler); // get count of relay channels
+        NetworkManager.login(login, password, handler);
+        NetworkManager.login(login, "", handler);
+        NetworkManager.getRelayStatus(handler); // get count of relay channels
     }
 
     private long getLoginStatusFromResponse(String responseString) {

@@ -1,30 +1,25 @@
-package com.mihalis.dtr00.systemd.service;
+package com.mihalis.dtr00.systemd.service.networking;
 
 import static com.badlogic.gdx.Net.HttpMethods.GET;
 import static com.badlogic.gdx.Net.HttpMethods.POST;
+import static com.mihalis.dtr00.Settings.TIMEOUT_MILLIS;
 import static com.mihalis.dtr00.systemd.service.Service.print;
 
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Net;
-import com.badlogic.gdx.Net.HttpRequest;
 import com.badlogic.gdx.Net.HttpResponse;
 import com.badlogic.gdx.net.HttpRequestBuilder;
 import com.mihalis.dtr00.utils.AsyncRequestHandler;
 
 import java.util.HashMap;
 
-public final class Networking {
+public final class NetworkManager {
     private static String IP_ADDRESS;
 
-    private static HttpRequest getRequest(String url) {
-        HttpRequest request = new HttpRequestBuilder()
+    private static HttpRequestBuilder getRequestBuilder(String url) {
+        return new HttpRequestBuilder()
                 .newRequest()
                 .method(GET)
                 .url(url)
-                .build();
-        request.setTimeOut(50);
-
-        return request;
+                .timeout(TIMEOUT_MILLIS);
     }
 
     private static void responseWithRunnable(String url, Runnable runnable) {
@@ -37,7 +32,7 @@ public final class Networking {
     }
 
     private static void responseWithAsyncHandler(String url, String tag, AsyncRequestHandler asyncRequestHandler) {
-        Gdx.net.sendHttpRequest(getRequest(url), new Net.HttpResponseListener() {
+        new SendRequestHandler(getRequestBuilder(url)) {
             @Override
             public void handleHttpResponse(HttpResponse httpResponse) {
                 if (httpResponse.getStatus().getStatusCode() == -1) {
@@ -54,12 +49,7 @@ public final class Networking {
 
                 asyncRequestHandler.handleError(tag, throwable.getClass().getSimpleName());
             }
-
-            @Override
-            public void cancelled() {
-
-            }
-        });
+        };
     }
 
     public static void login(String login, String password, AsyncRequestHandler asyncRequestHandler) {
@@ -96,16 +86,10 @@ public final class Networking {
     }
 
     public static void postErrorReport(String report, Runnable action) {
-        HttpRequest request = new HttpRequestBuilder()
-                .newRequest()
+        new SendRequestHandler(getRequestBuilder("http://78.29.33.173:49144/email")
                 .content("{\"report\":\"" + report.replace("\n", "*") + "\"}")
                 .header("Content-Type", "application/json")
-                .method(POST)
-                .url("http://78.29.33.173:49144/email")
-                .build();
-        request.setTimeOut(5000);
-
-        Gdx.net.sendHttpRequest(request, new Net.HttpResponseListener() {
+                .method(POST)) {
             @Override
             public void handleHttpResponse(HttpResponse httpResponse) {
                 action.run();
@@ -122,11 +106,6 @@ public final class Networking {
                     }
                 }.handleError("sendMail", throwable.getClass().getSimpleName());
             }
-
-            @Override
-            public void cancelled() {
-
-            }
-        });
+        };
     }
 }

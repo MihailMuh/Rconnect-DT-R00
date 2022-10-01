@@ -20,7 +20,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Array;
 import com.mihalis.dtr00.scenes.register.Registration;
 import com.mihalis.dtr00.systemd.MainAppManager;
-import com.mihalis.dtr00.systemd.service.Networking;
+import com.mihalis.dtr00.systemd.service.networking.NetworkManager;
 import com.mihalis.dtr00.systemd.service.Processor;
 import com.mihalis.dtr00.utils.AsyncRequestHandler;
 import com.mihalis.dtr00.utils.Scene;
@@ -126,7 +126,7 @@ public class MainScene extends Scene {
     protected void updateIndicatorsAndButtons() {
         if (onPause) return;
 
-        Networking.getRelayStatus(new AsyncRequestHandler(1) {
+        NetworkManager.getRelayStatus(new AsyncRequestHandler(1) {
             @Override
             public void action(HashMap<String, String> responses) {
                 // такой ответ &0&8&1&1&1&1&1&1&1&1&
