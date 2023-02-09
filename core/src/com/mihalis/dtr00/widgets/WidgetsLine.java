@@ -1,4 +1,4 @@
-package com.mihalis.dtr00.utils;
+package com.mihalis.dtr00.widgets;
 
 import static com.badlogic.gdx.utils.Align.left;
 import static com.badlogic.gdx.utils.Align.right;

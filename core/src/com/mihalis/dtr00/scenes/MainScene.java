@@ -24,7 +24,7 @@ import com.mihalis.dtr00.systemd.service.networking.NetworkManager;
 import com.mihalis.dtr00.systemd.service.Processor;
 import com.mihalis.dtr00.utils.AsyncRequestHandler;
 import com.mihalis.dtr00.utils.Scene;
-import com.mihalis.dtr00.utils.WidgetsLine;
+import com.mihalis.dtr00.widgets.WidgetsLine;
 import com.mihalis.dtr00.utils.jsonTypes.UserDevice;
 import com.mihalis.dtr00.widgets.Button;
 

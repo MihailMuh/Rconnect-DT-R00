@@ -13,7 +13,6 @@ import com.badlogic.gdx.backends.android.AndroidApplicationConfiguration;
 import com.mihalis.dtr00.systemd.MainApp;
 import com.mihalis.dtr00.systemd.service.Processor;
 import com.mihalis.dtr00.systemd.service.Service;
-import com.mihalis.dtr00.utils.DTR00Exception;
 import com.mihalis.dtr00.utils.LogManager;
 import com.mihalis.dtr00.utils.ToastManager;
 
@@ -34,7 +33,6 @@ public class AndroidLauncher extends AndroidApplication implements ToastManager,
         config.hideStatusBar = true;
         config.numSamples = 2;
         config.disableAudio = true;
-        config.useGL30 = true;
 
         setToastManager(this);
         setLogger(this);
@@ -84,7 +82,7 @@ public class AndroidLauncher extends AndroidApplication implements ToastManager,
                 }
             }
         } catch (Exception exception) {
-            throw new DTR00Exception(exception.getMessage(), exception, true, true);
+            throw new RuntimeException(exception.getMessage(), exception.getCause());
         }
 
         return stringBuilder.toString();

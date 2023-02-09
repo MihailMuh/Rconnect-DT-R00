@@ -18,7 +18,7 @@ import com.mihalis.dtr00.systemd.MainAppManager;
 import com.mihalis.dtr00.systemd.service.FileManager;
 import com.mihalis.dtr00.systemd.service.Toast;
 import com.mihalis.dtr00.utils.jsonTypes.UserDevice;
-import com.mihalis.dtr00.utils.WidgetsLine;
+import com.mihalis.dtr00.widgets.WidgetsLine;
 import com.mihalis.dtr00.widgets.AlertDialog;
 import com.mihalis.dtr00.widgets.Button;
 

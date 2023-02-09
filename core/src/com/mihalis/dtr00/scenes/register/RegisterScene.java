@@ -189,7 +189,7 @@ public class RegisterScene extends Scene {
                     Gdx.input.setOnscreenKeyboardVisible(false);
                     stage.setKeyboardFocus(null);
 
-                    // возвращаем всех на свои позиции
+                    // reset all elements position
                     float firstWidgetY = stage.getActors().get(0).getY(center);
                     for (Actor actor : stage.getActors()) {
                         actor.setY(actor.getY(center) - (firstWidgetY - maxYForWidget), center);

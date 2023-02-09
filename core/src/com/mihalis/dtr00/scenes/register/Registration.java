@@ -4,6 +4,7 @@ import static com.mihalis.dtr00.constants.Constant.INVALID_RESPONSE;
 import static com.mihalis.dtr00.hub.Resources.getLocales;
 import static com.mihalis.dtr00.systemd.service.Processor.postTask;
 import static com.mihalis.dtr00.systemd.service.Service.print;
+import static com.mihalis.dtr00.systemd.service.networking.NetworkManager.getIpAddress;
 
 import com.mihalis.dtr00.systemd.service.FileManager;
 import com.mihalis.dtr00.systemd.service.networking.NetworkManager;
@@ -16,7 +17,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 
 public abstract class Registration {
-    // channels - кубики на реле (2, 4, 8 шт.)
+    // channels - ports on relay (2, 4, 8 elems)
     private int getCountOfRelayChannels(String relayStatus) {
         int relayChannels = 2;
 
@@ -46,7 +47,7 @@ public abstract class Registration {
         userDevice.password = password;
         userDevice.rememberRegistration = rememberRegistration;
         userDevice.userSettings = getPrimaryUserSettings(countOfRelayChannels);
-        userDevice.deviceName = NetworkManager.getIpAddress();
+        userDevice.deviceName = getIpAddress();
         userDevice.countOfRelayChannels = countOfRelayChannels;
 
         return userDevice;
@@ -69,7 +70,7 @@ public abstract class Registration {
                     if (saveDeviceToJson) {
                         UserDevice userDevice = createUserJson(getCountOfRelayChannels(responses.get("relayStatus")),
                                 rememberRegistration, login, password);
-                        FileManager.writeToJsonFile(NetworkManager.getIpAddress(), userDevice);
+                        FileManager.writeToJsonFile(getIpAddress(), userDevice);
                     }
                     onCorrect();
                 } else {
@@ -84,9 +85,27 @@ public abstract class Registration {
             }
         };
 
+        if (isDemoInput(getIpAddress(), login, password)) {
+            handler.action(getDemoResponse(password));
+            return;
+        }
+
         NetworkManager.login(login, password, handler);
         NetworkManager.login(login, "", handler);
         NetworkManager.getRelayStatus(handler); // get count of relay channels
+    }
+
+    private HashMap<String, String> getDemoResponse(String password) {
+        HashMap<String, String> responses = new HashMap<>(2);
+        responses.put(password, "&302&/menu_page.html&");
+        responses.put("", "&0&");
+        responses.put("relayStatus", "8");
+        // 302 more then 0, so action will be successfully
+        return responses;
+    }
+
+    private boolean isDemoInput(String ip, String login, String password) {
+        return "admin".equals(ip) && "admin".equals(login) && "admin".equals(password);
     }
 
     private long getLoginStatusFromResponse(String responseString) {

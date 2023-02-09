@@ -95,7 +95,7 @@ public class DevicesScene extends Scene {
     }
 
     private void placeEditDeviceName(float x, float y, String currentDeviceName, String indexName) {
-        y -= 13; // кнопка почему-то ниже отрисовывается, отнимаем, чтобы все по одной линии были
+        y -= 13; // for some reason, the button is drawn below, so raise button up
 
         EditText editDeviceName = new EditText(currentDeviceName, getStyles().editTextStyle);
         editDeviceName.setMaxWidth(670); // методом тыка
